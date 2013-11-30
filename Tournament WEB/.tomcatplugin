@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tomcatProjectProperties>
+    <rootDir>/Web Content</rootDir>
+    <exportSource>false</exportSource>
+    <reloadable>true</reloadable>
+    <redirectLogger>true</redirectLogger>
+    <updateXml>true</updateXml>
+    <warLocation>C:\Users\Avery\Desktop\tournament.war</warLocation>
+    <extraInfo></extraInfo>
+    <webPath>/tournament</webPath>
+    <webClassPathEntries>
+        <webClassPathEntry>/Tournament WEB/Web Content/WEB-INF/classes</webClassPathEntry>
+        <webClassPathEntry>/Tournament WEB/Web Content/WEB-INF/lib/EasySMTPConnection.jar</webClassPathEntry>
+        <webClassPathEntry>/Tournament WEB/Web Content/WEB-INF/lib/bundle.jar</webClassPathEntry>
+        <webClassPathEntry>/Tournament WEB/Web Content/WEB-INF/lib/dom.jar</webClassPathEntry>
+        <webClassPathEntry>/Tournament WEB/Web Content/WEB-INF/lib/jaxen-full.jar</webClassPathEntry>
+        <webClassPathEntry>/Tournament WEB/Web Content/WEB-INF/lib/jaxp-api.jar</webClassPathEntry>
+        <webClassPathEntry>/Tournament WEB/Web Content/WEB-INF/lib/jdbc2_0-stdext.jar</webClassPathEntry>
+        <webClassPathEntry>/Tournament WEB/Web Content/WEB-INF/lib/jstl.jar</webClassPathEntry>
+        <webClassPathEntry>/Tournament WEB/Web Content/WEB-INF/lib/mysql-connector-java-3.0.15-ga-bin.jar</webClassPathEntry>
+        <webClassPathEntry>/Tournament WEB/Web Content/WEB-INF/lib/sax.jar</webClassPathEntry>
+        <webClassPathEntry>/Tournament WEB/Web Content/WEB-INF/lib/saxpath.jar</webClassPathEntry>
+        <webClassPathEntry>/Tournament WEB/Web Content/WEB-INF/lib/standard.jar</webClassPathEntry>
+        <webClassPathEntry>/Tournament WEB/Web Content/WEB-INF/lib/xalan.jar</webClassPathEntry>
+        <webClassPathEntry>/Tournament WEB/Web Content/WEB-INF/lib/xercesImpl.jar</webClassPathEntry>
+        <webClassPathEntry>/Web Utility/bin</webClassPathEntry>
+    </webClassPathEntries>
+</tomcatProjectProperties>

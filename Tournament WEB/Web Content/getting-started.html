@@ -1,0 +1,150 @@
+<html>
+<head><title>Tournament Pool and Bracket Tracker: Getting Started</title></head>
+<body>
+<h2>Tournament Pool and Bracket Tracker</h2>
+<h3>Getting Started</h3>
+
+<P>
+The development and testing of the system has only been done in <UL>
+<LI> Tomcat 7 and Tomcat 5.5.x</LI>
+<LI> MySQL Ver 12.21 Distrib 4.0.15, for Win95/Win98 (i32), and the latest 5.6 version</LI>
+<LI> Eclipse Juno SR2</LI>
+</UL>
+</P>
+<p>
+There are several prerequisites (programs you must have installed) to set the tournament bracket tracker up.
+<ol>
+<li> <a href="http://dev.mysql.com/downloads/mysql/5.0.html">MySQL</a>
+<li> Sun JDK 1.6.  You can get this from <a href="http://java.sun.com">java.sun.com</a>.
+	If you use Tomcat 5.5, you can get away with just the JRE, which you can get easily from
+	<a href="http://java.com">java.com</a>.  If you are working off of Linux, be aware that gcj doesn't work.
+	Some Linux distributions already have gcj installed and use it to run the already
+	installed version of tomcat.  This doesn't work yet, and I don't have a Linux box
+	at the moment to figure out why.  Installing the Sun JDK worked for another user
+	in this situation.
+<li> Tomcat or another J2EE container.  I suggest
+	<a href="http://tomcat.apache.org/download-70.cgi">Tomcat 7</a>.
+<li>
+Once you have tomcat installed, you must make it available from your web server.
+How this is done is different for every web server.  If you have Apache, then you need to
+use the <a href="http://tomcat.apache.org/download-connectors.cgi">mod-jk2 connector</a>.
+</li>
+<li>Put the tournament.war file in the tomcat 'webapps' folder.</li>
+<LI>To get the database ready, run the following commands from the mysql.exe tool in the following order:
+<pre>
+\. [path]\config\db.sql
+\. [path]\config\ncaa.sql
+\. [path]\config\ncaa-teams.sql
+\. [path]\config\ncaa-leagues.sql
+\. [path]\config\ncaa-2004.sql (optional)
+\. [path]\config\11team.sql (optional - for ACC and Big 10 tournaments)
+\. [path]\config\12team.sql (optional - for Big 12, Big East, and SEC tournaments)
+\. [path]\config\acc-league.sql (optional)
+\. [path]\config\acc-2005.sql (optional)
+\. [path]\config\ncaa-2005.sql (optional)
+\. [path]\config\nit.sql (optional - for National Invitation Tournament)
+\. [path]\config\nit32.sql (optional - for National Invitation Tournament 32 Team)
+\. [path]\config\worldcup.sql (optional - for World Cup Stage 2)
+</pre>
+<LI>To upgrade from a different version, run as appropriate
+<pre>
+\. [path]\config\upgrade2to3.sql (if starting at 0.2.x)
+\. [path]\config\upgrade3to4.sql (if starting at 0.3.x)
+\. [path]\config\upgrade4to5.sql
+\. [path]\config\upgrade5to5_1.sql
+\. [path]\config\upgrade5_1to5_2.sql
+\. [path]\config\upgrade5_2to6.sql
+\. [path]\config\upgrade6to6_1.sql
+\. [path]\config\ncaa-leagues.sql (add league data for simpler admin)
+\. [path]\config\acc-league.sql (optional - add league data for simpler admin)
+\. [path]\config\11team.sql (optional - for ACC and Big 10 tournaments)
+\. [path]\config\12team.sql (optional - for Big 12, Big East, and SEC tournaments)
+\. [path]\config\nit.sql (optional - for National Invitation Tournament)
+\. [path]\config\nit32.sql (optional - for National Invitation Tournament 32 Team)
+\. [path]\config\worldcup.sql (optional - for World Cup Stage 2)
+</pre>
+javax.mail is now supported.  You can get it from <a href="http://www.oracle.com/technetwork/java/index-138643.html">Oracle</a>.
+In your jdbc.properties file, you may want to use the following properties to so that password change notices are sent properly.
+<ul>
+<li>adminEmail</li>
+<li>smtpServerHost</li>
+<li>mail.userName</li>
+<li>mail.password</li>
+<li>mail.smtp.host</li>
+<li>mail.smtp.port</li>
+<li>Anything that starts with mail.smtp will be passed automatically to Java Mail.  Use these to configure security.</li>
+</ul>
+
+<LI>
+You need to grant privileges in mysql as well:
+<PRE>
+GRANT ALL PRIViLEGES ON *.* TO 'testuser'@'localhost'
+IDENTIFIED BY 'testpw' WITH GRANT OPTION;
+</PRE>
+</LI>
+<LI>
+You may add a file named jdbc.properties and override any properties you want
+(including userids and passwords).  This file will never be included in a distribution
+and is safe from being overridden.  Put it next to tournament.properties in
+WEB-INF/classes/config/ or anywhere else on the system class path.  
+See the note on email above.
+</LI>
+<LI>
+The tweaks to Tomcat necessary in older versions is no longer required as of 0.6.2.
+</LI>
+<LI>
+To enable automatic score updates from the Internet, you will need to find your own source.
+Version 0.6.2 enables a 'plug-in' that you may freely implement without having to adhere to the 
+GNU Affero GPL v3 for your plug-in implementation as a special exception that the copyright 
+holder is making.
+<OL>
+<LI>Implement the com.tournamentpool.controller.autoupdate.ScoreSource interface.</LI>
+<LI>Then add these properties to your jdbc.properties file:
+<pre>
+autoUpdate.leagues=<i>the ids of the leagues you want to enable updates for, separated by a comma (,)</i>
+#autoUpdate.tournamentDetectTimeInMins=60
+#autoUpdate.refreshDelayInSeconds=30
+scoreSource.<i>{league-id from above]</i>.uri=<i>The URL you want to load scores from</i>
+scoreSource.<i>{league-id from above]</i>.class=<i>Full package and class name of your ScoreSource implementation class.</i>
+scoreSource.<i>{league-id from above]</i>.classLocation=<i>File system location of the ScoreSource implementation class.</i>
+</pre>
+</LI>
+<LI>Make sure to use double back-slashes (\\) for your path separators.</LI>
+</OL>
+</LI>
+<!-- <LI>Make some tweaks to the [tomcat home]/conf/web.xml file.  Uncomment the following:
+	<PRE>
+    &lt;!-- The invoker servlet --&gt;
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;invoker&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;
+          org.apache.catalina.servlets.InvokerServlet
+        &lt;/servlet-class&gt;
+        &lt;init-param&gt;
+            &lt;param-name&gt;debug&lt;/param-name&gt;
+            &lt;param-value&gt;0&lt;/param-value&gt;
+        &lt;/init-param&gt;
+        &lt;load-on-startup&gt;2&lt;/load-on-startup&gt;
+    &lt;/servlet&gt;
+	</PRE>
+	and
+	<PRE>
+    &lt;!-- The mapping for the invoker servlet --&gt;
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;invoker&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/servlet/*&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+	</PRE>
+	This enables the autoinvoker servlet, which maps from URLs to class names which happen to
+	be J2EE servlet classes.  Some people consider this a security risk, which is why it is
+	disabled by default.  I've never had an issue so
+	long as I know all of the servlet classes I have in the system.  This can be changed.  If you
+	consider it an issue, let me know via a feature request.
+</LI>
+ -->
+<LI>Start MySQL and Tomcat</LI>
+<LI>Go to http://localhost:8080/tournament/</LI>
+</OL>
+</p>
+</body>
+</html>

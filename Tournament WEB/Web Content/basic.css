@@ -1,0 +1,51 @@
+.head {
+	font-family: Verdana;	
+	font-size: 10;
+	font-weight : bold;
+}
+
+.content {
+	font-family: Verdana;	
+	font-size: 10;
+	font-weight : normal;
+}
+
+table.border-table {
+	background : Navy;	
+}
+
+.X {
+	text-decoration: none;
+	font-weight: bold;
+	font-size-adjust: -1;
+	color: pink;	
+}
+
+tr.round-title {
+	font-family: Verdana;
+	font-size: 12;
+	background : Silver;
+	font-weight: bold;
+	background-color : #e2e2e2;
+}
+
+tr.header-row {
+	font-family: Verdana;	
+	font-size: 10;
+	background :  #e2e2e2;
+}
+
+tr.content-row {
+	font-family: Verdana;	
+	font-size: 10;
+	background : White;
+}
+
+input.common {
+    background-color:#737373;
+	border-color:#708090;
+	color: #ffffff;
+	font-size: 10;
+	font-weight: bold;
+	font-family: Arial;
+} 

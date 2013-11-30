@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE web-app
+PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+"http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+	<listener>
+		<listener-class>com.tournamentpool.application.TournamentSingletonProvider</listener-class>
+	</listener>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.Admin</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.Admin</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.AddSiteAdminsServlet</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.AddSiteAdminsServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.MyTournamentServlet</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.MyTournamentServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.AdminListServlet</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.AdminListServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.RegistrationServlet</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.RegistrationServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.ResetPasswordServlet</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.ResetPasswordServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.AssignBracketToPool</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.AssignBracketToPool</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.AssignSeeds</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.AssignSeeds</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.PlayerMaintenance</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.PlayerMaintenance</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.AddAdminsServlet</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.AddAdminsServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.BracketMaintenance</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.BracketMaintenance</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.PoolMaintenance</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.PoolMaintenance</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.Tournament</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.Tournament</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.LoginServlet</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.LoginServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.CreateTournament</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.CreateTournament</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.CreateSubTournament</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.CreateSubTournament</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.CreateTeam</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.CreateTeam</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.CreateLeague</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.CreateLeague</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>com.tournamentpool.servlet.AddTeamsToLeague</servlet-name>
+		<servlet-class>com.tournamentpool.servlet.AddTeamsToLeague</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.Admin</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.Admin</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.AddSiteAdminsServlet</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.AddSiteAdminsServlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.MyTournamentServlet</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.MyTournamentServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.AdminListServlet</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.AdminListServlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.RegistrationServlet</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.RegistrationServlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.ResetPasswordServlet</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.ResetPasswordServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.AssignBracketToPool</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.AssignBracketToPool</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.AssignSeeds</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.AssignSeeds</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.PlayerMaintenance</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.PlayerMaintenance</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.AddAdminsServlet</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.AddAdminsServlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.BracketMaintenance</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.BracketMaintenance</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.PoolMaintenance</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.PoolMaintenance</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.Tournament</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.Tournament</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.LoginServlet</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.LoginServlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.CreateTournament</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.CreateTournament</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.CreateSubTournament</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.CreateSubTournament</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.CreateTeam</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.CreateTeam</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.CreateLeague</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.CreateLeague</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>com.tournamentpool.servlet.AddTeamsToLeague</servlet-name>
+		<url-pattern>/servlet/com.tournamentpool.servlet.AddTeamsToLeague</url-pattern>
+	</servlet-mapping>
+
+	<taglib>
+		<taglib-uri>http://java.sun.com/jstl/fmt</taglib-uri>
+		<taglib-location>/WEB-INF/fmt.tld</taglib-location>
+	</taglib>
+
+	<taglib>
+		<taglib-uri>http://java.sun.com/jstl/fmt-rt</taglib-uri>
+		<taglib-location>/WEB-INF/fmt-rt.tld</taglib-location>
+	</taglib>
+
+	<taglib>
+		<taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
+		<taglib-location>/WEB-INF/c.tld</taglib-location>
+	</taglib>
+
+	<taglib>
+		<taglib-uri>http://java.sun.com/jstl/core-rt</taglib-uri>
+		<taglib-location>/WEB-INF/c-rt.tld</taglib-location>
+	</taglib>
+
+	<taglib>
+		<taglib-uri>http://java.sun.com/jstl/sql</taglib-uri>
+		<taglib-location>/WEB-INF/sql.tld</taglib-location>
+	</taglib>
+
+	<taglib>
+		<taglib-uri>http://java.sun.com/jstl/sql-rt</taglib-uri>
+		<taglib-location>/WEB-INF/sql-rt.tld</taglib-location>
+	</taglib>
+
+	<taglib>
+		<taglib-uri>http://java.sun.com/jstl/x</taglib-uri>
+		<taglib-location>/WEB-INF/x.tld</taglib-location>
+	</taglib>
+
+	<taglib>
+		<taglib-uri>http://java.sun.com/jstl/x-rt</taglib-uri>
+		<taglib-location>/WEB-INF/x-rt.tld</taglib-location>
+	</taglib>
+
+</web-app>
