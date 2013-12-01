@@ -21,12 +21,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql;
 
+import com.tournamentpool.application.SingletonProvider;
+
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import com.tournamentpool.application.SingletonProvider;
 
 /**
  * @author Avery J. Regier

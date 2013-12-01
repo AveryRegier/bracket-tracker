@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- The Basics -->
+    <groupId>com.sf.bracket-tracker</groupId>
+    <artifactId>bracket-tracker</artifactId>
+    <version>0.7.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>tournament</module>
+        <module>web-utility</module>
+    </modules>
+
+    <!-- More Project Information -->
+    <name>Tournament and Bracket Tracker</name>
+    <url>http://bracket-tracker.sf.net</url>
+    <inceptionYear>2003</inceptionYear>
+    <licenses>
+        <license>
+            <name>AGPL v3</name>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Avery Regier</name>
+            <email>avery.regier@gmail.com</email>
+        </developer>
+    </developers>
+</project>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configurations>
-<archive destination="" exploded="false" name="tournament.war" used="true">
-<file location="src/META-INF/MANIFEST.MF" name="MANIFEST.MF" prefix="META-INF" project="" projectLocation="/src/META-INF/MANIFEST.MF" used="true"/>
-<file location="src/WEB-INF/web.xml" name="web.xml" prefix="WEB-INF" project="" projectLocation="/src/WEB-INF/web.xml" used="true"/>
-<file location="src/WEB-INF/jboss-web.xml" name="jboss-web.xml" prefix="WEB-INF" project="" projectLocation="/src/WEB-INF/jboss-web.xml" used="false"/>
-<folder excludes="" includes="**/*.class" location="bin" name="bin" prefix="WEB-INF/classes" project="" projectLocation="/bin" used="true"/>
-</archive>
-</configurations>

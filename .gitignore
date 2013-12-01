@@ -1,3 +1,10 @@
 CVS/
 CVSROOT/
+.idea/
+*.iml
+lib/
+bin/
+target/
+Maven__*.xml
+
 
