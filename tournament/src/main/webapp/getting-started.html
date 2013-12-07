@@ -6,9 +6,14 @@
 
 <P>
 The development and testing of the system has only been done in <UL>
-<LI> Tomcat 7 and Tomcat 5.5.x</LI>
-<LI> MySQL Ver 12.21 Distrib 4.0.15, for Win95/Win98 (i32), and the latest 5.6 version</LI>
-<LI> Eclipse Juno SR2</LI>
+    <LI> Jetty (latest available from Maven)</LI>
+    <LI> MySQL (the latest 5.6 version)</LI>
+    <LI> IntelliJ IDEA</LI>
+</UL>
+The following were tested in previous versions, and may work, but may no longer:<UL>
+    <LI> Tomcat v5, v6, and v7 (v7 on Mac has known issues)</LI>
+    <LI> MySQL Ver 12.21 Distrib 4.0.15, and the latest 5.6 version for Win95/Win98 (i32)</LI>
+    <LI> Eclipse</LI>
 </UL>
 </P>
 <p>
@@ -32,36 +37,36 @@ use the <a href="http://tomcat.apache.org/download-connectors.cgi">mod-jk2 conne
 <li>Put the tournament.war file in the tomcat 'webapps' folder.</li>
 <LI>To get the database ready, run the following commands from the mysql.exe tool in the following order:
 <pre>
-\. [path]\config\db.sql
-\. [path]\config\ncaa.sql
-\. [path]\config\ncaa-teams.sql
-\. [path]\config\ncaa-leagues.sql
-\. [path]\config\ncaa-2004.sql (optional)
-\. [path]\config\11team.sql (optional - for ACC and Big 10 tournaments)
-\. [path]\config\12team.sql (optional - for Big 12, Big East, and SEC tournaments)
-\. [path]\config\acc-league.sql (optional)
-\. [path]\config\acc-2005.sql (optional)
-\. [path]\config\ncaa-2005.sql (optional)
-\. [path]\config\nit.sql (optional - for National Invitation Tournament)
-\. [path]\config\nit32.sql (optional - for National Invitation Tournament 32 Team)
-\. [path]\config\worldcup.sql (optional - for World Cup Stage 2)
+\. [path]\db\setup\db.sql
+\. [path]\db\data\tournamentTypes\ncaa.sql
+\. [path]\db\data\teams\ncaa-teams.sql
+\. [path]\db\data\teams\ncaa-leagues.sql
+\. [path]\db\data\example\ncaa-2004.sql (optional)
+\. [path]\db\data\tournamentTypes\11team.sql (optional - for ACC and Big 10 tournaments)
+\. [path]\db\data\tournamentTypes\12team.sql (optional - for Big 12, Big East, and SEC tournaments)
+\. [path]\db\data\teams\acc-league.sql (optional)
+\. [path]\db\data\example\acc-2005.sql (optional)
+\. [path]\db\data\example\ncaa-2005.sql (optional)
+\. [path]\db\data\tournamentTypes\nit.sql (optional - for National Invitation Tournament)
+\. [path]\db\data\tournamentTypes\nit32.sql (optional - for National Invitation Tournament 32 Team)
+\. [path]\db\data\tournamentTypes\worldcup.sql (optional - for World Cup Stage 2)
 </pre>
 <LI>To upgrade from a different version, run as appropriate
 <pre>
-\. [path]\config\upgrade2to3.sql (if starting at 0.2.x)
-\. [path]\config\upgrade3to4.sql (if starting at 0.3.x)
-\. [path]\config\upgrade4to5.sql
-\. [path]\config\upgrade5to5_1.sql
-\. [path]\config\upgrade5_1to5_2.sql
-\. [path]\config\upgrade5_2to6.sql
-\. [path]\config\upgrade6to6_1.sql
-\. [path]\config\ncaa-leagues.sql (add league data for simpler admin)
-\. [path]\config\acc-league.sql (optional - add league data for simpler admin)
-\. [path]\config\11team.sql (optional - for ACC and Big 10 tournaments)
-\. [path]\config\12team.sql (optional - for Big 12, Big East, and SEC tournaments)
-\. [path]\config\nit.sql (optional - for National Invitation Tournament)
-\. [path]\config\nit32.sql (optional - for National Invitation Tournament 32 Team)
-\. [path]\config\worldcup.sql (optional - for World Cup Stage 2)
+\. [path]\db\setup\upgrade2to3.sql (if starting at 0.2.x)
+\. [path]\db\setup\upgrade3to4.sql (if starting at 0.3.x)
+\. [path]\db\setup\upgrade4to5.sql
+\. [path]\db\setup\upgrade5to5_1.sql
+\. [path]\db\setup\upgrade5_1to5_2.sql
+\. [path]\db\setup\upgrade5_2to6.sql
+\. [path]\db\setup\upgrade6to6_1.sql
+\. [path]\db\data\teams\ncaa-leagues.sql (add league data for simpler admin)
+\. [path]\db\data\teams\acc-league.sql (optional - add league data for simpler admin)
+\. [path]\db\data\tournamentTypes\11team.sql (optional - for ACC and Big 10 tournaments)
+\. [path]\db\data\tournamentTypes\12team.sql (optional - for Big 12, Big East, and SEC tournaments)
+\. [path]\db\data\tournamentTypes\nit.sql (optional - for National Invitation Tournament)
+\. [path]\db\data\tournamentTypes\nit32.sql (optional - for National Invitation Tournament 32 Team)
+\. [path]\db\data\tournamentTypes\worldcup.sql (optional - for World Cup Stage 2)
 </pre>
 javax.mail is now supported.  You can get it from <a href="http://www.oracle.com/technetwork/java/index-138643.html">Oracle</a>.
 In your jdbc.properties file, you may want to use the following properties to so that password change notices are sent properly.
@@ -145,6 +150,5 @@ scoreSource.<i>{league-id from above]</i>.classLocation=<i>File system location 
 <LI>Start MySQL and Tomcat</LI>
 <LI>Go to http://localhost:8080/tournament/</LI>
 </OL>
-</p>
 </body>
 </html>
