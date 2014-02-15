@@ -21,21 +21,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.application.SingletonProviderHolder;
 
+import java.sql.*;
+import java.util.Properties;
+
 /**
- * @author RX39789
- *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
+ * @author avery
  */
 public abstract class SQLBroker extends SingletonProviderHolder {
 	/**
@@ -50,7 +43,7 @@ public abstract class SQLBroker extends SingletonProviderHolder {
 		try {
 			Properties config = sp.getSingleton().getConfig();
 			conn = DriverManager.getConnection(
-				config.getProperty("jdbcURL"),
+                getJdbcURL(),
 				config.getProperty("userid"),
 				config.getProperty("password")
 			);
@@ -62,7 +55,11 @@ public abstract class SQLBroker extends SingletonProviderHolder {
 		}
 	}
 
-	private static boolean loaded = false;
+    protected String getJdbcURL() {
+        return sp.getSingleton().getConfig().getProperty("jdbcURL");
+    }
+
+    private static boolean loaded = false;
 	public static synchronized void loadDriver(Properties config) throws ClassNotFoundException {
 		if(!loaded) {
 			Class.forName(config.getProperty("jdbcDriver"));

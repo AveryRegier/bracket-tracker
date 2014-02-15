@@ -21,42 +21,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.application;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.Properties;
-
 import com.tournamentpool.broker.sql.LoadBroker;
 import com.tournamentpool.broker.sql.LoadManager;
 import com.tournamentpool.broker.sql.SQLBroker;
-import com.tournamentpool.broker.sql.load.GameFeederLoadBroker;
-import com.tournamentpool.broker.sql.load.GameFeederTypeLoadBroker;
-import com.tournamentpool.broker.sql.load.GameLoadBroker;
-import com.tournamentpool.broker.sql.load.GameNodeLoadBroker;
-import com.tournamentpool.broker.sql.load.GameScoreLoadBroker;
-import com.tournamentpool.broker.sql.load.GameSeedLoadBroker;
-import com.tournamentpool.broker.sql.load.LeagueLoadBroker;
-import com.tournamentpool.broker.sql.load.LeagueTeamLoadBroker;
-import com.tournamentpool.broker.sql.load.LevelLoadBroker;
-import com.tournamentpool.broker.sql.load.OpponentLoadBroker;
-import com.tournamentpool.broker.sql.load.ScoreSystemDetailLoadBroker;
-import com.tournamentpool.broker.sql.load.ScoreSystemLoadBroker;
-import com.tournamentpool.broker.sql.load.SeedLoadBroker;
-import com.tournamentpool.broker.sql.load.TeamLoadBroker;
-import com.tournamentpool.broker.sql.load.TeamSynonymLoadBroker;
-import com.tournamentpool.broker.sql.load.TieBreakerTypeLoadBroker;
-import com.tournamentpool.broker.sql.load.TournamentAdminLoadBroker;
-import com.tournamentpool.broker.sql.load.TournamentLoadBroker;
-import com.tournamentpool.broker.sql.load.TournamentSeedLoadBroker;
-import com.tournamentpool.broker.sql.load.TournamentTypeLoadBroker;
+import com.tournamentpool.broker.sql.SetupBroker;
+import com.tournamentpool.broker.sql.get.SiteAdminsGetBroker;
+import com.tournamentpool.broker.sql.load.*;
 import com.tournamentpool.controller.ShowTournamentController;
 import com.tournamentpool.controller.autoupdate.AutoUpdateController;
-import com.tournamentpool.domain.BracketManager;
-import com.tournamentpool.domain.ScoreSystemManager;
-import com.tournamentpool.domain.TeamManager;
-import com.tournamentpool.domain.TournamentManager;
-import com.tournamentpool.domain.TournamentTypeManager;
-import com.tournamentpool.domain.UserManager;
+import com.tournamentpool.domain.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.Properties;
 
 /**
  * @author avery
@@ -96,78 +75,96 @@ public class TournamentApp {
 		}, "Initialization").start();
 	}
 
-	private void init() {
-		LoadManager lm = new LoadManager();
+	private void init() throws IOException, SQLException {
+        setup();
 
-		LoadBroker levelLoader = lm.addLoader(new LevelLoadBroker(sp));
-		LoadBroker teamLoader = lm.addLoader(new TeamLoadBroker(sp));
-		LoadBroker leagueLoader = lm.addLoader(new LeagueLoadBroker(sp));
-		LoadBroker scoreSystemLoader = lm.addLoader(new ScoreSystemLoadBroker(sp));
-		
-		LoadBroker teamSynonymLoader = lm.addLoader(new TeamSynonymLoadBroker(sp));
-		teamSynonymLoader.addDependency(teamLoader);
-		
-		LoadBroker leagueTeamLoader = lm.addLoader(new LeagueTeamLoadBroker(sp));
-		leagueTeamLoader.addDependency(teamLoader);
-		leagueTeamLoader.addDependency(leagueLoader);
-
-		LoadBroker scoreSystemDetailLoader = lm.addLoader(new ScoreSystemDetailLoadBroker(sp));
-		scoreSystemDetailLoader.addDependency(scoreSystemLoader);
-		scoreSystemDetailLoader.addDependency(levelLoader);
-
-		LoadBroker gameFeederTypeLoader = lm.addLoader(new GameFeederTypeLoadBroker(sp));
-
-		lm.addLoader(new TieBreakerTypeLoadBroker(sp));
-
-		LoadBroker gameNodeLoader = lm.addLoader(new GameNodeLoadBroker(sp));
-		gameNodeLoader.addDependency(levelLoader);
-		gameNodeLoader.addDependency(gameFeederTypeLoader);
-
-		LoadBroker tournamentTypeLoader = lm.addLoader(new TournamentTypeLoadBroker(sp));
-		tournamentTypeLoader.addDependency(gameNodeLoader);
-
-		LoadBroker oponentLoader = lm.addLoader(new OpponentLoadBroker(sp));
-		oponentLoader.addDependency(tournamentTypeLoader);
-
-		LoadBroker seedLoader = lm.addLoader(new SeedLoadBroker(sp));
-		seedLoader.addDependency(tournamentTypeLoader);
-
-		LoadBroker gameSeedLoader = lm.addLoader(new GameSeedLoadBroker(sp));
-		gameSeedLoader.addDependency(oponentLoader);
-		gameSeedLoader.addDependency(seedLoader);
-		gameSeedLoader.addDependency(gameNodeLoader);
-
-		LoadBroker gameFeederLoader = lm.addLoader(new GameFeederLoadBroker(sp));
-		gameFeederLoader.addDependency(oponentLoader);
-		gameFeederLoader.addDependency(seedLoader);
-		gameFeederLoader.addDependency(gameNodeLoader);
-
-		LoadBroker tournamentLoader = lm.addLoader(new TournamentLoadBroker(sp));
-		tournamentLoader.addDependency(tournamentTypeLoader);
-		tournamentLoader.addDependency(leagueLoader);
-
-		LoadBroker tournamentAdminLoader = lm.addLoader(new TournamentAdminLoadBroker(sp));
-		tournamentAdminLoader.addDependency(tournamentLoader);
-
-		LoadBroker tournamentSeedLoader = lm.addLoader(new TournamentSeedLoadBroker(sp));
-		tournamentSeedLoader.addDependency(tournamentLoader);
-		tournamentSeedLoader.addDependency(teamLoader);
-		tournamentSeedLoader.addDependency(seedLoader);
-
-		LoadBroker gameLoader = lm.addLoader(new GameLoadBroker(sp));
-		gameLoader.addDependency(tournamentLoader);
-		gameLoader.addDependency(gameNodeLoader);
-		gameLoader.addDependency(oponentLoader);
-
-		LoadBroker gameScoreLoader = lm.addLoader(new GameScoreLoadBroker(sp));
-		gameScoreLoader.addDependency(gameLoader);
-
-		lm.load();
+        load();
 		
 		getAutoUpdateController().init();
 	}
 
-	/**
+    private void setup() throws IOException, SQLException {
+        // see if the database requires initialization
+        try {
+            new SiteAdminsGetBroker(sp).getPlayers();
+        } catch(SQLException e) {
+            System.out.println("Database not setup, so doing it now");
+            SetupBroker setupBroker = new SetupBroker(sp);
+            setupBroker.init("db/setup/db.sql");
+            setupBroker.execute();
+        }
+    }
+
+    private void load() {
+        LoadManager lm = new LoadManager();
+
+        LoadBroker levelLoader = lm.addLoader(new LevelLoadBroker(sp));
+        LoadBroker teamLoader = lm.addLoader(new TeamLoadBroker(sp));
+        LoadBroker leagueLoader = lm.addLoader(new LeagueLoadBroker(sp));
+        LoadBroker scoreSystemLoader = lm.addLoader(new ScoreSystemLoadBroker(sp));
+
+        LoadBroker teamSynonymLoader = lm.addLoader(new TeamSynonymLoadBroker(sp));
+        teamSynonymLoader.addDependency(teamLoader);
+
+        LoadBroker leagueTeamLoader = lm.addLoader(new LeagueTeamLoadBroker(sp));
+        leagueTeamLoader.addDependency(teamLoader);
+        leagueTeamLoader.addDependency(leagueLoader);
+
+        LoadBroker scoreSystemDetailLoader = lm.addLoader(new ScoreSystemDetailLoadBroker(sp));
+        scoreSystemDetailLoader.addDependency(scoreSystemLoader);
+        scoreSystemDetailLoader.addDependency(levelLoader);
+
+        LoadBroker gameFeederTypeLoader = lm.addLoader(new GameFeederTypeLoadBroker(sp));
+
+        lm.addLoader(new TieBreakerTypeLoadBroker(sp));
+
+        LoadBroker gameNodeLoader = lm.addLoader(new GameNodeLoadBroker(sp));
+        gameNodeLoader.addDependency(levelLoader);
+        gameNodeLoader.addDependency(gameFeederTypeLoader);
+
+        LoadBroker tournamentTypeLoader = lm.addLoader(new TournamentTypeLoadBroker(sp));
+        tournamentTypeLoader.addDependency(gameNodeLoader);
+
+        LoadBroker oponentLoader = lm.addLoader(new OpponentLoadBroker(sp));
+        oponentLoader.addDependency(tournamentTypeLoader);
+
+        LoadBroker seedLoader = lm.addLoader(new SeedLoadBroker(sp));
+        seedLoader.addDependency(tournamentTypeLoader);
+
+        LoadBroker gameSeedLoader = lm.addLoader(new GameSeedLoadBroker(sp));
+        gameSeedLoader.addDependency(oponentLoader);
+        gameSeedLoader.addDependency(seedLoader);
+        gameSeedLoader.addDependency(gameNodeLoader);
+
+        LoadBroker gameFeederLoader = lm.addLoader(new GameFeederLoadBroker(sp));
+        gameFeederLoader.addDependency(oponentLoader);
+        gameFeederLoader.addDependency(seedLoader);
+        gameFeederLoader.addDependency(gameNodeLoader);
+
+        LoadBroker tournamentLoader = lm.addLoader(new TournamentLoadBroker(sp));
+        tournamentLoader.addDependency(tournamentTypeLoader);
+        tournamentLoader.addDependency(leagueLoader);
+
+        LoadBroker tournamentAdminLoader = lm.addLoader(new TournamentAdminLoadBroker(sp));
+        tournamentAdminLoader.addDependency(tournamentLoader);
+
+        LoadBroker tournamentSeedLoader = lm.addLoader(new TournamentSeedLoadBroker(sp));
+        tournamentSeedLoader.addDependency(tournamentLoader);
+        tournamentSeedLoader.addDependency(teamLoader);
+        tournamentSeedLoader.addDependency(seedLoader);
+
+        LoadBroker gameLoader = lm.addLoader(new GameLoadBroker(sp));
+        gameLoader.addDependency(tournamentLoader);
+        gameLoader.addDependency(gameNodeLoader);
+        gameLoader.addDependency(oponentLoader);
+
+        LoadBroker gameScoreLoader = lm.addLoader(new GameScoreLoadBroker(sp));
+        gameScoreLoader.addDependency(gameLoader);
+
+        lm.load();
+    }
+
+    /**
 	 * @return Object
 	 */
 	public SingletonProvider getSingletonProvider() {

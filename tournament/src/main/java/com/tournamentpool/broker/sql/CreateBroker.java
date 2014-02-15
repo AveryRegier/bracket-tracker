@@ -1,5 +1,5 @@
-/* 
-Copyright (C) 2003-2008 Avery J. Regier.
+/*
+Copyright (C) 2003-2013 Avery J. Regier.
 
 This file is part of the Tournament Pool and Bracket Tracker.
 
@@ -16,9 +16,6 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
-/*
- * Created on Oct 16, 2004
- */
 package com.tournamentpool.broker.sql;
 
 import com.tournamentpool.application.SingletonProvider;
@@ -27,39 +24,34 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
- * @author Avery J. Regier
+ * Created by avery on 12/14/13.
  */
-public class TransactionBroker extends BaseTransactionBroker<TransactionBroker.Query> {
-	public abstract class Query {
-		private String key;
-		public Query(String key) {
-			this.key = key;
-		}
-		protected void prepare(PreparedStatement stmt) throws SQLException {}
-		protected String getSQLKey() {
-			return key;
-		}
-	}
-	
-	public abstract class MultipleQuery extends Query {
-		public MultipleQuery(String key) {
-			super(key);
-		}
-		public abstract boolean hasMore();
-	}
-	
-	/**
-	 * @param sp
-	 */
-	public TransactionBroker(SingletonProvider sp) {
-		super(sp);
-	}
+public class CreateBroker extends BaseTransactionBroker<String> {
 
-	protected void prepare(PreparedStatement stmt) throws SQLException {
-		current.prepare(stmt);
-	}
+    /**
+     * @param sp
+     */
+    public CreateBroker(SingletonProvider sp) {
+        super(sp);
+    }
 
-	protected String getSQLKey() {
-		return current.getSQLKey();
-	}
+    protected void prepare(PreparedStatement stmt) throws SQLException {}
+
+    protected String getSQL() {
+        return current;
+    }
+
+    @Override
+    protected String getSQLKey() {
+        return "create";
+    }
+
+    @Override
+    protected void processUpdateCount(int updateCount) throws SQLException {
+        if(updateCount > 1)  {
+            System.out.println("Success("+updateCount+"): "+getSQL());
+        } else {
+            System.out.println("Failed("+updateCount+"): "+getSQL());
+        }
+    }
 }
