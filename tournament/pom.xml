@@ -5,8 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- The Basics -->
-    <groupId>com.sf.bracket-tracker</groupId>
-    <artifactId>tournament</artifactId>
+   <artifactId>tournament</artifactId>
 
     <parent>
         <groupId>com.sf.bracket-tracker</groupId>
@@ -24,6 +23,12 @@
             <artifactId>web-utility</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.sf.bracket-tracker</groupId>
+            <artifactId>score-source</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>javax.mail-api</artifactId>

@@ -12,6 +12,7 @@
     <modules>
         <module>tournament</module>
         <module>web-utility</module>
+        <module>score-source</module>
     </modules>
 
     <!-- More Project Information -->
