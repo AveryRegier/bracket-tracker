@@ -26,6 +26,7 @@ package com.tournamentpool.domain;
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.delete.LeagueTeamDeleteBroker;
 import com.tournamentpool.broker.sql.delete.TeamDeleteBroker;
+import com.tournamentpool.broker.sql.delete.TeamSynonymDeleteBroker;
 import utility.domain.Reference;
 
 import java.sql.SQLException;
@@ -100,6 +101,9 @@ public class Team implements Reference, Comparable<Team> {
 					new LeagueTeamDeleteBroker(sp, league, this).execute();
 				}
 			}
+            for(String name: new ArrayList<String>(synonymns)) {
+                new TeamSynonymDeleteBroker(sp, this, name).execute();
+            }
 			new TeamDeleteBroker(sp, this).execute();
 		}
 	}
@@ -125,5 +129,9 @@ public class Team implements Reference, Comparable<Team> {
 
     public List<String> getSynonyms() {
         return synonymns;
+    }
+
+    public void removeSynonym(String name) {
+        synonymns.remove(name);
     }
 }
