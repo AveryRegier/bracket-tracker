@@ -18,23 +18,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.controller.autoupdate;
 
+import com.tournamentpool.controller.TournamentVisitor;
+import com.tournamentpool.domain.*;
+import com.tournamentpool.domain.GameNode.Feeder;
+import com.tournamentpool.domain.MainTournament.WinnerSource;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.tournamentpool.controller.TournamentVisitor;
-import com.tournamentpool.domain.Game;
-import com.tournamentpool.domain.GameInfo;
-import com.tournamentpool.domain.GameNode;
-import com.tournamentpool.domain.GameNode.Feeder;
-import com.tournamentpool.domain.MainTournament;
-import com.tournamentpool.domain.MainTournament.WinnerSource;
-import com.tournamentpool.domain.Opponent;
-import com.tournamentpool.domain.Seed;
-import com.tournamentpool.domain.Team;
-import com.tournamentpool.domain.Tournament;
-import com.tournamentpool.domain.TournamentType;
 
 final class AutoUpdateWinnerSource implements WinnerSource {
 	private final MainTournament mainTournament;
@@ -54,29 +46,33 @@ final class AutoUpdateWinnerSource implements WinnerSource {
 			if(oldWinner != null) return oldGame;
 		}
 		
-		final Map<Opponent, Team> teams = getTeamsIfReadyToPlay(mainTournament, node);
-		if(teams != null) {
-			for (Entry<Opponent, Team> entry : teams.entrySet()) {
-				Iterable<String> names = entry.getValue().getNames();
-			n:	for (String name : names) {
-					String teamName = name.toUpperCase();
-					System.out.println("Evaluating "+teamName);
-					LiveGame game = teamGameMap.get(teamName);
-					if(game != null) {
-						if(verifySameGame(game, teams)) {
-							return new AutoUpdateGameInfo(game, teams, oldGame);
-						}
-						break n;
-					}
-				}
-			}
-		} else {
-			System.out.println("No teams are ready to play for "+mainTournament.getOid()+" "+mainTournament.getName());
-		}
-		return null;
+	    Map<Opponent, Team> teams = getTeamsIfReadyToPlay(mainTournament, node);
+        return getUpdatedGameInfoFor(oldGame, teams);
 	}
 
-	private Map<Opponent, Team> getTeamsIfReadyToPlay(Tournament tournament, GameNode gameNode) {
+    private GameInfo getUpdatedGameInfoFor(GameInfo oldGame, Map<Opponent, Team> teams) {
+        if(teams != null) {
+            for (Entry<Opponent, Team> entry : teams.entrySet()) {
+                Iterable<String> names = entry.getValue().getNames();
+            n:	for (String name : names) {
+                    String teamName = name.toUpperCase();
+                    System.out.println("Evaluating "+teamName);
+                    LiveGame game = teamGameMap.get(teamName);
+                    if(game != null) {
+                        if(verifySameGame(game, teams)) {
+                            return new AutoUpdateGameInfo(game, teams, oldGame);
+                        }
+                        break n;
+                    }
+                }
+            }
+        } else {
+            System.out.println("No teams are ready to play for "+mainTournament.getOid()+" "+mainTournament.getName());
+        }
+        return null;
+    }
+
+    private Map<Opponent, Team> getTeamsIfReadyToPlay(Tournament tournament, GameNode gameNode) {
 	
 		Game game = tournament.getGame(gameNode);
 		
