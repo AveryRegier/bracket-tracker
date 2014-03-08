@@ -1,5 +1,5 @@
 /* 
-Copyright (C) 2003-2013 Avery J. Regier.
+Copyright (C) 2003-2014 Avery J. Regier.
 
 This file is part of the Tournament Pool and Bracket Tracker.
 
@@ -21,19 +21,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import utility.menu.Menu;
-import utility.menu.reference.ReferenceMenu;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.application.SingletonProviderHolder;
 import com.tournamentpool.broker.sql.insert.LeagueInsertBroker;
 import com.tournamentpool.broker.sql.insert.LeagueTeamInsertBroker;
 import com.tournamentpool.broker.sql.insert.TeamInsertBroker;
+import com.tournamentpool.broker.sql.insert.TeamSynonymInsertBroker;
+import utility.menu.Menu;
+import utility.menu.reference.ReferenceMenu;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @author Avery Regier
@@ -144,4 +144,9 @@ public class TeamManager extends SingletonProviderHolder {
 	public void loadTeamSynonym(int teamOID, String name) {
 		teams.get(teamOID).addSynonym(name);
 	}
+
+    public void createTeamSynonym(Team team, String name) throws SQLException {
+        TeamSynonymInsertBroker teamInsertBroker = new TeamSynonymInsertBroker(sp, team, name);
+        teamInsertBroker.execute();
+    }
 }

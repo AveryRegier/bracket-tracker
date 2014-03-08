@@ -1,5 +1,5 @@
 /* 
-Copyright (C) 2003-2008 Avery J. Regier.
+Copyright (C) 2003-2014 Avery J. Regier.
 
 This file is part of the Tournament Pool and Bracket Tracker.
 
@@ -20,14 +20,23 @@ package com.tournamentpool.beans;
 
 import com.tournamentpool.domain.Team;
 
+import java.util.List;
+
 public class TeamBean {
 
 	private final Integer id;
 	private final String name;
 	private int numLeagues;
 	private boolean deletable;
+    private int numSynonyms;
 
-	public Integer getId() {
+    public List<String> getSynonyms() {
+        return synonyms;
+    }
+
+    private List<String> synonyms;
+
+    public Integer getId() {
 		return id;
 	}
 
@@ -55,4 +64,16 @@ public class TeamBean {
 	public void setNumLeagues(int numLeagues) {
 		this.numLeagues = numLeagues;
 	}
+
+    public void setSynonyms(List<String> synonyms) {
+        this.synonyms = synonyms;
+    }
+
+    public void setNumSynonyms(int numSynonyms) {
+        this.numSynonyms = numSynonyms;
+    }
+
+    public int getNumSynonyms() {
+        return numSynonyms;
+    }
 }

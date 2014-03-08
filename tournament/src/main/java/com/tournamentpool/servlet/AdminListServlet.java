@@ -21,32 +21,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.servlet;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
+import com.tournamentpool.beans.*;
+import com.tournamentpool.domain.*;
+import com.tournamentpool.domain.Tournament;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.tournamentpool.beans.GroupBean;
-import com.tournamentpool.beans.LeagueBean;
-import com.tournamentpool.beans.PlayerBean;
-import com.tournamentpool.beans.PoolBean;
-import com.tournamentpool.beans.TeamBean;
-import com.tournamentpool.beans.TournamentBean;
-import com.tournamentpool.domain.Group;
-import com.tournamentpool.domain.League;
-import com.tournamentpool.domain.Pool;
-import com.tournamentpool.domain.Team;
-import com.tournamentpool.domain.Tournament;
-import com.tournamentpool.domain.User;
-import com.tournamentpool.domain.UserManager;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * @author Avery J. Regier
@@ -196,6 +180,7 @@ public class AdminListServlet extends RequiresLoginServlet {
 			int[] counter = teamCounter.get(team);
 			teamBean.setNumLeagues(counter != null ? counter[0] : 0);
 			teamBean.setMayDelete(team.isDeletable(user, getApp().getSingletonProvider()));
+            teamBean.setNumSynonyms(team.getSynonyms().size());
 			teamBeans.add(teamBean);
 		}
 		req.setAttribute("Teams", teamBeans);

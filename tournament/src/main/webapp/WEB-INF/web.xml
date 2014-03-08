@@ -92,6 +92,11 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
 		<servlet-class>com.tournamentpool.servlet.CreateTeam</servlet-class>
 	</servlet>
 
+    <servlet>
+        <servlet-name>com.tournamentpool.servlet.TeamSynonymServlet</servlet-name>
+        <servlet-class>com.tournamentpool.servlet.TeamSynonymServlet</servlet-class>
+    </servlet>
+
 	<servlet>
 		<servlet-name>com.tournamentpool.servlet.CreateLeague</servlet-name>
 		<servlet-class>com.tournamentpool.servlet.CreateLeague</servlet-class>
@@ -186,7 +191,12 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
 		<servlet-name>com.tournamentpool.servlet.CreateTeam</servlet-name>
 		<url-pattern>/servlet/com.tournamentpool.servlet.CreateTeam</url-pattern>
 	</servlet-mapping>
-	
+
+    <servlet-mapping>
+        <servlet-name>com.tournamentpool.servlet.TeamSynonymServlet</servlet-name>
+        <url-pattern>/servlet/com.tournamentpool.servlet.ManageSynonyms</url-pattern>
+    </servlet-mapping>
+
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.CreateLeague</servlet-name>
 		<url-pattern>/servlet/com.tournamentpool.servlet.CreateLeague</url-pattern>

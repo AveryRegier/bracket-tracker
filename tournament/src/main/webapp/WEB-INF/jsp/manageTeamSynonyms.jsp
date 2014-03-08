@@ -1,5 +1,5 @@
 <%--
-Copyright (C) 2003-2014 Avery J. Regier.
+Copyright (C) 2014 Avery J. Regier.
 
 This file is part of the Tournament Pool and Bracket Tracker.
 
@@ -17,23 +17,24 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  --%>
 
+
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-<title><c:choose><c:when test="${League != null}"><c:out value="${League.name}">'s</c:out></c:when><c:otherwise>Site Wide</c:otherwise></c:choose> Team List</title>
+<title>Manage synonyms for <c:out value="${Team.name}"/></title>
 <link rel="stylesheet" type="text/css" href="/tournament/basic.css">
 </head>
-<body>
+<body onLoad="theForm.name.focus()">
 <jsp:include page="header.jsp"/>
 <!--Round Table-->
 <table border="0" cellpadding="0" cellspacing="0" width="60%" align="center">
-	<tr valign="top" align="right" class="round-title">
+	<tr class="round-title" valign="top" align="right">
 		<td width="0%" align="left"><img src="/tournament/images/boxtopleft.gif" alt="" width="8" height="25" border="0"></td>
 		<td width="100%" background="/tournament/images/boxtop.gif">
 			<table border="0" cellpadding="2" cellspacing="0" width="100%" align="center">
 				<tr>
-					<td align="left" valign="top" class="head"><b><c:choose><c:when test="${League != null}"><c:out value="${League.name}">'s</c:out></c:when><c:otherwise>Site Wide</c:otherwise></c:choose> Team List</b></td>
+					<td align="left" valign="top"><b>Add Synonyms for <c:out value="${Team.name}"/><br><!-- title --></b></td>
 				</tr>
 			</table>
 		</td>
@@ -44,36 +45,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		<td width="100%">
 			<img src="/tournament/images/spacer.gif" width="143" height="5" border="0" alt=""><br>
 			<!--Content Table-->
-			
-			<table class="border-table" cellpadding="0" cellspacing="0" border="0">
+			<form method="POST" name="theForm">
+			<input type="hidden" name="team" value="<c:out value="${Team.id}"/>"/>
+			<table cellspacing="3" cellpadding="0" border="0">
 				<tr>
-					<td>
-						<table class="content-table" cellpadding="3" cellspacing="1" border="0">
-							<tr class="header-row">
-								<td>Team Name</td>
-							<%--<td># of Tournaments</td> This would be a good idea.  Link to a history list. --%>
-								<td># of Leagues</td>  	
-								<td># of Synonyms</td>
-								<td>Actions</td>
-							</tr>
-							<c:forEach var="Team" items="${Teams}">
-							<tr class="content-row">
-								<td><c:out value="${Team.name}"/></td>
-								<td>
-								    <a href="<c:out value="${config.AdminListURL}"/>?request=list&type=league&team=<c:out value="${Team.id}"/>"><c:out value="${Team.numLeagues}"/></a>
-								</td>
-								<td>
-								    <a href="<c:out value="${config.ManageTeamSynonymURL}"/>?team=<c:out value="${Team.id}"/>"><c:out value="${Team.numSynonyms}"/></a>
-								</td>
-                                <td>
-								    <c:if test="${Team.deletable}">[<a onclick="return confirm('Continue to delete team \'<c:out value="${Team.name}"/>\'?');" href="<c:out value="${config.AdminListURL}"/>?request=delete&type=team&id=<c:out value="${Team.id}"/>">Delete</a>]</c:if>
-								</td>
-							</tr> 
-							</c:forEach>
-						</table>
+					<td class="head">Add Synonym:</td>
+					<td class="content"><input type=text name="name"></td>
+				</tr>
+				<tr>
+					<td class="head" style="vertical-align: top;">Current Synonyms:</td>
+					<td class="content">
+						<c:forEach var="synonym" items="${Team.synonyms}">
+				            <c:out value="${synonym}"/><br/>
+					    </c:forEach>
 					</td>
 				</tr>
+				<tr><td>&nbsp;</td></tr>
+				<tr>
+					<td colspan="2" align="center"><input class="common" type="submit" value="Add Synonym"></td>
+				</tr>
 			</table>
+			</form>
 			<!--Content Table-->
 		</td>
 		<td width="0%" background="/tournament/images/boxright.gif"><img src="/tournament/images/boxright.gif" alt="" width="8" height="8" border="0"></td>

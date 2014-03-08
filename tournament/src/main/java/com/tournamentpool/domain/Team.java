@@ -1,5 +1,5 @@
 /* 
-Copyright (C) 2003-2013 Avery J. Regier.
+Copyright (C) 2003-2014 Avery J. Regier.
 
 This file is part of the Tournament Pool and Bracket Tracker.
 
@@ -23,16 +23,15 @@ package com.tournamentpool.domain;
 
 //import java.net.URI;
 
+import com.tournamentpool.application.SingletonProvider;
+import com.tournamentpool.broker.sql.delete.LeagueTeamDeleteBroker;
+import com.tournamentpool.broker.sql.delete.TeamDeleteBroker;
+import utility.domain.Reference;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import utility.domain.Reference;
-
-import com.tournamentpool.application.SingletonProvider;
-import com.tournamentpool.broker.sql.delete.LeagueTeamDeleteBroker;
-import com.tournamentpool.broker.sql.delete.TeamDeleteBroker;
 
 /**
  * @author avery
@@ -58,7 +57,6 @@ public class Team implements Reference, Comparable<Team> {
 	public Team(int teamOID, String name) {
 		this.teamOID = teamOID;
 		this.name = name;
-		addSynonym(name);
 	}
 	
 	/**
@@ -111,7 +109,9 @@ public class Team implements Reference, Comparable<Team> {
 	}
 	
 	public Iterable<String> getNames() {
-		return synonymns;
+        ArrayList<String> names = new ArrayList<String>(synonymns);
+        names.add(0, name);
+        return names;
 	}
 
 	public boolean anyNamesMatch(String winner) {
@@ -122,4 +122,8 @@ public class Team implements Reference, Comparable<Team> {
 		}
 		return false;
 	}
+
+    public List<String> getSynonyms() {
+        return synonymns;
+    }
 }
