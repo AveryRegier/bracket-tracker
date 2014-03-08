@@ -23,6 +23,7 @@ package com.tournamentpool.domain;
 
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.application.SingletonProviderHolder;
+import com.tournamentpool.broker.sql.delete.TeamSynonymDeleteBroker;
 import com.tournamentpool.broker.sql.insert.LeagueInsertBroker;
 import com.tournamentpool.broker.sql.insert.LeagueTeamInsertBroker;
 import com.tournamentpool.broker.sql.insert.TeamInsertBroker;
@@ -146,7 +147,10 @@ public class TeamManager extends SingletonProviderHolder {
 	}
 
     public void createTeamSynonym(Team team, String name) throws SQLException {
-        TeamSynonymInsertBroker teamInsertBroker = new TeamSynonymInsertBroker(sp, team, name);
-        teamInsertBroker.execute();
+        new TeamSynonymInsertBroker(sp, team, name).execute();
+    }
+
+    public void removeTeamSynonym(Team team, String name) throws SQLException {
+        new TeamSynonymDeleteBroker(sp, team, name).execute();
     }
 }

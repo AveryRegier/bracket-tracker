@@ -56,7 +56,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					<td class="head" style="vertical-align: top;">Current Synonyms:</td>
 					<td class="content">
 						<c:forEach var="synonym" items="${Team.synonyms}">
-				            <c:out value="${synonym}"/><br/>
+				            <c:out value="${synonym}"/>
+				            <a onclick="return confirm('Continue to delete synonym \'<c:out value="${synonym}"/>\' for \'<c:out value="${Team.name}"/>\'?');"
+				                href="<c:out value="${config.AdminListURL}"/>?request=delete&team=<c:out value="${Team.id}"/>&name=<c:out value="${synonym}"/>" class="X">X</a>
+				            <br/>
 					    </c:forEach>
 					</td>
 				</tr>

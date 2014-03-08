@@ -39,13 +39,23 @@ public class TeamSynonymServlet extends RequiresLoginServlet {
         if(!getUser(req, res).isSiteAdmin()) {
             throw new ServletException("You are not a site administrator.");
         }
-
-        TeamManager teamManager = getApp().getTeamManager();
-        Team team = teamManager.getTeam(Integer.parseInt(req.getParameter("team")));
-        TeamBean bean = new TeamBean(team);
-        bean.setSynonyms(team.getSynonyms());
-        req.setAttribute("Team", bean);
-        produceJSPPage(req, res, "ManageTeamSynonymsJSP");
+        try {
+            if("delete".equals(req.getParameter("request"))) {
+                TeamManager teamManager = getApp().getTeamManager();
+                Team team = teamManager.getTeam(Integer.parseInt(req.getParameter("team")));
+                teamManager.removeTeamSynonym(team, req.getParameter("name"));
+                res.sendRedirect(req.getHeader("referer"));
+            } else {
+                TeamManager teamManager = getApp().getTeamManager();
+                Team team = teamManager.getTeam(Integer.parseInt(req.getParameter("team")));
+                TeamBean bean = new TeamBean(team);
+                bean.setSynonyms(team.getSynonyms());
+                req.setAttribute("Team", bean);
+                produceJSPPage(req, res, "ManageTeamSynonymsJSP");
+            }
+        } catch(SQLException e) {
+            throw new ServletException(e);
+        }
 	}
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
