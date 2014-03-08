@@ -35,6 +35,11 @@ public class TeamSynonymServlet extends RequiresLoginServlet {
 	private static final long serialVersionUID = 4376942544476556758L;
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+
+        if(!getUser(req, res).isSiteAdmin()) {
+            throw new ServletException("You are not a site administrator.");
+        }
+
         TeamManager teamManager = getApp().getTeamManager();
         Team team = teamManager.getTeam(Integer.parseInt(req.getParameter("team")));
         TeamBean bean = new TeamBean(team);
@@ -45,7 +50,10 @@ public class TeamSynonymServlet extends RequiresLoginServlet {
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		try {
-			getUser(req, res); // we want the side effect
+
+            if(!getUser(req, res).isSiteAdmin()) {
+                throw new ServletException("You are not a site administrator.");
+            }
 			TeamManager teamManager = getApp().getTeamManager();
 			Team team = teamManager.getTeam(Integer.parseInt(req.getParameter("team")));
             teamManager.createTeamSynonym(team, req.getParameter("name"));
