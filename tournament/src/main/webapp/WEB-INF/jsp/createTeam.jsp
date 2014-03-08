@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-<title>Create a new Pool for Group <c:out value="${Group.name}"/></title>
+<title>Create a new Team</title>
 <link rel="stylesheet" type="text/css" href="/tournament/basic.css">
 </head>
 <body onLoad="theForm.name.focus()">
@@ -46,7 +46,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			<img src="/tournament/images/spacer.gif" width="143" height="5" border="0" alt=""><br>
 			<!--Content Table-->
 			<form method="POST" name="theForm">
-			<input type=hidden name="group" value="<c:out value="${group.id}"/>">
 			<table cellspacing="3" cellpadding="0" border="0">
 				<tr>
 					<td class="head">Name:</td>
