@@ -1,5 +1,5 @@
 /* 
-Copyright (C) 2003-2008 Avery J. Regier.
+Copyright (C) 2003-2014 Avery J. Regier.
 
 This file is part of the Tournament Pool and Bracket Tracker.
 
