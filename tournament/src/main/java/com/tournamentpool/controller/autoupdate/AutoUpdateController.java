@@ -18,35 +18,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.controller.autoupdate;
 
-import static utility.StringUtil.killWhitespace;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.TreeMap;
-
-import utility.IterableIterator;
-import utility.IteratorUtility;
-import utility.StringUtil;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.controller.TournamentController;
 import com.tournamentpool.domain.League;
 import com.tournamentpool.domain.MainTournament;
 import com.tournamentpool.domain.Tournament;
+import utility.IterableIterator;
+import utility.IteratorUtility;
+import utility.StringUtil;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Constructor;
+import java.net.*;
+import java.sql.SQLException;
+import java.util.*;
+
+import static utility.StringUtil.killWhitespace;
 
 
 public class AutoUpdateController extends TournamentController {
@@ -59,7 +49,7 @@ public class AutoUpdateController extends TournamentController {
 
 	public void init() {
 		// start some threads that wait until the appropriate time and do updates	
-		String autoUpdateLeaguesString = killWhitespace(sp.getSingleton().getConfig().getProperty("autoUpdate.leagues"));
+		String autoUpdateLeaguesString = killWhitespace(getConfig().getProperty("autoUpdate.leagues"));
 		if(autoUpdateLeaguesString != null) {
 			String[] leagueIDStrings = autoUpdateLeaguesString.split(",");
 			for (String string : leagueIDStrings) {
@@ -153,14 +143,18 @@ public class AutoUpdateController extends TournamentController {
 
 	private String getProperty(String name) {
 		return StringUtil.killWhitespace(
-				sp
-				.getSingleton()
-				.getConfig()
+				getConfig()
 				.getProperty(name));
 	}
 
-	private long getLongProperty(String name, long defaultValue) {
-		String value = StringUtil.killWhitespace(sp.getSingleton().getConfig().getProperty(name));
+    private Properties getConfig() {
+        return sp
+            .getSingleton()
+            .getConfig();
+    }
+
+    private long getLongProperty(String name, long defaultValue) {
+		String value = StringUtil.killWhitespace(getConfig().getProperty(name));
 		if(value == null) return defaultValue;
 		return Long.parseLong(value);
 	}
@@ -221,13 +215,33 @@ public class AutoUpdateController extends TournamentController {
 
 	private ScoreSource loadParser(League sourceLeague) throws ClassNotFoundException,
 			InstantiationException, IllegalAccessException, MalformedURLException {
-		URL[] urls = new URL[] {new File(getProperty("scoreSource."+sourceLeague.getLeagueID()+".classLocation")).toURI().toURL()};
+        String prefix = "scoreSource." + sourceLeague.getLeagueID()+".";
+        URL[] urls = new URL[] {new File(getProperty(prefix + "classLocation")).toURI().toURL()};
 		URLClassLoader loader = new URLClassLoader(urls, getClass().getClassLoader());
-		String className = getProperty("scoreSource."+sourceLeague.getLeagueID()+".class");
+		String className = getProperty(prefix+"class");
 		Class<?> clazz = Class.forName(className, true, loader);
-		ScoreSource source = (ScoreSource) clazz.newInstance();
-		return source;
-	}
+        try {
+            Constructor<?> constructor = clazz.getConstructor(Properties.class);
+            if(constructor != null) {
+                return (ScoreSource) constructor.newInstance(getSubSet(prefix));
+            }
+        } catch(ReflectiveOperationException e) {
+            e.printStackTrace();
+            // fall through
+        }
+        return (ScoreSource) clazz.newInstance();
+    }
+
+    private Properties getSubSet(String prefix) {
+        Properties config = getConfig();
+        Properties subConfig = new Properties();
+        for(String prop: config.stringPropertyNames()) {
+            if(prop.startsWith(prefix)){
+                subConfig.put(prop.substring(prefix.length()), config.getProperty(prop));
+            }
+        }
+        return subConfig;
+    }
 
 	private String loadURIContents(League sourceLeague) throws URISyntaxException, IOException {
 		URI uri = new URI(getProperty("scoreSource."+sourceLeague.getLeagueID()+".uri"));
