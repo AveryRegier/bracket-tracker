@@ -179,9 +179,12 @@ public class AutoUpdateController extends TournamentController {
 			tournament.isStarted() && 
 			!tournament.isComplete() && 
 			tournament.hasAllSeedsAssigned();
-		System.out.println("Tournament "+tournament.getName()+(ongoing ? " is ongoing ": " is not ongoing."));
-//		System.out.println("League: "+tournament.getLeague());
-		return ongoing;
+		System.out.println("Tournament "+tournament.getName()+(ongoing ? " is ongoing ": " is not ongoing ")+
+                "for League: "+tournament.getLeague());
+        System.out.println("Tournament "+tournament.getName()+(tournament.isStarted() ? " is started ": " is not started ")+
+                "at time: "+new Date());
+
+        return ongoing;
 	}
 
 	private Date findAppropriateStartDate(final League sourceLeague) {
@@ -194,7 +197,7 @@ public class AutoUpdateController extends TournamentController {
 				Date tstart = tournament.getNextStartTime();
 				start = start == null ? tstart : tstart.before(start) ? tstart : start;
 			} else {
-				System.out.println(tournament.getName()+" starts at "+tournament.getStartTime());
+				System.out.println(new Date()+": "+tournament.getName()+" starts at "+tournament.getStartTime());
 			}
 		}
 		System.out.println(sourceLeague.getID()+" appropriate start date is "+start);
