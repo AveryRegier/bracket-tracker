@@ -180,7 +180,7 @@ public class AutoUpdateController extends TournamentController {
 			!tournament.isComplete() && 
 			tournament.hasAllSeedsAssigned();
 		System.out.println("Tournament "+tournament.getName()+(ongoing ? " is ongoing ": " is not ongoing ")+
-                "for League: "+tournament.getLeague().getName());
+                "for League: "+sourceLeague.getLeagueID());
         System.out.println("Tournament "+tournament.getName()+(tournament.isStarted() ? " is started ": " is not started ")+
                 "at time: "+new Date());
 
