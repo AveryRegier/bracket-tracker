@@ -18,21 +18,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.servlet;
 
+import com.tournamentpool.domain.Seed;
+import com.tournamentpool.domain.Team;
+import com.tournamentpool.domain.User;
+import utility.StringUtil;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import utility.StringUtil;
-
-import com.tournamentpool.domain.Seed;
-import com.tournamentpool.domain.Team;
-import com.tournamentpool.domain.User;
 
 public class AssignSeeds extends RequiresLoginServlet {
 	/**
@@ -52,6 +50,7 @@ public class AssignSeeds extends RequiresLoginServlet {
 			req.setAttribute("BracketBean", 
 					getApp().getTournamentController().getTournamentBracketToEdit(tournament.getOid())
 				);
+            setDate(tournament.getStartTime(), req);
 			produceJSPPage(req, res, "AssignSeedsJSP");
 		} else {
 			req.setAttribute("BracketBean", 
@@ -70,7 +69,10 @@ public class AssignSeeds extends RequiresLoginServlet {
 			com.tournamentpool.domain.Tournament tournament = 
 				getApp().getTournamentManager().getTournament(tournamentOid);
 	
-			getApp().getTournamentManager().updateTournament(tournament, req.getParameter("name"));
+			getApp().getTournamentManager().updateTournament(
+                    tournament,
+                    req.getParameter("name"),
+                    getDate(req));
 			
 			Map<Seed, Team> seedTeam = new HashMap<Seed, Team>();
 			

@@ -104,6 +104,10 @@ var games = new Array();
 </c:if>
 <form name="theForm" method="POST">
 <div class="head"><c:out value="${BracketBean.bracketType}"/> Name:</div> <input type=text name="name" size="100" maxlength="70" value="<c:out value="${BracketBean.name}"/>"><input type="submit" name="save" value="Save" class="common">
+<c:if test="${BracketBean.bracketType == 'Tournament'}">
+<%@ include file="editDate.jsp" %>
+</c:if>
+
 <%@ include file="bracket-start.jsp" %>
 <c:forEach var="game" items="${BracketBean.bracket}">
 <%@ include file="game-start.jsp" %>

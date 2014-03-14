@@ -181,8 +181,8 @@ public class TournamentManager extends SingletonProviderHolder {
 		}
 	}
 
-	public void updateTournament(Tournament tournament, String name) throws SQLException {
-		TournamentUpdateBroker broker = new TournamentUpdateBroker(sp, tournament, name);
+	public void updateTournament(Tournament tournament, String name, Timestamp startTime) throws SQLException {
+		TournamentUpdateBroker broker = new TournamentUpdateBroker(sp, tournament, name, startTime);
 		broker.execute();
 	}
 

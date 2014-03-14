@@ -283,7 +283,12 @@ public class MainTournament implements Tournament {
 		return startTime;
 	}
 
-	public boolean isComplete() {
+    @Override
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
+    }
+
+    public boolean isComplete() {
 		Game championshipGame = getChampionshipGame();
 		return championshipGame != null && championshipGame.isComplete();
 	}

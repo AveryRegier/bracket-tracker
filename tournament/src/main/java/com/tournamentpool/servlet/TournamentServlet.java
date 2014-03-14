@@ -21,22 +21,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.servlet;
 
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Properties;
-import java.util.TimeZone;
+import com.tournamentpool.application.SingletonProvider;
+import com.tournamentpool.application.TournamentApp;
+import com.tournamentpool.beans.PlayerBean;
+import com.tournamentpool.domain.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.tournamentpool.application.SingletonProvider;
-import com.tournamentpool.application.TournamentApp;
-import com.tournamentpool.beans.PlayerBean;
-import com.tournamentpool.domain.User;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * @author avery
@@ -124,7 +121,7 @@ public class TournamentServlet extends HttpServlet {
 		return value;
 	}
 
-	protected Date getDate(HttpServletRequest req) {
+	protected Timestamp getDate(HttpServletRequest req) {
 		int month = Integer.parseInt(req.getParameter("month"))-1;// java.util.Calendar uses 0 based months
 		int day = Integer.parseInt(req.getParameter("day"));
 		int year = Integer.parseInt(req.getParameter("year"));
@@ -136,8 +133,30 @@ public class TournamentServlet extends HttpServlet {
 
 		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone(timezone));
 		cal.set(year, month, day, hourOfDay, minute);
-		return cal.getTime();
+		return new Timestamp(cal.getTime().getTime());
 	}
+
+    protected void setDate(Date date, HttpServletRequest req) {
+        req.setAttribute("timezones", TimeZone.getAvailableIDs());
+
+        Calendar cal = GregorianCalendar.getInstance();
+        cal.setTime(date);
+        int month = cal.get(Calendar.MONTH)+1;
+        int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
+        int year = cal.get(Calendar.YEAR);
+        int hourOfDay = cal.get(Calendar.HOUR_OF_DAY);
+        int minute = cal.get(Calendar.MINUTE);
+        boolean am = cal.get(Calendar.AM_PM) == Calendar.AM;
+        TimeZone timeZone = cal.getTimeZone();
+
+        req.setAttribute("month", month);
+        req.setAttribute("day", dayOfMonth);
+        req.setAttribute("year", year);
+        req.setAttribute("hour", am ? hourOfDay : hourOfDay - 12);
+        req.setAttribute("minute", minute < 10 ? "0"+minute : minute);
+        req.setAttribute("ampm", am ? "AM" : "PM");
+        req.setAttribute("timezone", timeZone.getID());
+    }
 
 	protected int[] convertToIntegers(String[] parameterValues) {
 		int[] ints = new int[parameterValues.length];

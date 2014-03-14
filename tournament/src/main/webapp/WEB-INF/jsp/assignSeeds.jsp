@@ -30,6 +30,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <a href="<c:out value="${config.AddTeamsToLeagueURL}"/>?tournament=<c:out value="${BracketBean.oid}"/>">Import Existing Teams</a>
 <a href="<c:out value="${config.CreateTeamURL}"/>?tournament=<c:out value="${BracketBean.oid}"/>">Create New Team</a>
 
+<%@ include file="editDate.jsp" %>
+
 <%@ include file="bracket-start.jsp" %>
 <c:forEach var="game" items="${BracketBean.bracket}">
 <%@ include file="game-start.jsp" %>

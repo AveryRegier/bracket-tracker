@@ -18,15 +18,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.domain;
 
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.Iterator;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.delete.TournamentDeleteBroker;
 import com.tournamentpool.broker.sql.status.TournamentBracketStatusBroker;
 import com.tournamentpool.broker.sql.status.TournamentPoolStatusBroker;
+
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.Iterator;
 
 class SubTournament implements Tournament {
 
@@ -35,7 +35,7 @@ class SubTournament implements Tournament {
 	private final Tournament parent;
 	private final Level startLevel;
 	private final SubTournamentType subTournamentType;
-	private final Timestamp startTime;
+	private Timestamp startTime;
 
 	SubTournament(Integer id, String name, Tournament parent, Level startLevel, Timestamp startTime) {
 		this.id = id;
@@ -71,7 +71,12 @@ class SubTournament implements Tournament {
 		return startTime;
 	}
 
-	private boolean checkStarted(GameNode node) {
+    @Override
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
+    }
+
+    private boolean checkStarted(GameNode node) {
 		if(node == null) return false;
 		Level level = node.getLevel();
 		if(level == startLevel) {

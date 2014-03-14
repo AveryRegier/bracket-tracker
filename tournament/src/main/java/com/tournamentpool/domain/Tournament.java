@@ -21,13 +21,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
+import com.tournamentpool.application.SingletonProvider;
+import utility.domain.Reference;
+
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
-
-import utility.domain.Reference;
-
-import com.tournamentpool.application.SingletonProvider;
 
 /**
  * @author avery
@@ -92,4 +91,6 @@ public interface Tournament extends Reference {
 	public boolean hasTeam(Team team);
 
 	public java.util.Date getNextStartTime();
+
+    void setStartTime(Timestamp startTime);
 }

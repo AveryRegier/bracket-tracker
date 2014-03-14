@@ -21,23 +21,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql.update;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.PreparedStatementBroker;
 import com.tournamentpool.domain.Tournament;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 
 public class TournamentUpdateBroker extends PreparedStatementBroker {
 
 	private final Tournament tournament;
 	private final String name;
+    private Timestamp startTime;
 
-	public TournamentUpdateBroker(SingletonProvider sp, Tournament tournament, String name) {
+    public TournamentUpdateBroker(SingletonProvider sp,
+                                  Tournament tournament,
+                                  String name,
+                                  Timestamp startTime) {
 		super(sp);
 		this.tournament = tournament;
 		this.name = name;
-	}
+        this.startTime = startTime;
+    }
 
 	protected String getSQLKey() {
 		return "TournamentUpdateSQL";
@@ -45,12 +51,14 @@ public class TournamentUpdateBroker extends PreparedStatementBroker {
 
 	protected void prepare(PreparedStatement stmt) throws SQLException {
 		stmt.setString(1, name);
-		stmt.setInt(2, tournament.getOid());
+        stmt.setTimestamp(2, startTime);
+		stmt.setInt(3, tournament.getOid());
 	}
 	
 	protected void processUpdateCount(int updateCount) throws SQLException {
 		if(updateCount == 1) {
 			tournament.setName(name);
+            tournament.setStartTime(startTime);
 		}
 	}
 }

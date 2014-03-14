@@ -21,24 +21,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.servlet;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Date;
+import com.tournamentpool.beans.BracketBean;
+import com.tournamentpool.controller.TournamentVisitor.Node;
+import com.tournamentpool.domain.*;
+import com.tournamentpool.domain.MainTournament.WinnerSource;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.tournamentpool.beans.BracketBean;
-import com.tournamentpool.controller.TournamentVisitor.Node;
-import com.tournamentpool.domain.Game;
-import com.tournamentpool.domain.GameInfo;
-import com.tournamentpool.domain.GameNode;
-import com.tournamentpool.domain.MainTournament;
-import com.tournamentpool.domain.MainTournament.WinnerSource;
-import com.tournamentpool.domain.Opponent;
-import com.tournamentpool.domain.TournamentType;
-import com.tournamentpool.domain.User;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Date;
 
 /**
  * @author Avery J. Regier
@@ -63,11 +56,13 @@ public class Tournament extends RequiresLoginServlet {
 				throw new ServletException(e);
 			}
 		} else if(!tournament.hasAllSeedsAssigned() && tournament.mayEdit(user)) {
+            setDate(tournament.getStartTime(), req);
 			res.sendRedirect(getApp().getConfig().getProperty("AssignSeedsURL")+"?tournament="+tournament.getOid());
 		} else if(tournament.mayEdit(user) && "true".equalsIgnoreCase(req.getParameter("edit"))) {
 			BracketBean<Node> bracketBean = getApp().getTournamentController().getTournamentBracketToEdit(tournament.getOid());
 			bracketBean.setBracketType("Tournament");
 			req.setAttribute("BracketBean", bracketBean);
+            setDate(tournament.getStartTime(), req);
 			produceJSPPage(req, res, "CreateBracketJSP");
 		} else {
 			req.setAttribute("BracketBean", 
@@ -91,7 +86,10 @@ public class Tournament extends RequiresLoginServlet {
 				if(!tournament.mayEdit(user)) {
 					throw new ServletException("You may not edit "+tournament.getName());
 				}
-				getApp().getTournamentManager().updateTournament(tournament, req.getParameter("name"));
+				getApp().getTournamentManager().updateTournament(
+                        tournament,
+                        req.getParameter("name"),
+                        getDate(req));
 
 				WinnerSource winnerSource = new WinnerSource() {
 					@Override
