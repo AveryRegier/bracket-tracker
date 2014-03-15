@@ -6,5 +6,6 @@ lib/
 bin/
 target/
 Maven__*.xml
+.DS_Store
 
 

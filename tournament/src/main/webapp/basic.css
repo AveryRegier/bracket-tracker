@@ -1,12 +1,12 @@
 .head {
 	font-family: Verdana;	
-	font-size: 10;
+	font-size: 10px;
 	font-weight : bold;
 }
 
 .content {
 	font-family: Verdana;	
-	font-size: 10;
+	font-size: 10px;
 	font-weight : normal;
 }
 
@@ -21,9 +21,9 @@ table.border-table {
 	color: pink;	
 }
 
-tr.round-title {
+round-title {
 	font-family: Verdana;
-	font-size: 12;
+	font-size: 12px;
 	background : Silver;
 	font-weight: bold;
 	background-color : #e2e2e2;
@@ -31,13 +31,13 @@ tr.round-title {
 
 tr.header-row {
 	font-family: Verdana;	
-	font-size: 10;
+	font-size: 10px;
 	background :  #e2e2e2;
 }
 
 tr.content-row {
 	font-family: Verdana;	
-	font-size: 10;
+	font-size: 10px;
 	background : White;
 }
 
@@ -45,7 +45,7 @@ input.common {
     background-color:#737373;
 	border-color:#708090;
 	color: #ffffff;
-	font-size: 10;
+	font-size: 10px;
 	font-weight: bold;
 	font-family: Arial;
 }
