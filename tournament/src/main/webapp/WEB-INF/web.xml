@@ -107,12 +107,17 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
 		<servlet-class>com.tournamentpool.servlet.AddTeamsToLeague</servlet-class>
 	</servlet>
 
+    <servlet>
+        <servlet-name>com.tournamentpool.servlet.ProfileServlet</servlet-name>
+        <servlet-class>com.tournamentpool.servlet.ProfileServlet</servlet-class>
+    </servlet>
+
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.Admin</servlet-name>
 		<url-pattern>/servlet/com.tournamentpool.servlet.Admin</url-pattern>
 	</servlet-mapping>
 
-	<servlet-mapping>
+    <servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.AddSiteAdminsServlet</servlet-name>
 		<url-pattern>/servlet/com.tournamentpool.servlet.AddSiteAdminsServlet</url-pattern>
 	</servlet-mapping>
@@ -207,7 +212,12 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
 		<url-pattern>/servlet/com.tournamentpool.servlet.AddTeamsToLeague</url-pattern>
 	</servlet-mapping>
 
-	<taglib>
+    <servlet-mapping>
+        <servlet-name>com.tournamentpool.servlet.ProfileServlet</servlet-name>
+        <url-pattern>/servlet/com.tournamentpool.servlet.ProfileServlet</url-pattern>
+    </servlet-mapping>
+
+    <taglib>
 		<taglib-uri>http://java.sun.com/jstl/fmt</taglib-uri>
 		<taglib-location>/WEB-INF/fmt.tld</taglib-location>
 	</taglib>

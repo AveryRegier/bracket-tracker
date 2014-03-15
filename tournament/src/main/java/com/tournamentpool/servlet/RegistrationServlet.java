@@ -21,13 +21,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.servlet;
 
-import java.io.IOException;
-import java.net.URLEncoder;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
 
 public class RegistrationServlet extends TournamentServlet {
 	/**
@@ -57,7 +56,7 @@ public class RegistrationServlet extends TournamentServlet {
 
 				String redirect = req.getParameter("redirect");
 				if(redirect == null) {
-					getApp().getConfig().getProperty("defaultURL");
+					redirect = getApp().getConfig().getProperty("defaultURL");
 				}
 				res.sendRedirect(redirect);
 			} else {

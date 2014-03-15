@@ -88,21 +88,25 @@ public class TournamentServlet extends HttpServlet {
 	}
 
 	protected void produceJSPPage(HttpServletRequest req, HttpServletResponse res, String key) throws ServletException, IOException {
-		Properties config2 = getApp().getConfig();
-		req.setAttribute("config", config2);
-		if(req.getAttribute("Player") == null) {
-			User user = getUser(req, res);
-			if(user != null) {
-				PlayerBean playerBean = new PlayerBean(user.getOID(), user.getName(), user.isSiteAdmin());
-				req.setAttribute("Player", playerBean);
-			}
-		}
-		req.getRequestDispatcher(
-			config2.getProperty(key)
-		).forward(req, res);
+        if(req.getAttribute("Player") == null) {
+            User user = getUser(req, res);
+            if(user != null) {
+                PlayerBean playerBean = new PlayerBean(user.getOID(), user.getName(), user.isSiteAdmin());
+                req.setAttribute("Player", playerBean);
+            }
+        }
+        produceNonUserJSPPage(req, res, key);
 	}
 
-	protected int getInt(HttpServletRequest req, String key, int defaultValue) {
+    protected void produceNonUserJSPPage(HttpServletRequest req, HttpServletResponse res, String key) throws ServletException, IOException {
+        Properties config2 = getApp().getConfig();
+        req.setAttribute("config", config2);
+        req.getRequestDispatcher(
+            config2.getProperty(key)
+        ).forward(req, res);
+    }
+
+    protected int getInt(HttpServletRequest req, String key, int defaultValue) {
 		String value = killWhitespace(req.getParameter(key));
 		if(value != null) {
 			return Integer.parseInt(value);

@@ -21,18 +21,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.servlet;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.sql.SQLException;
+import com.tournamentpool.broker.mail.JavaMailEmailBroker;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.tournamentpool.broker.mail.JavaMailEmailBroker;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.sql.SQLException;
 
 /**
  * @author avery
@@ -43,7 +42,7 @@ public final class LoginServlet extends TournamentServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse res)
 		throws ServletException, IOException
 	{
-		produceJSPPage(req, res, "LoginJSP");
+        produceNonUserJSPPage(req, res, "LoginJSP");
 	}
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse res)

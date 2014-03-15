@@ -36,6 +36,7 @@ import java.util.TreeMap;
 
 import javax.mail.MessagingException;
 
+import com.tournamentpool.broker.sql.update.*;
 import utility.StringUtil;
 import utility.menu.Menu;
 import utility.menu.reference.ReferenceMenu;
@@ -60,11 +61,6 @@ import com.tournamentpool.broker.sql.insert.GroupInsertBroker;
 import com.tournamentpool.broker.sql.insert.GroupPlayerInsertBroker;
 import com.tournamentpool.broker.sql.insert.PlayerInsertBroker;
 import com.tournamentpool.broker.sql.insert.PoolInsertBroker;
-import com.tournamentpool.broker.sql.update.GroupUpdateBroker;
-import com.tournamentpool.broker.sql.update.PasswordResetBroker;
-import com.tournamentpool.broker.sql.update.PoolUpdateBroker;
-import com.tournamentpool.broker.sql.update.SiteAdminUpdateBroker;
-import com.tournamentpool.broker.sql.update.TieBreakerAnswerBroker;
 
 /**
  * @author avery
@@ -178,9 +174,6 @@ public class UserManager extends SingletonProviderHolder {
 
 	/**
 	 * @param userid
-	 * @param i
-	 * @param string
-	 * @param string2
 	 */
 	public void loadPlayer(String userid, int id, String name, String pw, boolean siteAdmin, String email) {
 		User user = new User(userid, id, name, pw, siteAdmin, email);
@@ -329,14 +322,14 @@ public class UserManager extends SingletonProviderHolder {
 
 	/**
 	 * @param groupOID
-	 * @param int1
+	 * @param playerOID
 	 */
 	public void associateUserToGroup(int groupOID, int playerOID) {
 		getGroup(groupOID).addMember(playerOID);
 	}
 
 	/**
-	 * @param members
+	 * @param playerOIDs
 	 * @return
 	 * @throws SQLException
 	 */
@@ -363,7 +356,7 @@ public class UserManager extends SingletonProviderHolder {
 	}
 
 	/**
-	 * @param pools2
+	 * @param poolOids
 	 * @return
 	 * @throws SQLException
 	 */
@@ -377,7 +370,6 @@ public class UserManager extends SingletonProviderHolder {
 	}
 
 	/**
-	 * @param parameter
 	 * @param group
 	 * @param tournament
 	 * @param scoreSystem
@@ -682,4 +674,11 @@ public class UserManager extends SingletonProviderHolder {
 		players.remove(new Integer(player.getOID()));
 		users.remove(player.getID());
 	}
+
+    public void updateProfile(User user, String userID, String name, String email) throws SQLException {
+        String oldID = user.getID();
+        ProfileUpdateBroker broker = new ProfileUpdateBroker(sp, user.getOID(), userID, name, email);
+        broker.execute();
+        users.put(userID, users.remove(oldID));
+    }
 }

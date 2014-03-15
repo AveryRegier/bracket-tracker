@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <P class="content" align="right">
 	<a href="<c:out value="${config.MyTournamentURL}"/>">My Tournament</a> 
 	<c:if test="${Player.siteAdmin}"><a href="<c:out value="${config.AdminURL}"/>">Admin</a></c:if>
+	<a href="<c:out value="${config.ProfileURL}"/>">My Profile</a>
 	<a href="?logoff=true">Logoff</a><BR/>
 	Last Updated: <fmt:formatDate type="both" timeStyle="short" value="${app.singleton.lastUpdated}" />   
 </P>

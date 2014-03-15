@@ -137,7 +137,7 @@ public class User {
 	}
 
 	/**
-	 * @param int1
+	 * @param bracketOid
 	 * @return
 	 */
 	public Bracket getBracket(int bracketOid) {
@@ -192,7 +192,15 @@ public class User {
 		groups.remove(group);
 	}
 
-	// what organizations does the user belong to?
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setID(String userID) {
+        this.id = userID;
+    }
+
+    // what organizations does the user belong to?
 	// what brackets does the user have?
 	// to what pools has this user been invited?
 
