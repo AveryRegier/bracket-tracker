@@ -21,33 +21,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.servlet;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import utility.StringUtil;
-
 import com.tournamentpool.beans.GroupBean;
 import com.tournamentpool.beans.PlayerBean;
 import com.tournamentpool.beans.PoolBean;
 import com.tournamentpool.beans.TournamentBean;
-import com.tournamentpool.controller.AdministratorFilter;
-import com.tournamentpool.controller.ArchiveFilter;
-import com.tournamentpool.controller.CurrentFilter;
-import com.tournamentpool.controller.Filter;
-import com.tournamentpool.controller.TournamentFilter;
-import com.tournamentpool.domain.Bracket;
-import com.tournamentpool.domain.Group;
-import com.tournamentpool.domain.Pool;
+import com.tournamentpool.controller.*;
+import com.tournamentpool.domain.*;
 import com.tournamentpool.domain.Tournament;
-import com.tournamentpool.domain.User;
+import utility.StringUtil;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * @author avery
@@ -267,6 +255,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 					tournament.hasAllSeedsAssigned(),
 					tournament.getStartTime(), tournament.getLastUpdated(), tournament.mayDelete(user, getApp().getSingletonProvider())));
 		}
+        Collections.sort(tournamentBeans);
 		req.setAttribute("Tournaments", tournamentBeans);
 	}
 

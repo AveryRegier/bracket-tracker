@@ -21,15 +21,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.beans;
 
+import com.tournamentpool.controller.ArchiveFilter;
+import com.tournamentpool.domain.Tournament;
+
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.tournamentpool.controller.ArchiveFilter;
-import com.tournamentpool.domain.Tournament;
-
-public class TournamentBean {
+public class TournamentBean implements Comparable<TournamentBean> {
 	private final int id;
 	private final String name;
 	private final boolean currentUserIsAdmin;
@@ -107,4 +107,9 @@ public class TournamentBean {
 	public boolean isDeletable() {
 		return deletable;
 	}
+
+    @Override
+    public int compareTo(TournamentBean o) {
+        return o.startTime.compareTo(startTime);
+    }
 }
