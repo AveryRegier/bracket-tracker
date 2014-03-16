@@ -21,16 +21,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.beans;
 
-import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import com.tournamentpool.controller.Filter;
 import com.tournamentpool.domain.Bracket;
 import com.tournamentpool.domain.Group;
 import com.tournamentpool.domain.Pool;
 import com.tournamentpool.domain.User;
+
+import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * @author Avery J. Regier
@@ -39,8 +39,9 @@ public class PlayerBean extends BracketHolderBean implements Comparable<PlayerBe
 	private final int oid;
 	private final String name;
 	private final boolean siteAdmin;
+    private String id;
 
-	/**
+    /**
 	 * 
 	 */
 	public PlayerBean(int oid, String name) {
@@ -129,4 +130,12 @@ public class PlayerBean extends BracketHolderBean implements Comparable<PlayerBe
 	public boolean isDeletable() {
 		return mayRemoveUser;
 	}
+
+    public void setLoginId(String id) {
+        this.id = id;
+    }
+
+    public String getLoginId() {
+        return id;
+    }
 }

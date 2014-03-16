@@ -252,6 +252,7 @@ public class AdminListServlet extends RequiresLoginServlet {
 		while (members.hasNext()) {
 			User player = members.next();
 			PlayerBean playerBean = new PlayerBean(player.getOID(), player.getName());
+            playerBean.setLoginId(player.getID());
 			playerBean.setBrackets(player.getBrackets(), user);
 			playerBean.setGroups(player.getGroups());
 			playerBean.setMayDelete(userManager.mayRemoveUser(user, player));

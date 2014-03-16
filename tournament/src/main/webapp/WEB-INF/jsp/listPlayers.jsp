@@ -50,6 +50,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					<td>
 						<table class="content-table" cellpadding="3" cellspacing="1" border="0">
 							<tr class="header-row">
+								<td>Login ID</td>
 								<td>Player Name</td>
 								<td># of Brackets</td>
 								<td># of Groups</td>
@@ -57,7 +58,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 							</tr>
 							<c:forEach var="Player" items="${Players}">
 							<tr class="content-row">
-								<td><c:out value="${Player.name}"/></td>
+								<td><c:out value="${Player.loginId}"/></td>
+                                <td><c:out value="${Player.name}"/></td>
 								<td><a href="<c:out value="${config.AdminListURL}"/>?request=list&type=bracket&playerid=<c:out value="${Player.oid}"/>"><c:out value="${Player.numBrackets}"/></a></td>
 								<td><c:out value="${Player.numGroups}"/></td>
 								<td><c:if test="${Player.deletable}">[<a onclick="return confirm('Continue to delete player \'<c:out value="${Player.name}"/>\'?');" href="?request=delete&type=player&id=<c:out value="${Player.oid}"/>">Delete</a>]</c:if></td>
