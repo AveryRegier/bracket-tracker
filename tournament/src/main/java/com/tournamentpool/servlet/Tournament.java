@@ -110,7 +110,7 @@ public class Tournament extends RequiresLoginServlet {
 							
 							@Override
 							public Date getDate() {
-								return game != null ? game.getDate() : null;
+								return game != null ? game.getDate() : getWinner() != null ? new Date() : null;
 							}
 							
 							@Override
