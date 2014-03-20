@@ -21,34 +21,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.servlet;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import com.tournamentpool.beans.GroupBean;
+import com.tournamentpool.beans.PoolBean;
+import com.tournamentpool.broker.sql.insert.PickInsertBroker;
+import com.tournamentpool.domain.*;
+import com.tournamentpool.domain.Bracket.Pick;
+import com.tournamentpool.domain.GameNode.Feeder;
+import com.tournamentpool.domain.Tournament;
+import utility.StringUtil;
+import utility.domain.Reference;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import utility.StringUtil;
-import utility.domain.Reference;
-
-import com.tournamentpool.beans.GroupBean;
-import com.tournamentpool.beans.PoolBean;
-import com.tournamentpool.broker.sql.insert.PickInsertBroker;
-import com.tournamentpool.domain.Bracket;
-import com.tournamentpool.domain.Bracket.Pick;
-import com.tournamentpool.domain.GameNode;
-import com.tournamentpool.domain.GameNode.Feeder;
-import com.tournamentpool.domain.Group;
-import com.tournamentpool.domain.Opponent;
-import com.tournamentpool.domain.Pool;
-import com.tournamentpool.domain.Tournament;
-import com.tournamentpool.domain.TournamentType;
-import com.tournamentpool.domain.User;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * @author Avery J. Regier
@@ -144,10 +132,18 @@ public class BracketMaintenance extends RequiresLoginServlet {
 	//	System.out.println(req.getParameterMap());
 		try {
 			Bracket bracket = createOrUpdateBracket(req, user);
-			
-			applyPicks(req, bracket);
 
-			if(req.getParameter("save") != null) {
+            DecisionMaker decider;
+            boolean randomize = "Randomize".equals(req.getParameter("decider"));
+            if(randomize) {
+                decider = new RandomDecider(bracket.getTournament().getTournamentType());
+            } else {
+                decider = new UserDecider(req);
+            }
+
+			applyPicks(decider, bracket);
+
+			if(randomize || req.getParameter("save") != null) {
 				res.sendRedirect(req.getRequestURI()+"?request=edit&id="+bracket.getOID());
 			} else { // continue
 				res.sendRedirect(getApp().getConfig().getProperty("MyTournamentURL"));
@@ -190,13 +186,13 @@ public class BracketMaintenance extends RequiresLoginServlet {
 		return bracket;
 	}
 
-	private void applyPicks(HttpServletRequest req, Bracket bracket) 
+	private void applyPicks(DecisionMaker decider, Bracket bracket)
 			throws IllegalAccessException, SQLException 
 	{
 		List<Pick> insertPicks = new LinkedList<Pick>();
 		List<Pick> updatePicks = new LinkedList<Pick>();
 		List<Pick> deletePicks = new LinkedList<Pick>();
-		sortPicks(req, bracket, insertPicks, updatePicks, deletePicks);
+		sortPicks(decider, bracket, insertPicks, updatePicks, deletePicks);
 		
 		boolean mayDelete = true;
 		if(bracket.isInPool()) {
@@ -216,7 +212,7 @@ public class BracketMaintenance extends RequiresLoginServlet {
 		bracket.applyPicks(updatePicks); // clears the list of picks in the bracket before applying these
 	}
 
-	private void sortPicks(HttpServletRequest req, 
+	private void sortPicks(DecisionMaker decider,
 			Bracket bracket, List<Pick> insertPicks, List<Pick> updatePicks,
 			List<Pick> deletePicks) {
 		TournamentType tournamentType = bracket.getTournament().getTournamentType();
@@ -229,7 +225,8 @@ public class BracketMaintenance extends RequiresLoginServlet {
 				for (Feeder feeder : node.getFeeders()) {
 					nodes.add(feeder.getFeeder());
 				}
-				Opponent winner = tournamentType.getOpponentByOrder(getInt(req, "game"+node.getOid(), -1));
+                int decision = decider.getDecision(node);
+                Opponent winner = tournamentType.getOpponentByOrder(decision);
 				Bracket.Pick pick = bracket.createPick(node);
 				if(pick.isNew()) {
 					if(winner != null) {
@@ -245,4 +242,40 @@ public class BracketMaintenance extends RequiresLoginServlet {
 			}
 		}
 	}
+
+    interface DecisionMaker {
+        public int getDecision(GameNode node);
+    }
+
+    public class UserDecider implements DecisionMaker {
+        private HttpServletRequest req;
+
+        public UserDecider(HttpServletRequest req) {
+            this.req = req;
+        }
+
+        public int getDecision(GameNode node) {
+            return getInt(req, "game" + node.getOid(), -1);
+        }
+    }
+
+    public class RandomDecider implements DecisionMaker {
+        private final Random r = new Random();
+        private final int[] sequences;
+
+        public RandomDecider(TournamentType type) {
+            Set<Map.Entry<Integer, Opponent>> opponents = type.getOpponents();
+            this.sequences = new int[opponents.size()];
+            int i=0;
+            for(Map.Entry<Integer, Opponent> entry: opponents) {
+                sequences[i++] = entry.getValue().getSequence();
+            }
+        }
+
+        @Override
+        public int getDecision(GameNode node) {
+            return sequences[r.nextInt(sequences.length)];
+        }
+    }
+
 }
