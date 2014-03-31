@@ -59,7 +59,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </td>
                     <td>
                         <c:forEach var="pool" items="${bracket.pools}">
-                            <a href="?request=show&type=group&id=<c:out value="${pool.group.oid}"/>"><c:out value="${pool.group.name}"/></a> - <a href="?request=show&type=pool&id=<c:out value="${pool.oid}"/>"><c:out value="${pool.name}"/></a>
+                            <a href="?request=show&type=group&id=<c:out value="${pool.group.oid}"/>"><c:out value="${pool.group.name}"/></a> - <a href="?request=show&type=pool&id=<c:out value="${pool.oid}"/>&groupID=<c:out value="${pool.group.oid}"/>"><c:out value="${pool.name}"/></a>
                             <c:if test="${pool.removable}"><a onclick="return confirm('Continue to remove <c:out value="${bracket.name}"/> from \'<c:out value="${pool.name}"/>\'?');" href="<c:out value="${config.PoolMaintenanceURL}"/>?bracket=<c:out value="${bracket.oid}"/>&request=remove&pool=<c:out value="${pool.oid}"/>" class="X">X</a></c:if>
                             <br>
                         </c:forEach>

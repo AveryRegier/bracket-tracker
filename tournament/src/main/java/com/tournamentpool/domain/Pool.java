@@ -18,12 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.domain;
 
+import com.tournamentpool.application.SingletonProvider;
+
 import java.sql.SQLException;
 import java.util.Iterator;
 
-import com.tournamentpool.application.SingletonProvider;
-
-public interface Pool {
+public interface Pool extends Comparable<Pool> {
 	/**
 	 * @return String
 	 */

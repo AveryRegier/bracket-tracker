@@ -21,23 +21,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import utility.domain.Reference;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.delete.BracketDeleteBroker;
 import com.tournamentpool.broker.sql.get.PickGetBroker;
 import com.tournamentpool.broker.sql.insert.PickInsertBroker;
 import com.tournamentpool.domain.GameNode.Feeder;
+import utility.domain.Reference;
+
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * @author avery
@@ -285,15 +277,17 @@ public class Bracket implements Reference {
 	public Iterator<Pool> getPools() throws SQLException {
 		User owner = getOwner();
 		Iterator<Group> groups = owner.getGroups();
-		Set<Pool> poolsToReturn = new HashSet<Pool>();
-		while (groups.hasNext()) {
-			Group group = groups.next();
-			for(Pool pool: group.getPools()) {
-				if(pool.hasBracket(this)) {
-					poolsToReturn.add(pool);
-				}
-			}
-		}
+		Set<Pool> allPools = new LinkedHashSet<Pool>();
+        while (groups.hasNext()) {
+            Group group = groups.next();
+            allPools.addAll(group.getPools());
+        }
+        Set<Pool> poolsToReturn = new TreeSet<Pool>();
+        for(Pool pool: allPools) {
+            if(pool.hasBracket(this)) {
+                poolsToReturn.add(pool);
+            }
+        }
 		return poolsToReturn.iterator();
 	}
 

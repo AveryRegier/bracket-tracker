@@ -24,17 +24,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeSet;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.delete.BracketPoolDeleteBroker;
 import com.tournamentpool.broker.sql.delete.PoolDeleteBroker;
 import com.tournamentpool.broker.sql.get.BracketPoolGetBroker;
 import com.tournamentpool.domain.ScoreSystem.Score;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * @author avery
@@ -379,4 +379,24 @@ public class MainPool implements Pool {
 		}
 		return null;
 	}
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Pool) {
+            Pool other = (Pool)obj;
+            return this.oid == other.getOid() && this.getGroup() == other.getGroup();
+        }
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return oid + getGroup().hashCode();
+    }
+
+    @Override
+    public int compareTo(Pool o) {
+        int c = this.oid - o.getOid();
+        return c == 0 ? this.getGroup().getId() - o.getGroup().getId(): c;
+    }
 }

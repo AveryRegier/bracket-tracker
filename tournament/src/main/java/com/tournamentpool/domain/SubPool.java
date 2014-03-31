@@ -18,13 +18,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.domain;
 
+import com.tournamentpool.application.SingletonProvider;
+import com.tournamentpool.broker.sql.delete.BracketPoolDeleteBroker;
+
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import com.tournamentpool.application.SingletonProvider;
-import com.tournamentpool.broker.sql.delete.BracketPoolDeleteBroker;
 
 public class SubPool implements Pool {
 
@@ -191,5 +191,25 @@ public class SubPool implements Pool {
 			return !getTournament().isStarted();
 		}
 		return getParentPool().mayRemoveBracket(requestor, bracket);
-	}	
+	}
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Pool) {
+            Pool other = (Pool)obj;
+            return this.getOid() == other.getOid() && this.getGroup() == other.getGroup();
+        }
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getOid() + getGroup().hashCode();
+    }
+
+    @Override
+    public int compareTo(Pool o) {
+        int c = this.getOid() - o.getOid();
+        return c == 0 ? this.getGroup().getId() - o.getGroup().getId(): c;
+    }
 }
