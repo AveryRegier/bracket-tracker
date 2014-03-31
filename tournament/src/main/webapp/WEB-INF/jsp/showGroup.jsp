@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt" %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html>
 <html>
 <head>
 	<title><c:out value="${Group.name}"/> Group Detail</title>
@@ -50,40 +50,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		}
 	</script>
 </head>
-<body> 
+<body>
 <jsp:include page="header.jsp"/>
-<table border="0" width="100%">
-<tr><td valign="top" width="20%" align="right">
-<table border="0" cellpadding="2" cellspacing="2" align="left">
-	
-	<tr><td class="<c:choose><c:when test="${(empty param.tournament and empty param.archives)}">head</c:when><c:otherwise>content</c:otherwise></c:choose>"><a href="<c:out value="${config.MyTournamentURL}"/>?type=group&id=<c:out value="${Group.oid}"/>&current=true">Current Tournaments</a></td></tr>
-	<tr><td class="<c:choose><c:when test="${(empty param.tournament and !empty param.archives)}">head</c:when><c:otherwise>content</c:otherwise></c:choose>"><a href="<c:out value="${config.MyTournamentURL}"/>?type=group&id=<c:out value="${Group.oid}"/>&archives=true">Archived Tournaments</a></td></tr>
-	<tr><td class="content">&nbsp;</td></tr>
-	<c:forEach var="tournament" items="${Tournaments}">
-		<c:if test="${(!empty param.archives) == (tournament.archived)}"><tr><td class="<c:choose><c:when test="${param.tournament == tournament.id}">head</c:when><c:otherwise>content</c:otherwise></c:choose>">
-		<a href="<c:out value="${config.MyTournamentURL}"/>?type=group&id=<c:out value="${Group.oid}"/>&tournament=<c:out value="${tournament.id}"/><c:if test="${tournament.archived}">&archives=true</c:if>">
-			<c:out value="${tournament.name}"/></a></td></tr></c:if>
-	</c:forEach>
-</table>
-</td><td width="60%" valign="top">
 
-	<!--Round Table-->
-	<table border="0" cellpadding="0" cellspacing="0" width="100%" align="center">
-		<tr valign="top" align="right" class="round-title">
-			<td width="0%" align="left"><img src="/tournament/images/boxtopleft.gif" alt="" width="8" height="25" border="0"></td>
-			<td width="100%" background="/tournament/images/boxtop.gif" class="round-title">
-				<table border="0" cellpadding="2" cellspacing="0" width="100%" align="center">
-					<tr>
-						<td align="left" valign="top" class="head"><b><c:out value="${Group.name}"/> Group Detail</b></td>
-					</tr>
-				</table>
-			</td>
-			<td width="0%" align="right"><img src="/tournament/images/boxtopright.gif" alt="" width="8" height="25" border="0"></td>
-		</tr>
-		<tr valign="top" align="left">
-			<td width="0%" background="/tournament/images/boxleft.gif"><img src="/tournament/images/boxleft.gif" alt="" width="8" height="8" border="0"></td>
-			<td width="100%">
-				<img src="/tournament/images/spacer.gif" width="143" height="5" border="0" alt=""><br>
+<div class="sidebar">
+	<p class="<c:choose><c:when test="${(empty param.tournament and empty param.archives)}">head</c:when><c:otherwise>content</c:otherwise></c:choose>"><a href="<c:out value="${config.MyTournamentURL}"/>?type=group&id=<c:out value="${Group.oid}"/>&current=true">Current Tournaments</a></p>
+	<p class="<c:choose><c:when test="${(empty param.tournament and !empty param.archives)}">head</c:when><c:otherwise>content</c:otherwise></c:choose>"><a href="<c:out value="${config.MyTournamentURL}"/>?type=group&id=<c:out value="${Group.oid}"/>&archives=true">Archived Tournaments</a></p>
+	<div class="content">&nbsp;</div>
+	<c:forEach var="tournament" items="${Tournaments}">
+		<c:if test="${(!empty param.archives) == (tournament.archived)}"><p class="<c:choose><c:when test="${param.tournament == tournament.id}">head</c:when><c:otherwise>content</c:otherwise></c:choose>">
+		<a href="<c:out value="${config.MyTournamentURL}"/>?type=group&id=<c:out value="${Group.oid}"/>&tournament=<c:out value="${tournament.id}"/><c:if test="${tournament.archived}">&archives=true</c:if>">
+			<c:out value="${tournament.name}"/></a></p></c:if>
+	</c:forEach>
+</div>
+
+<div class="main">
+    <div class="box">
+        <h2><c:out value="${Group.name}"/> Group Detail</h2>
+        <div class="inner-content">
 				<!--Content Table-->
 				<table>
 					<tr>
@@ -108,34 +92,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					</c:if>
 				</table>
 				<!--Content Table-->
-			</td>
-			<td width="0%" background="/tournament/images/boxright.gif"><img src="/tournament/images/boxright.gif" alt="" width="8" height="8" border="0"></td>
-		</tr>
-		<tr valign="top" align="left">
-			<td width="0%" align="left" valign="top"><img src="/tournament/images/boxbottomleft.gif" alt="" width="8" height="8" border="0"></td>
-			<td width="100%" background="/tournament/images/boxbottom.gif"><img src="/tournament/images/boxbottom.gif" alt="" width="9" height="8" border="0"></td>
-			<td width="0%" align="right" valign="top"><img src="/tournament/images/boxbottomright.gif" alt="" width="8" height="8" border="0"></td>
-		</tr>
-	</table>
-	<!--Round Table-->
+
+        </div>
+     </div>
+
+
 	<BR/>
 	<!--Round Table - Pools -->
-	<table border="0" cellpadding="0" cellspacing="0" width="100%" align="center">
-		<tr valign="top" align="right" class="round-title">
-			<td width="0%" align="left"><img src="/tournament/images/boxtopleft.gif" alt="" width="8" height="25" border="0"></td>
-			<td width="100%" background="/tournament/images/boxtop.gif">
-				<table border="0" cellpadding="2" cellspacing="0" width="100%" align="center">
-					<tr>
-						<td align="left" valign="top" class="head"><b>Pools</b></td>
-					</tr>
-				</table>
-			</td>
-			<td width="0%" align="right"><img src="/tournament/images/boxtopright.gif" alt="" width="8" height="25" border="0"></td>
-		</tr>
-		<tr valign="top" align="left">
-			<td width="0%" background="/tournament/images/boxleft.gif"><img src="/tournament/images/boxleft.gif" alt="" width="8" height="8" border="0"></td>
-			<td width="100%">
-				<img src="/tournament/images/spacer.gif" width="143" height="5" border="0" alt=""><br>
+
+    <div class="box">
+        <h2>Pools</h2>
+        <div class="inner-content">
 				<!--Content Table-->
 				<table cellpadding="3" cellspacing="0" border="0">
 					<c:forEach var="pool" items="${Group.pools}">
@@ -152,34 +119,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				</table>
 	
 				<!--Content Table-->
-			</td>
-			<td width="0%" background="/tournament/images/boxright.gif"><img src="/tournament/images/boxright.gif" alt="" width="8" height="8" border="0"></td>
-		</tr>
-		<tr valign="top" align="left">
-			<td width="0%" align="left" valign="top"><img src="/tournament/images/boxbottomleft.gif" alt="" width="8" height="8" border="0"></td>
-			<td width="100%" background="/tournament/images/boxbottom.gif"><img src="/tournament/images/boxbottom.gif" alt="" width="9" height="8" border="0"></td>
-			<td width="0%" align="right" valign="top"><img src="/tournament/images/boxbottomright.gif" alt="" width="8" height="8" border="0"></td>
-		</tr>
-	</table>
+
+        </div>
+     </div>
 	<!--Round Table - Pools-->
 	<BR/>
 	<!--Round Table - Members-->
-	<table border="0" cellpadding="0" cellspacing="0" width="100%" align="center">
-		<tr valign="top" align="right" class="round-title">
-			<td width="0%" align="left"><img src="/tournament/images/boxtopleft.gif" alt="" width="8" height="25" border="0"></td>
-			<td width="100%" background="/tournament/images/boxtop.gif">
-				<table border="0" cellpadding="2" cellspacing="0" width="100%" align="center">
-					<tr>
-						<td align="left" valign="top" class="head"><b>Members</b></td>
-					</tr>
-				</table>
-			</td>
-			<td width="0%" align="right"><img src="/tournament/images/boxtopright.gif" alt="" width="8" height="25" border="0"></td>
-		</tr>
-		<tr valign="top" align="left">
-			<td width="0%" background="/tournament/images/boxleft.gif"><img src="/tournament/images/boxleft.gif" alt="" width="8" height="8" border="0"></td>
-			<td width="100%">
-				<img src="/tournament/images/spacer.gif" width="143" height="5" border="0" alt=""><br>
+    <div class="box">
+        <h2>Members</h2>
+        <div class="inner-content">
 				<!--Content -->
 				<div id="container">
 					<div class="content">
@@ -196,35 +144,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					</P>
 				</c:if>
 				<!--Content -->
-			</td>
-			<td width="0%" background="/tournament/images/boxright.gif"><img src="/tournament/images/boxright.gif" alt="" width="8" height="8" border="0"></td>
-		</tr>
-		<tr valign="top" align="left">
-			<td width="0%" align="left" valign="top"><img src="/tournament/images/boxbottomleft.gif" alt="" width="8" height="8" border="0"></td>
-			<td width="100%" background="/tournament/images/boxbottom.gif"><img src="/tournament/images/boxbottom.gif" alt="" width="9" height="8" border="0"></td>
-			<td width="0%" align="right" valign="top"><img src="/tournament/images/boxbottomright.gif" alt="" width="8" height="8" border="0"></td>
-		</tr>
-	</table>
+        </div>
+     </div>
 	<!--Round Table - Members-->
-	<c:if test="${Group.currentUserAdmin || not empty Group.subGroups}"> 
+
+	<c:if test="${Group.currentUserAdmin || not empty Group.subGroups}">
 	<BR/>
 	<!--Round Table - SubGroups-->
-	<table border="0" cellpadding="0" cellspacing="0" width="100%" align="center">
-		<tr valign="top" align="right" class="round-title">
-			<td width="0%" align="left"><img src="/tournament/images/boxtopleft.gif" alt="" width="8" height="25" border="0"></td>
-			<td width="100%" background="/tournament/images/boxtop.gif">
-				<table border="0" cellpadding="2" cellspacing="0" width="100%" align="center">
-					<tr>
-						<td align="left" valign="top" class="head"><b>Sub Groups</b></td>
-					</tr>
-				</table>
-			</td>
-			<td width="0%" align="right"><img src="/tournament/images/boxtopright.gif" alt="" width="8" height="25" border="0"></td>
-		</tr>
-		<tr valign="top" align="left">
-			<td width="0%" background="/tournament/images/boxleft.gif"><img src="/tournament/images/boxleft.gif" alt="" width="8" height="8" border="0"></td>
-			<td width="100%">
-				<img src="/tournament/images/spacer.gif" width="143" height="5" border="0" alt=""><br>
+    <div class="box">
+        <h2>Sub Groups</h2>
+        <div class="inner-content">
 				<!--Content -->
 				<div id="container">
 					<div class="content">
@@ -238,17 +167,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					</div>
 				</div>
 				<!--Content -->
-			</td>			
-			<td width="0%" background="/tournament/images/boxright.gif"><img src="/tournament/images/boxright.gif" alt="" width="8" height="8" border="0"></td>
-		</tr>
-		<tr valign="top" align="left">
-			<td width="0%" align="left" valign="top"><img src="/tournament/images/boxbottomleft.gif" alt="" width="8" height="8" border="0"></td>
-			<td width="100%" background="/tournament/images/boxbottom.gif"><img src="/tournament/images/boxbottom.gif" alt="" width="9" height="8" border="0"></td>
-			<td width="0%" align="right" valign="top"><img src="/tournament/images/boxbottomright.gif" alt="" width="8" height="8" border="0"></td>
-		</tr>
-	</table>
+        </div>
+     </div>
 	</c:if>
-</td><td width="20%">&nbsp;</td></tr>
-</table>
+</div>
 </body>
 </html>
