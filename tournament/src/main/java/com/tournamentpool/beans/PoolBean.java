@@ -21,17 +21,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.beans;
 
-import java.sql.SQLException;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
+import com.tournamentpool.domain.*;
 import utility.StringUtil;
 
-import com.tournamentpool.domain.Bracket;
-import com.tournamentpool.domain.Pool;
-import com.tournamentpool.domain.ScoreSystem;
-import com.tournamentpool.domain.TieBreakerType;
-import com.tournamentpool.domain.User;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * @author Avery J. Regier
@@ -55,6 +49,8 @@ public class PoolBean extends BracketHolderBean implements Comparable<PoolBean> 
 	private boolean mayRemoveBracket;
 	private Set<String> email = new LinkedHashSet<String>();
 	private boolean showGroups = false;
+
+    private TreeMap<GroupBean, List<Integer>> groupScores = new TreeMap<GroupBean, List<Integer>>();
 
 	/**
 	 * @param name
@@ -209,7 +205,51 @@ public class PoolBean extends BracketHolderBean implements Comparable<PoolBean> 
 		if(pool != null) {
 			bracketBean.setMayRemove(pool.mayRemoveBracket(user, bracket));
 		}
-	}
+    }
+
+    protected void setupTeamScores(BracketBean<?> bracketBean) {
+        GroupBean group1 = bracketBean.getGroup();
+        if(group1 != null) {
+            List<Integer> scores = groupScores.get(group1);
+            if(scores == null) {
+                scores = new ArrayList<Integer>();
+                groupScores.put(group1, scores);
+            }
+            scores.add(bracketBean.getScore().getCurrent());
+        }
+    }
+
+    public Iterator getTeamScores() {
+        Set<TeamScore> averageMap = new TreeSet<TeamScore>(new Comparator<TeamScore>() {
+            public int compare(TeamScore abean, TeamScore bbean) {
+                if(abean == bbean) return 0;
+                Float aScore = abean.getValue();
+                Float bScore = bbean.getValue();
+                if(aScore != null && bScore != null) {
+                    float score = aScore - bScore;
+                    if(score != 0) return (int)(-score * 100); // highest score first
+                }
+
+                if(abean.getKey().getName() != null) {
+                    int result = abean.getKey().getName().compareTo(bbean.getKey().getName());
+                    if(result != 0) return result;
+                }
+                return abean.getKey().getOid() - bbean.getKey().getOid();
+            }});
+
+        for(Map.Entry<GroupBean, List<Integer>> entry : groupScores.entrySet()) {
+            GroupBean group = entry.getKey();
+            List<Integer> scores = entry.getValue();
+            int total = 0;
+            int count = 0;
+            for(; count<3 && count<scores.size(); count++)  {
+                total += scores.get(count);
+            }
+            averageMap.add(new TeamScore(group, total/count));
+        }
+
+        return averageMap.iterator();
+    }
 
 	public void setMayRemove(boolean mayRemoveBracket) {
 		this.mayRemoveBracket = mayRemoveBracket;
@@ -254,4 +294,29 @@ public class PoolBean extends BracketHolderBean implements Comparable<PoolBean> 
 	public boolean isShowGroups() {
 		return showGroups;
 	}
+
+    private static class TeamScore implements Map.Entry<GroupBean, Float> {
+        private final GroupBean group;
+        private final float score;
+
+        public TeamScore(GroupBean group, float score) {
+            this.group = group;
+            this.score = score;
+        }
+
+        @Override
+        public GroupBean getKey() {
+            return group;
+        }
+
+        @Override
+        public Float getValue() {
+            return score;
+        }
+
+        @Override
+        public Float setValue(Float value) {
+            return null;
+        }
+    }
 }

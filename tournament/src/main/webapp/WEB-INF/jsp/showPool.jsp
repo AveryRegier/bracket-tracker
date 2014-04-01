@@ -132,7 +132,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			</td>
 			</tr>
 			</table>
-			<c:if test="${!Pool.closed}">
+
+			<c:if test="${Pool.showGroups}">
+			<br>
+			<br>
+			<table class="border-table" cellpadding="0" cellspacing="0" align="center">
+			<tr>
+			<td>
+			<table class="content-table" cellpadding="3" cellspacing="1">
+				<tr class="header-row">
+					<th>Team</th>
+					<th>Current</th>
+				</tr>
+				<c:forEach var="team" items="${Pool.teamScores}">
+				<tr class="content-row">
+					<td><c:out value="${team.key.name}"/></td>
+					<td><c:out value="${team.value}"/></td>
+				</tr>
+				</c:forEach>
+			</table>
+			</td>
+			</tr>
+			</table>
+			</c:if>
+
+            <c:if test="${!Pool.closed}">
 			<br>
 			<table>
 				<tr class="content-row">
