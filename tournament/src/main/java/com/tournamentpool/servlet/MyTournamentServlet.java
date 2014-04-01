@@ -178,7 +178,12 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 		Pool pool = lookupPool(req);
 		PoolBean poolBean = mapPoolBean(user, pool);
 		req.setAttribute("Pool", poolBean);
-		produceJSPPage(req, resp, "ShowPoolJSP");
+        if("csv".equals(req.getParameter("output"))) {
+            resp.setContentType("text/csv");
+            produceJSPPage(req, resp, "PoolCSVJSP");
+        } else {
+            produceJSPPage(req, resp, "ShowPoolJSP");
+        }
 	}
 
 	private PoolBean mapPoolBean(User user, Pool pool) throws SQLException {

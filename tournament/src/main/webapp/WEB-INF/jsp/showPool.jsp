@@ -1,5 +1,5 @@
 <%--
-Copyright (C) 2003-2008 Avery J. Regier.
+Copyright (C) 2003-2014 Avery J. Regier.
 
 This file is part of the Tournament Pool and Bracket Tracker.
 
@@ -164,6 +164,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				</tr>
 			</table>
 			</c:if>
+			<br>
+			<table>
+				<tr class="content-row">
+					<td><a href="?<c:out value="${pageContext.request.queryString}"/>&output=csv">Export to CSV</a></td>
+				</tr>
+			</table>
 			<!--Content Table-->
         </div>
      </div>
