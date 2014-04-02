@@ -22,11 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 package com.tournamentpool.beans;
 
 import com.tournamentpool.controller.Filter;
-import com.tournamentpool.domain.Bracket;
-import com.tournamentpool.domain.Pool;
-import com.tournamentpool.domain.PoolBracket;
+import com.tournamentpool.domain.*;
 import com.tournamentpool.domain.ScoreSystem.Score;
-import com.tournamentpool.domain.User;
 
 import java.sql.SQLException;
 import java.util.Comparator;
@@ -158,14 +155,16 @@ public class BracketHolderBean {
 						PoolBean poolBean = bracketBean.addPool(pool);
 						addOtherAttributes(bracket, pool, user, bracketBean, poolBean);
 					}
-                    setupTeamScores(bracketBean);
+                    if(apool.getGroup().hasChildren()) {
+                        setupTeamScores(bracketBean, user.getMembershipGroupsInHierarchy(apool.getGroup()));
+                    }
 					bracketBeans.add(bracketBean);
 				}
 			}
 		}
 	}
 
-    protected void setupTeamScores(BracketBean<?> bracketBean) {
+    protected void setupTeamScores(BracketBean<?> bracketBean, Iterable<Group> membershipGroupsInHierarchy) {
         // do nothing, allow overrides
     }
 }

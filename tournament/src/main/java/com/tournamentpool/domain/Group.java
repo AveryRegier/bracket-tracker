@@ -21,16 +21,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.TreeSet;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.delete.GroupDeleteBroker;
 import com.tournamentpool.broker.sql.delete.GroupPlayerDeleteBroker;
+
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * @author avery
@@ -292,4 +288,14 @@ public class Group implements Comparable<Group> {
 	public Iterable<Group> getChildren() {
 		return Collections.unmodifiableSet(children);
 	}
+
+    public boolean isInHierarchy(Group parent) {
+        Group group = this;
+        do {
+            if(group == parent) return true;
+            group = group.getParent();
+        } while(group != null);
+
+        return false;
+    }
 }

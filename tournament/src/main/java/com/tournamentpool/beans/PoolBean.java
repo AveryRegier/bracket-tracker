@@ -207,13 +207,13 @@ public class PoolBean extends BracketHolderBean implements Comparable<PoolBean> 
 		}
     }
 
-    protected void setupTeamScores(BracketBean<?> bracketBean) {
-        GroupBean group1 = bracketBean.getGroup();
-        if(group1 != null) {
-            List<Integer> scores = groupScores.get(group1);
+    protected void setupTeamScores(BracketBean<?> bracketBean, Iterable<Group> membershipGroupsInHierarchy) {
+        for(Group group: membershipGroupsInHierarchy) {
+            GroupBean groupBean = new GroupBean(group);
+            List<Integer> scores = groupScores.get(groupBean);
             if(scores == null) {
                 scores = new ArrayList<Integer>();
-                groupScores.put(group1, scores);
+                groupScores.put(groupBean, scores);
             }
             scores.add(bracketBean.getScore().getCurrent());
         }

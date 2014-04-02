@@ -23,12 +23,7 @@ package com.tournamentpool.domain;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * @author avery
@@ -108,11 +103,10 @@ public class User {
 	
 	public Group getGroupInHierarchy(Group parent) {
 		for (Group groupTesting : groups) {
-			Group group = groupTesting;
-			do {
-				if(group == parent) return groupTesting;
-				group = group.getParent();				
-			} while(group != null);		
+            if(groupTesting.isInHierarchy(parent)) {
+                return groupTesting;
+            }
+
 		}
 		return null;
 	}
@@ -129,7 +123,17 @@ public class User {
 		return allGroups.iterator();
 	}
 
-	/**
+    public Iterable<Group> getMembershipGroupsInHierarchy(Group parent) {
+        Set<Group> allGroups = new TreeSet<Group>();
+        for(Group group: groups) {
+            if(group.isInHierarchy(parent)) {
+                allGroups.add(group);
+            }
+        }
+        return allGroups;
+    }
+
+    /**
 	 * @param bracket
 	 */
 	public void loadBracket(Bracket bracket) {

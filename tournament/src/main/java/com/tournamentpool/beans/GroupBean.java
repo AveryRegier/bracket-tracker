@@ -21,17 +21,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.beans;
 
-import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
-
-import utility.StringUtil;
-
 import com.tournamentpool.controller.Filter;
 import com.tournamentpool.domain.Group;
 import com.tournamentpool.domain.Pool;
 import com.tournamentpool.domain.User;
+import utility.StringUtil;
+
+import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author Avery J. Regier
@@ -129,11 +128,6 @@ public class GroupBean implements Comparable<GroupBean>{
 		return pools != null ? pools.size() : 0;
 	}
 
-	/**
-	 * @param user 
-	 * @param members The members to set.
-	 * @throws SQLException
-	 */
 	public void setPools(Set<Pool> poolObjects, User user) throws SQLException {
 		TreeSet<PoolBean> poolBeans = new TreeSet<PoolBean>();
 		if(poolObjects != null) {
@@ -204,7 +198,17 @@ public class GroupBean implements Comparable<GroupBean>{
 
 	@Override
 	public int compareTo(GroupBean o) {
-		// TODO Auto-generated method stub
 		return getName().compareTo(o.getName());
 	}
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof  GroupBean)) return false;
+        return this.getOid() == ((GroupBean)obj).getOid();
+    }
+
+    @Override
+    public int hashCode() {
+        return getOid();
+    }
 }

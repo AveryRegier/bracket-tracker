@@ -146,7 +146,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				</tr>
 				<c:forEach var="team" items="${Pool.teamScores}">
 				<tr class="content-row">
-					<td><c:out value="${team.key.name}"/></td>
+					<td><a href="?request=show&type=pool&id=<c:out value="${Pool.oid}"/>&groupID=<c:out value="${team.key.oid}"/>"><c:out value="${team.key.name}"/></a></td>
 					<td><c:out value="${team.value}"/></td>
 				</tr>
 				</c:forEach>
