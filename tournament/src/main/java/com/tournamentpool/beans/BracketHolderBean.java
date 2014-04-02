@@ -156,7 +156,7 @@ public class BracketHolderBean {
 						addOtherAttributes(bracket, pool, user, bracketBean, poolBean);
 					}
                     if(apool.getGroup().hasChildren()) {
-                        setupTeamScores(bracketBean, user.getMembershipGroupsInHierarchy(apool.getGroup()));
+                        setupTeamScores(bracketBean, owner.getMembershipGroupsInHierarchy(apool.getGroup()));
                     }
 					bracketBeans.add(bracketBean);
 				}
