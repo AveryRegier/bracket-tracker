@@ -21,16 +21,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.controller;
 
+import com.tournamentpool.domain.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-
-import com.tournamentpool.domain.GameNode;
-import com.tournamentpool.domain.GameVisitor;
-import com.tournamentpool.domain.Opponent;
-import com.tournamentpool.domain.Seed;
-import com.tournamentpool.domain.Team;
-import com.tournamentpool.domain.Tournament;
 
 /**
  * @author Avery J. Regier
@@ -88,13 +83,13 @@ public abstract class GameVisitorCommon<T extends GameVisitorCommon.Node> extend
 			this.gameNodeOID = gameNode.getOid();
 			this.feeders = new ArrayList<Feeder>();
 			this.isSeed = false;
-			
-			for (GameNode.Feeder feeder : gameNode.getFeeders()) {
-				this.feeders.add(new Feeder(
-						feeder.getOpponent(), 
-						feeder.getFeeder().getID(), 
-						feeder.isSeed()));
-			}
+
+            for (GameNode.Feeder feeder : gameNode.getFeeders()) {
+                this.feeders.add(new Feeder(
+                        feeder.getOpponent(),
+                        feeder.getFeeder().getID(),
+                        feeder.isSeed()));
+            }
 		}
 
 		/**

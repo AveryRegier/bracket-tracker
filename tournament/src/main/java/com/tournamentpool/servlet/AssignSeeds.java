@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class AssignSeeds extends RequiresLoginServlet {
@@ -77,21 +76,19 @@ public class AssignSeeds extends RequiresLoginServlet {
 			Map<Seed, Team> seedTeam = new HashMap<Seed, Team>();
 			
 			Map params = req.getParameterMap();
-			Iterator<Map.Entry> keys = params.entrySet().iterator();
-			while (keys.hasNext()) {
-				Map.Entry entry = keys.next();
-				String key = (String) entry.getKey();
-				if(key.startsWith("team")) {
-					Integer seedID = Integer.valueOf(key.substring(4).trim());
-					Seed seed = tournament.getTournamentType().getSeed(seedID.intValue());
-					String teamIDString = ((String[])entry.getValue())[0];
-					Team team = null;
-					if(StringUtil.killWhitespace(teamIDString) != null) {
-						team = getApp().getTeamManager().getTeam(Integer.valueOf(teamIDString).intValue()); 
-					}
-					seedTeam.put(seed, team);
-				}
-			}
+            for (Map.Entry entry : (Iterable<Map.Entry>) params.entrySet()) {
+                String key = (String) entry.getKey();
+                if (key.startsWith("team")) {
+                    Integer seedID = Integer.valueOf(key.substring(4).trim());
+                    Seed seed = tournament.getTournamentType().getSeed(seedID.intValue());
+                    String teamIDString = ((String[]) entry.getValue())[0];
+                    Team team = null;
+                    if (StringUtil.killWhitespace(teamIDString) != null) {
+                        team = getApp().getTeamManager().getTeam(Integer.valueOf(teamIDString).intValue());
+                    }
+                    seedTeam.put(seed, team);
+                }
+            }
 		
 			getApp().getTournamentManager().updateTounamentSeeds(tournament, seedTeam);
 		

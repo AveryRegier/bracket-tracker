@@ -21,24 +21,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.controller;
 
-import java.sql.SQLException;
-import java.util.List;
-
-import utility.domain.Reference;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.beans.BracketBean;
 import com.tournamentpool.controller.BracketVisitor.Node;
-import com.tournamentpool.domain.Bracket;
+import com.tournamentpool.domain.*;
 import com.tournamentpool.domain.Bracket.Pick;
-import com.tournamentpool.domain.Game;
-import com.tournamentpool.domain.GameNode;
 import com.tournamentpool.domain.GameNode.Feeder;
-import com.tournamentpool.domain.Pool;
-import com.tournamentpool.domain.ScoreSystem;
-import com.tournamentpool.domain.Seed;
-import com.tournamentpool.domain.Tournament;
-import com.tournamentpool.domain.TournamentType;
+import utility.domain.Reference;
+
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author Avery J. Regier
@@ -108,37 +100,9 @@ public class ShowTournamentController extends TournamentController {
 				Integer.parseInt(bracketOID));
 		Tournament tournament = bracket.getTournament();
 
-		BracketBean<? extends GameVisitorCommon.Node> bean;
-		if(view) {
-			BracketVisitor visitor = new BracketVisitor(sp, tournament, bracket);
-			List<Node> nodes = visitor.visit();
-			ScoreSystem scoreSystem = null;
-			if(poolOID != null) {
-				int oid = Integer.parseInt(poolOID);
-				Pool pool = sp.getSingleton().getUserManager().getPoolObject(oid);
-				scoreSystem = pool.getScoreSystem();
-			}
-			if(scoreSystem == null) scoreSystem = sp.getSingleton().getScoreSystemManager().getScoreSystem(1); // default it
-			if(scoreSystem != null) {
-				visitForScore(bracket, nodes, scoreSystem);
-			}
-			visitForUpset(bracket.getTournament(), nodes);
-			BracketBean<BracketVisitor.Node> bean1 = new BracketBean<BracketVisitor.Node>();
-			bean1.setBracket(nodes);
-			bean = bean1;
-		} else {
-			TournamentVisitor visitor = new TournamentVisitor(tournament);
-			List<TournamentVisitor.Node> nodes = visitor.visit();
-
-			// set the winners
-			TournamentType tournamentType = tournament.getTournamentType();
-			for (TournamentVisitor.Node node : nodes) {
-				node.setPick(bracket.getPick(sp, tournamentType.getGameNode(node.getGameNodeOid())));
-			}
-			BracketBean<TournamentVisitor.Node> bean1 = new BracketBean<TournamentVisitor.Node>();
-			bean1.setBracket(nodes);
-			bean = bean1;
-		}
+		BracketBean<? extends GameVisitorCommon.Node> bean = view ?
+                visitForView(poolOID, bracket, tournament) :
+                visitForEdit(bracket, tournament);
 		bean.setOid(bracket.getOID());
 		bean.setName(bracket.getName());
 		bean.setOponents(tournament.getTournamentType().getOpponents());
@@ -147,7 +111,40 @@ public class ShowTournamentController extends TournamentController {
 		return bean;
 	}
 
-	/**
+    private BracketBean<TournamentVisitor.Node> visitForEdit(Bracket bracket, Tournament tournament) throws SQLException {
+        TournamentVisitor visitor = new TournamentVisitor(tournament);
+        List<TournamentVisitor.Node> nodes = visitor.visit();
+
+        // set the winners
+        TournamentType tournamentType = tournament.getTournamentType();
+        for (TournamentVisitor.Node node : nodes) {
+            node.setPick(bracket.getPick(sp, tournamentType.getGameNode(node.getGameNodeOid())));
+        }
+        BracketBean<TournamentVisitor.Node> bean1 = new BracketBean<TournamentVisitor.Node>();
+        bean1.setBracket(nodes);
+        return bean1;
+    }
+
+    private BracketBean<Node> visitForView(String poolOID, Bracket bracket, Tournament tournament) throws SQLException {
+        BracketVisitor visitor = new BracketVisitor(sp, tournament, bracket);
+        List<Node> nodes = visitor.visit();
+        ScoreSystem scoreSystem = null;
+        if(poolOID != null) {
+            int oid = Integer.parseInt(poolOID);
+            Pool pool = sp.getSingleton().getUserManager().getPoolObject(oid);
+            scoreSystem = pool.getScoreSystem();
+        }
+        if(scoreSystem == null) scoreSystem = sp.getSingleton().getScoreSystemManager().getScoreSystem(1); // default it
+        if(scoreSystem != null) {
+            visitForScore(bracket, nodes, scoreSystem);
+        }
+        visitForUpset(bracket.getTournament(), nodes);
+        BracketBean<Node> bean1 = new BracketBean<Node>();
+        bean1.setBracket(nodes);
+        return bean1;
+    }
+
+    /**
 	 * @param bracket
 	 * @param tournament
 	 * @param nodes
