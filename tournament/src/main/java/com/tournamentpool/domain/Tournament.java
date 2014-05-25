@@ -24,7 +24,6 @@ package com.tournamentpool.domain;
 import com.tournamentpool.application.SingletonProvider;
 import utility.domain.Reference;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -80,11 +79,9 @@ public interface Tournament extends Reference {
 	
 	public Date getLastUpdated();
 
-	public boolean delete(User requestor, SingletonProvider sp)
-			throws SQLException;
+	public boolean delete(User requestor, SingletonProvider sp);
 
-	public boolean mayDelete(User requestor, SingletonProvider sp)
-			throws SQLException;
+	public boolean mayDelete(User requestor, SingletonProvider sp);
 
 	public boolean isAdmin(User requestor);
 

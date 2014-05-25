@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 package com.tournamentpool.servlet;
 
 import com.tournamentpool.beans.*;
+import com.tournamentpool.broker.sql.DatabaseFailure;
 import com.tournamentpool.domain.*;
 import com.tournamentpool.domain.Tournament;
 
@@ -29,7 +30,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -84,7 +84,7 @@ public class AdminListServlet extends RequiresLoginServlet {
 			} else { // if we haven't configured the page, just redirect to the administration main screen
 				produceJSPPage(req, res, "AdminJSP");
 			}
-		} catch (SQLException e) {
+		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
 		}
 	}
@@ -94,7 +94,7 @@ public class AdminListServlet extends RequiresLoginServlet {
 
 	}
 
-	private void deleteLeague(HttpServletRequest req, HttpServletResponse res) throws ServletException, SQLException, IOException {
+	private void deleteLeague(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		User user = getUser(req, res);
 		League league = getApp().getTeamManager().getLeague(Integer.parseInt(req.getParameter("id")));
 		league.delete(user, getApp().getSingletonProvider());
@@ -188,7 +188,7 @@ public class AdminListServlet extends RequiresLoginServlet {
 	}
 
 	private void deleteTeam(HttpServletRequest req, HttpServletResponse res) 
-		throws NumberFormatException, SQLException, ServletException, IOException 
+		throws NumberFormatException, ServletException, IOException
 	{
 		User user = getUser(req, res);
 		Team team = getApp().getTeamManager().getTeam(Integer.parseInt(req.getParameter("id")));
@@ -217,7 +217,7 @@ public class AdminListServlet extends RequiresLoginServlet {
 		produceJSPPage(req, res, "ListBracketsJSP");
 	}
 
-	private void listPools(HttpServletRequest req, HttpServletResponse res) throws SQLException, ServletException, IOException {
+	private void listPools(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		TreeSet<PoolBean> poolBeans = new TreeSet<PoolBean>();
 		Iterator<Pool> pools = getApp().getUserManager().getPools();
 		User user = getUser(req, res);
@@ -244,7 +244,7 @@ public class AdminListServlet extends RequiresLoginServlet {
 		produceJSPPage(req, res, "ListPoolsJSP");
 	}
 
-	private void listPlayers(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException, SQLException {
+	private void listPlayers(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		TreeSet<PlayerBean> playerBeans = new TreeSet<PlayerBean>();
 		User user = getUser(req, res);
 		UserManager userManager = getApp().getUserManager();
@@ -266,11 +266,10 @@ public class AdminListServlet extends RequiresLoginServlet {
 	/**
 	 * @param req
 	 * @param res
-	 * @throws SQLException
 	 * @throws IOException 
 	 * @throws ServletException 
 	 */
-	private void listGroups(HttpServletRequest req, HttpServletResponse res) throws SQLException, ServletException, IOException {
+	private void listGroups(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
 		User user = getUser(req, res);
 		List<GroupBean> groupBeans = new ArrayList<GroupBean>();

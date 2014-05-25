@@ -18,20 +18,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.servlet;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.TimeZone;
+import com.tournamentpool.broker.sql.DatabaseFailure;
+import com.tournamentpool.domain.Level;
+import com.tournamentpool.domain.Tournament;
+import com.tournamentpool.domain.User;
+import utility.StringUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import utility.StringUtil;
-
-import com.tournamentpool.domain.Level;
-import com.tournamentpool.domain.Tournament;
-import com.tournamentpool.domain.User;
+import java.io.IOException;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class CreateSubTournament extends RequiresLoginServlet {
 
@@ -92,7 +90,7 @@ public class CreateSubTournament extends RequiresLoginServlet {
 			throw new ServletException("Level is required.", e);
 		} catch (NumberFormatException e) {
 			throw new ServletException("Level is required.", e);
-		} catch (SQLException e) {
+		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
 		}
 	}

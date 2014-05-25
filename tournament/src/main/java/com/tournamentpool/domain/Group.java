@@ -25,7 +25,6 @@ import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.delete.GroupDeleteBroker;
 import com.tournamentpool.broker.sql.delete.GroupPlayerDeleteBroker;
 
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -46,7 +45,6 @@ public class Group implements Comparable<Group> {
 	 * @param groupOID
 	 * @param name
 	 * @param invitationCode TODO
-	 * @param adminID
 	 */
 	public Group(UserManager um, int groupOID, String name, int adminOID, int invitationCode, Group parent) {
 		this.um = um;
@@ -95,9 +93,8 @@ public class Group implements Comparable<Group> {
 	
 	/**
 	 * @return Returns the members.
-	 * @throws SQLException
 	 */
-	public synchronized Set<User> getMembers() throws SQLException {
+	public synchronized Set<User> getMembers() {
 		if(members == null) {
 			members = new HashSet<Integer>();
 			um.loadGroupMembers(this);
@@ -110,7 +107,7 @@ public class Group implements Comparable<Group> {
 		return Collections.unmodifiableSet(these);
 	}
 	
-	public synchronized Set<User> getMyMembers() throws SQLException {
+	public synchronized Set<User> getMyMembers() {
 		if(members == null) {
 			members = new HashSet<Integer>();
 			um.loadGroupMembers(this);
@@ -128,17 +125,15 @@ public class Group implements Comparable<Group> {
 
 	/**
 	 * @return
-	 * @throws SQLException 
 	 */
-	public User getAdministrator() throws SQLException {
+	public User getAdministrator() {
 		return um.getUserObject(adminOID);
 	}
 
 	/**
 	 * @return
-	 * @throws SQLException
 	 */
-	public Set<Pool> getPools() throws SQLException {
+	public Set<Pool> getPools() {
 		if(pools == null) {
 			pools = new LinkedHashSet<Pool>();
 			um.loadPools(this);
@@ -157,7 +152,7 @@ public class Group implements Comparable<Group> {
 		}
 	}
 
-	public Set<Pool> getMyPools() throws SQLException {
+	public Set<Pool> getMyPools() {
 		if(pools == null) {
 			pools = new LinkedHashSet<Pool>();
 			um.loadPools(this);
@@ -165,7 +160,7 @@ public class Group implements Comparable<Group> {
 		return Collections.unmodifiableSet(pools);
 	}
 
-	public void addMembers(int[] playerIDs) throws SQLException {
+	public void addMembers(int[] playerIDs) {
 		um.addPlayersTo(this, playerIDs);
 		getMembers(); // make sure they are all loaded
 		// if the group is already loaded, group won't contain the members just added, so add manually
@@ -175,7 +170,7 @@ public class Group implements Comparable<Group> {
 		}
 	}
 	
-	public boolean hasMember(int playerOID) throws SQLException {
+	public boolean hasMember(int playerOID) {
 		getMembers();
 		if(members.contains(new Integer(playerOID))) return true;
 		
@@ -220,7 +215,7 @@ public class Group implements Comparable<Group> {
 		um.removePool(pool);
 	}
 
-	public boolean mayDelete(User requestor) throws SQLException {
+	public boolean mayDelete(User requestor) {
 		return requestor != null 
 		    && (requestor == getAdministrator() || requestor.isSiteAdmin())
 		    && ((  getMyMembers().contains(getAdministrator()) && getMembers().size() == 1) // administrator is only member
@@ -228,14 +223,14 @@ public class Group implements Comparable<Group> {
 		    && getMyPools().isEmpty(); // and there are no pools
 	}
 	
-	public void applyDelete() throws SQLException {
+	public void applyDelete() {
 		for (User user: getMembers()) {
 			user.removeGroup(this);
 		}
 		um.removeGroup(this);
 	}
 	
-	public boolean delete(User requestor, SingletonProvider sp) throws SQLException {
+	public boolean delete(User requestor, SingletonProvider sp) {
 		if(mayDelete(requestor)) {
 			if(!getMembers().isEmpty()) {
 				// if we're past isEmpty, then due to mayDelete, we know the administrator is the only member
@@ -247,7 +242,7 @@ public class Group implements Comparable<Group> {
 		return false;
 	}
 	
-	public boolean mayRemoveMember(User requestor, User player) throws SQLException {
+	public boolean mayRemoveMember(User requestor, User player) {
 		if( (requestor.isSiteAdmin() || requestor == getAdministrator() || requestor == player)
 		    && (getMyMembers().contains(player))) {
 			// does this player have any brackets in a pool in this group?
@@ -261,7 +256,7 @@ public class Group implements Comparable<Group> {
 		return false;
 	}
 
-	public boolean removeMember(User requestor, User player, SingletonProvider sp) throws SQLException {
+	public boolean removeMember(User requestor, User player, SingletonProvider sp) {
 		if(mayRemoveMember(requestor, player)) {
 			new GroupPlayerDeleteBroker(sp, this, new int[] {player.getOID()}).execute();
 			members.remove(new Integer(player.getOID()));
@@ -275,7 +270,7 @@ public class Group implements Comparable<Group> {
 		return parent;
 	}
 
-	public Pool getPool(int id2) throws SQLException {
+	public Pool getPool(int id2) {
 		Set<Pool> poolSet = getPools();
 		for (Pool pool : poolSet) {
 			if(pool.getOid() == id2) {

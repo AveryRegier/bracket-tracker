@@ -21,13 +21,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql.status;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.PreparedStatementBroker;
 import com.tournamentpool.domain.Tournament;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * @author Avery J. Regier
@@ -59,7 +59,7 @@ public class TournamentBracketStatusBroker extends PreparedStatementBroker {
 		}
 	}
 	
-	public boolean isUsedByBrackets() throws SQLException {
+	public boolean isUsedByBrackets() {
 		execute();
 		return usedByBrackets;
 	}

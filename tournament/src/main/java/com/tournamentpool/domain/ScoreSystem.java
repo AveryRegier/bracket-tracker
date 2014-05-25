@@ -21,20 +21,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import utility.domain.Reference;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.controller.TournamentVisitor;
 import com.tournamentpool.domain.Bracket.Pick;
+import utility.domain.Reference;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * @author Avery J. Regier
@@ -294,9 +287,8 @@ public class ScoreSystem implements Reference {
 	/**
 	 * @param bracket
 	 * @return
-	 * @throws SQLException
 	 */
-	public Score calculate(Bracket bracket, SingletonProvider sp) throws SQLException {
+	public Score calculate(Bracket bracket, SingletonProvider sp) {
 		Score theScore = new Score();
 		Tournament tournament = bracket.getTournament();
 		TournamentVisitor tournamentVisitor = new TournamentVisitor(tournament);

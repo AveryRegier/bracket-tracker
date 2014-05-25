@@ -27,7 +27,6 @@ import com.tournamentpool.domain.Pool;
 import com.tournamentpool.domain.User;
 import utility.StringUtil;
 
-import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -83,9 +82,8 @@ public class GroupBean implements Comparable<GroupBean>{
 
 	/**
 	 * @param members The members to set.
-	 * @throws SQLException 
 	 */
-	public void setMembers(Set<User> members, User requestor, Group group) throws SQLException {
+	public void setMembers(Set<User> members, User requestor, Group group) {
 		TreeSet<GroupPlayerBean> playerBeans = new TreeSet<GroupPlayerBean>();
 		Iterator<User> iter = members.iterator();
 		while (iter.hasNext()) {
@@ -95,7 +93,7 @@ public class GroupBean implements Comparable<GroupBean>{
 		this.members = playerBeans;
 	}
 
-	public void addMembers(Set<User> members, User requestor, Group group) throws SQLException {
+	public void addMembers(Set<User> members, User requestor, Group group) {
 		GroupBean groupBean = new GroupBean(group);
 		Iterator<User> iter = members.iterator();
 		while (iter.hasNext()) {
@@ -128,7 +126,7 @@ public class GroupBean implements Comparable<GroupBean>{
 		return pools != null ? pools.size() : 0;
 	}
 
-	public void setPools(Set<Pool> poolObjects, User user) throws SQLException {
+	public void setPools(Set<Pool> poolObjects, User user) {
 		TreeSet<PoolBean> poolBeans = new TreeSet<PoolBean>();
 		if(poolObjects != null) {
 			Iterator<Pool> pools = poolObjects.iterator();
@@ -155,7 +153,7 @@ public class GroupBean implements Comparable<GroupBean>{
 		return currentUserIsAdmin;
 	}
 
-	public void setPools(Set<Pool> poolObjects, Filter filter, User user) throws SQLException {
+	public void setPools(Set<Pool> poolObjects, Filter filter, User user) {
 		TreeSet<PoolBean> poolBeans = new TreeSet<PoolBean>();
 		if(poolObjects != null) {
 			Iterator<Pool> pools = poolObjects.iterator();

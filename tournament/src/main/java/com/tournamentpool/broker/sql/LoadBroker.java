@@ -23,9 +23,7 @@ package com.tournamentpool.broker.sql;
 
 import com.tournamentpool.application.SingletonProvider;
 
-import java.sql.SQLException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -55,7 +53,7 @@ public abstract class LoadBroker extends SQLBroker {
 	/* (non-Javadoc)
 	 * @see com.tournamentpool.broker.sql.SQLBroker#execute()
 	 */
-	public void execute() throws SQLException {
+	public void execute() {
 		try {
 			System.out.println("Load "+getSQLKey()+" started.");
 			super.execute();
@@ -68,10 +66,9 @@ public abstract class LoadBroker extends SQLBroker {
 	}
 
 	public boolean executeIfPossible() {
-		for (Iterator<LoadBroker> iter = dependencies.iterator(); iter.hasNext();) {
-			LoadBroker dependency = iter.next();
-			if(!(dependency.hasRun() && dependency.isSuccessful())) return false;
-		}
+        for (LoadBroker dependency : dependencies) {
+            if (!(dependency.hasRun() && dependency.isSuccessful())) return false;
+        }
 		new Thread(new Runnable() {
 			public void run() {
 				try {

@@ -21,6 +21,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql.insert;
 
+import com.tournamentpool.application.SingletonProvider;
+import com.tournamentpool.broker.sql.TransactionBroker;
+import com.tournamentpool.domain.Game;
+import com.tournamentpool.domain.GameReporter;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -29,11 +34,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.tournamentpool.application.SingletonProvider;
-import com.tournamentpool.broker.sql.TransactionBroker;
-import com.tournamentpool.domain.Game;
-import com.tournamentpool.domain.GameReporter;
 
 /**
  * @author Avery J. Regier
@@ -129,7 +129,7 @@ public class GameInsertBroker extends TransactionBroker implements GameReporter 
 	}
 	
 	@Override
-	public void execute() throws SQLException {
+	public void execute() {
 		addQueries(insertedGames, updatedGames, deletedGames);
 		super.execute();
 	}

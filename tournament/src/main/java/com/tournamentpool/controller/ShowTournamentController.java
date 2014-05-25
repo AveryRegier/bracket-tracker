@@ -29,7 +29,6 @@ import com.tournamentpool.domain.Bracket.Pick;
 import com.tournamentpool.domain.GameNode.Feeder;
 import utility.domain.Reference;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -45,7 +44,6 @@ public class ShowTournamentController extends TournamentController {
 	}
 
 	/**
-	 * @param string
 	 */
 	public BracketBean<TournamentVisitor.Node> getTournamentBracket(int tournamentKey) {
 		BracketBean<TournamentVisitor.Node> bean = new BracketBean<TournamentVisitor.Node>();
@@ -89,12 +87,10 @@ public class ShowTournamentController extends TournamentController {
 	}
 
 	/**
-	 * @param parameter
 	 * @return
-	 * @throws SQLException
 	 * @throws NumberFormatException
 	 */
-	public BracketBean<? extends GameVisitorCommon.Node> getBracket(String bracketOID, String poolOID, boolean view) throws NumberFormatException, SQLException {
+	public BracketBean<? extends GameVisitorCommon.Node> getBracket(String bracketOID, String poolOID, boolean view) throws NumberFormatException {
 		Bracket bracket =
 			sp.getSingleton().getBracketManager().getBracket(
 				Integer.parseInt(bracketOID));
@@ -111,7 +107,7 @@ public class ShowTournamentController extends TournamentController {
 		return bean;
 	}
 
-    private BracketBean<TournamentVisitor.Node> visitForEdit(Bracket bracket, Tournament tournament) throws SQLException {
+    private BracketBean<TournamentVisitor.Node> visitForEdit(Bracket bracket, Tournament tournament) {
         TournamentVisitor visitor = new TournamentVisitor(tournament);
         List<TournamentVisitor.Node> nodes = visitor.visit();
 
@@ -125,7 +121,7 @@ public class ShowTournamentController extends TournamentController {
         return bean1;
     }
 
-    private BracketBean<Node> visitForView(String poolOID, Bracket bracket, Tournament tournament) throws SQLException {
+    private BracketBean<Node> visitForView(String poolOID, Bracket bracket, Tournament tournament) {
         BracketVisitor visitor = new BracketVisitor(sp, tournament, bracket);
         List<Node> nodes = visitor.visit();
         ScoreSystem scoreSystem = null;
@@ -146,7 +142,6 @@ public class ShowTournamentController extends TournamentController {
 
     /**
 	 * @param bracket
-	 * @param tournament
 	 * @param nodes
 	 * @param scoreSystem
 	 */
@@ -186,10 +181,8 @@ public class ShowTournamentController extends TournamentController {
 	}
 
 	/**
-	 * @param bracket
 	 * @param tournament
 	 * @param nodes
-	 * @param scoreSystem
 	 */
 	private void visitForUpset(Tournament tournament, List<? extends GameVisitorCommon.Node> nodes) {
 		TournamentVisitor tournamentVisitor = new TournamentVisitor(tournament);
@@ -211,7 +204,7 @@ public class ShowTournamentController extends TournamentController {
 		}
 	}
 
-	private void visitForUpsetPicked(Bracket bracket, List<BracketVisitor.Node> nodes) throws SQLException {
+	private void visitForUpsetPicked(Bracket bracket, List<BracketVisitor.Node> nodes) {
 		BracketVisitor bracketVisitor = new BracketVisitor(sp, bracket.getTournament(), bracket);
 		TournamentType tournamentType = bracket.getTournament().getTournamentType();
 		for (BracketVisitor.Node node: nodes) {
@@ -231,7 +224,7 @@ public class ShowTournamentController extends TournamentController {
 		}
 	}
 
-	public int getUpsetPredictionDelta(Bracket bracket, ScoreSystem scoreSystem) throws SQLException {
+	public int getUpsetPredictionDelta(Bracket bracket, ScoreSystem scoreSystem) {
 		Tournament tournament = bracket.getTournament();
 		BracketVisitor visitor = new BracketVisitor(sp, tournament, bracket);
 		List<BracketVisitor.Node> nodes = visitor.visit();
@@ -257,7 +250,7 @@ public class ShowTournamentController extends TournamentController {
 	}
 
 /*
-	public UpsetPredictionDelta getUpsetPredictionDelta(Bracket bracket, ScoreSystem scoreSystem) throws SQLException {
+	public UpsetPredictionDelta getUpsetPredictionDelta(Bracket bracket, ScoreSystem scoreSystem) {
 		Tournament tournament = bracket.getTournament();
 		BracketVisitor visitor = new BracketVisitor(sp, tournament, bracket);
 		List nodes = visitor.visit();
@@ -279,7 +272,7 @@ public class ShowTournamentController extends TournamentController {
 		}
 		return delta;
 	}
-	public UpsetPredictionRiskDelta getUpsetPredictionRiskDelta(Bracket bracket, ScoreSystem scoreSystem) throws SQLException {
+	public UpsetPredictionRiskDelta getUpsetPredictionRiskDelta(Bracket bracket, ScoreSystem scoreSystem) {
 		Tournament tournament = bracket.getTournament();
 		BracketVisitor visitor = new BracketVisitor(sp, tournament, bracket);
 		List nodes = visitor.visit();

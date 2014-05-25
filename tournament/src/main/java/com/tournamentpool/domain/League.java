@@ -18,22 +18,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.domain;
 
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.TreeMap;
-
+import com.tournamentpool.application.SingletonProvider;
+import com.tournamentpool.broker.sql.delete.LeagueDeleteBroker;
+import com.tournamentpool.broker.sql.delete.LeagueTeamDeleteBroker;
 import utility.domain.Reference;
 import utility.menu.Menu;
 import utility.menu.reference.ReferenceMenu;
 
-import com.tournamentpool.application.SingletonProvider;
-import com.tournamentpool.broker.sql.delete.LeagueDeleteBroker;
-import com.tournamentpool.broker.sql.delete.LeagueTeamDeleteBroker;
+import java.util.*;
 
 public class League implements Reference, Comparable<League> {
 
@@ -117,7 +109,7 @@ public class League implements Reference, Comparable<League> {
 		return teams.containsKey(team.getID());
 	}
 
-	public void delete(User user, SingletonProvider sp) throws SQLException {
+	public void delete(User user, SingletonProvider sp) {
 		if(isDeletable(user, sp)) {
 			for (Team team: teams.values())  {
 				new LeagueTeamDeleteBroker(sp, this, team).execute();

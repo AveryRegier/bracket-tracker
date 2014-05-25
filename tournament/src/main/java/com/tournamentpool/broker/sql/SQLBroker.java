@@ -21,15 +21,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.application.SingletonProviderHolder;
+
+import java.sql.*;
+import java.util.Properties;
 
 /**
  * @author RX39789
@@ -45,7 +41,7 @@ public abstract class SQLBroker extends SingletonProviderHolder {
 		super(sp);
 	}
 
-	public void execute() throws SQLException {
+	public void execute() {
 		Connection conn = null;
 		try {
 			Properties config = sp.getSingleton().getConfig();
@@ -55,9 +51,15 @@ public abstract class SQLBroker extends SingletonProviderHolder {
 				config.getProperty("password")
 			);
 			execute(conn);
-		} finally {
+		} catch (SQLException e) {
+            throw new DatabaseFailure(e);
+        } finally {
 			if(conn != null) {
-				conn.close();
+                try {
+                    conn.close();
+                } catch(SQLException e) {
+                    e.printStackTrace(); // silence it
+                }
 			}
 		}
 	}

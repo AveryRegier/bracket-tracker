@@ -21,18 +21,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.servlet;
 
-import java.io.IOException;
-import java.sql.SQLException;
+import com.tournamentpool.beans.GroupBean;
+import com.tournamentpool.beans.PlayerBean;
+import com.tournamentpool.broker.sql.DatabaseFailure;
+import com.tournamentpool.broker.sql.get.GroupAvailablePlayersGetBroker;
+import com.tournamentpool.domain.Group;
+import com.tournamentpool.domain.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.tournamentpool.beans.GroupBean;
-import com.tournamentpool.beans.PlayerBean;
-import com.tournamentpool.broker.sql.get.GroupAvailablePlayersGetBroker;
-import com.tournamentpool.domain.Group;
-import com.tournamentpool.domain.User;
+import java.io.IOException;
 
 public class PlayerMaintenance extends RequiresLoginServlet {
 	/**
@@ -75,7 +74,7 @@ public class PlayerMaintenance extends RequiresLoginServlet {
 				req.setAttribute("Players", new GroupAvailablePlayersGetBroker(getApp().getSingletonProvider(), group).getPlayers());
 				produceJSPPage(req, res, "AddPlayersToGroupJSP");
 			}
-		} catch (SQLException e) {
+		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
 		}
 	}
@@ -90,7 +89,7 @@ public class PlayerMaintenance extends RequiresLoginServlet {
 			int[] playerIDs = convertToIntegers(req.getParameterValues("player"));
 			group.addMembers(playerIDs);
 			res.sendRedirect(getApp().getConfig().getProperty("ShowGroupURL")+req.getParameter("group"));
-		} catch (SQLException e) {
+		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
 		}
 	}

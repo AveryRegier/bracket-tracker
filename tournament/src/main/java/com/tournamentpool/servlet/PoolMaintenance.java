@@ -21,26 +21,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.servlet;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import utility.StringUtil;
-
 import com.tournamentpool.beans.GroupBean;
 import com.tournamentpool.beans.PlayerBean;
 import com.tournamentpool.beans.PoolBean;
 import com.tournamentpool.beans.TournamentBean;
-import com.tournamentpool.domain.Bracket;
-import com.tournamentpool.domain.Group;
-import com.tournamentpool.domain.Pool;
-import com.tournamentpool.domain.ScoreSystem;
+import com.tournamentpool.broker.sql.DatabaseFailure;
+import com.tournamentpool.domain.*;
 import com.tournamentpool.domain.Tournament;
-import com.tournamentpool.domain.User;
-import com.tournamentpool.domain.UserManager;
+import utility.StringUtil;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author Avery J. Regier
@@ -118,7 +111,7 @@ public class PoolMaintenance extends RequiresLoginServlet {
 		}
 	}
 
-	private GroupBean setupBeans(HttpServletRequest req, User user, Group group) throws SQLException, IllegalAccessException {
+	private GroupBean setupBeans(HttpServletRequest req, User user, Group group) throws IllegalAccessException {
 		if(!group.getAdministrator().equals(user)) {
 			throw new IllegalAccessException("You are not the administrator of this group");
 		}
@@ -209,7 +202,7 @@ public class PoolMaintenance extends RequiresLoginServlet {
 				}
 				res.sendRedirect(getApp().getConfig().getProperty("ShowGroupURL") + groupID);
 			}
-		} catch (SQLException e) {
+		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
 		} catch (IllegalAccessException e) {
 			throw new ServletException(e);

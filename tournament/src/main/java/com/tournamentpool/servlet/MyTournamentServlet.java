@@ -25,6 +25,7 @@ import com.tournamentpool.beans.GroupBean;
 import com.tournamentpool.beans.PlayerBean;
 import com.tournamentpool.beans.PoolBean;
 import com.tournamentpool.beans.TournamentBean;
+import com.tournamentpool.broker.sql.DatabaseFailure;
 import com.tournamentpool.controller.*;
 import com.tournamentpool.domain.*;
 import com.tournamentpool.domain.Tournament;
@@ -34,7 +35,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -88,12 +88,12 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 			} else /* if("player".equalsIgnoreCase(type)) */{
 				showMyTournamentPage(req, resp, user);
 			}
-		} catch (SQLException e) {
+		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
 		}
 	}
 
-	private void handleTournamentFilter(HttpServletRequest req, HttpServletResponse resp, User user) throws SQLException, ServletException, IOException {
+	private void handleTournamentFilter(HttpServletRequest req, HttpServletResponse resp, User user) throws ServletException, IOException {
 		String query = "?";
 		query = buildFilterQuery(req, query);
 
@@ -118,7 +118,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 	}
 
 	@SuppressWarnings("rawtypes")
-	private void showGroup(HttpServletRequest req, HttpServletResponse resp, User user) throws SQLException, ServletException, IOException {
+	private void showGroup(HttpServletRequest req, HttpServletResponse resp, User user) throws ServletException, IOException {
 		Set keySet = req.getParameterMap().keySet();
 		if(req.getSession().getAttributeNames().hasMoreElements() &&
 				!(keySet.contains("archives") || keySet.contains("tournament") || keySet.contains("current"))) {
@@ -143,8 +143,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 		produceJSPPage(req, resp, "ShowGroupJSP");
 	}
 
-	private GroupBean mapGroupBean(User user, Filter filter, Group group)
-			throws SQLException {
+	private GroupBean mapGroupBean(User user, Filter filter, Group group) {
 		GroupBean bean = new GroupBean(group);
 		bean.setMembers(group.getMyMembers(), user, group);
 		bean.setSubGroups(group.getChildren());
@@ -168,13 +167,13 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 		return group;
 	}
 
-	private void deleteGroup(HttpServletRequest req, HttpServletResponse resp, User user) throws SQLException, ServletException, IOException {
+	private void deleteGroup(HttpServletRequest req, HttpServletResponse resp, User user) throws ServletException, IOException {
 		Group group = lookupGroup(req);
 		group.delete(user, getApp().getSingletonProvider());
 		resp.sendRedirect(req.getHeader("Referer"));
 	}
 
-	private void showPool(HttpServletRequest req, HttpServletResponse resp, User user) throws SQLException, ServletException, IOException {
+	private void showPool(HttpServletRequest req, HttpServletResponse resp, User user) throws ServletException, IOException {
 		Pool pool = lookupPool(req);
 		PoolBean poolBean = mapPoolBean(user, pool);
 		req.setAttribute("Pool", poolBean);
@@ -186,7 +185,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
         }
 	}
 
-	private PoolBean mapPoolBean(User user, Pool pool) throws SQLException {
+	private PoolBean mapPoolBean(User user, Pool pool) {
 		PoolBean poolBean = new PoolBean(pool.getOid(),pool.getName());
 		poolBean.setShowGroups(pool.getGroup().hasChildren());
 		poolBean.setPoolBrackets(pool, pool.getRankedBrackets(), user);
@@ -214,11 +213,11 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 		return poolBean;
 	}
 
-	private boolean hasAnyBrackets(Pool pool) throws SQLException {
+	private boolean hasAnyBrackets(Pool pool) {
 		return pool.getBrackets().iterator().hasNext();
 	}
 
-	private Pool lookupPool(HttpServletRequest req) throws SQLException {
+	private Pool lookupPool(HttpServletRequest req) {
 		int id = Integer.parseInt(req.getParameter("id"));
 		Pool pool = null;
 		String groupParam = req.getParameter("groupID");
@@ -238,7 +237,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 		return pool;
 	}
 
-	private void showMyTournamentPage(HttpServletRequest req, HttpServletResponse resp, User user) throws SQLException, ServletException, IOException {
+	private void showMyTournamentPage(HttpServletRequest req, HttpServletResponse resp, User user) throws ServletException, IOException {
 		addTournamentBeans(req, user);
 		Filter filter = getFilter(req, user);
 
@@ -250,8 +249,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 		produceJSPPage(req, resp, "MyTournamentJSP");
 	}
 
-	private void addTournamentBeans(HttpServletRequest req, User user)
-			throws SQLException {
+	private void addTournamentBeans(HttpServletRequest req, User user) {
 		List<TournamentBean> tournamentBeans = new ArrayList<TournamentBean>(getApp().getTournamentManager().getNumTournaments());
 		Iterator<Tournament> iter = getApp().getTournamentManager().getTournaments();
 		while (iter.hasNext()) {
@@ -290,7 +288,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 		return filter;
 	}
 
-	private boolean handleInvitation(HttpServletRequest req, User user) throws SQLException {
+	private boolean handleInvitation(HttpServletRequest req, User user) {
 		String invitationCode = req.getParameter("invitationCode");
 		if(invitationCode != null) {
 			Group group = getApp().getUserManager().getGroup(invitationCode);
@@ -319,14 +317,14 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 						req.getParameter("name"),
 						"true".equalsIgnoreCase(req.getParameter("createInvitationCode")),
 						parentID);
-			} catch (SQLException e) {
+			} catch (DatabaseFailure e) {
 				throw new ServletException(e);
 			}
 		} else if(req.getParameter("enableInvitation") != null) {
 			Group group = getGroup(req, resp);
 			try {
 				getApp().getUserManager().updateGroup(group, true);
-			} catch (SQLException e) {
+			} catch (DatabaseFailure e) {
 				throw new ServletException(e);
 			}
 			groupID = group.getId();
@@ -334,7 +332,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 			Group group = getGroup(req, resp);
 			try {
 				getApp().getUserManager().updateGroup(group, false);
-			} catch (SQLException e) {
+			} catch (DatabaseFailure e) {
 				throw new ServletException(e);
 			}
 			groupID = group.getId();
@@ -361,7 +359,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 				throw new ServletException("You are not allowed to take this action");
 			}
 			return group;
-		} catch (SQLException e) {
+		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
 		}
 	}

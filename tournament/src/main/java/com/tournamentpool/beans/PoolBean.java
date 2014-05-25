@@ -24,7 +24,6 @@ package com.tournamentpool.beans;
 import com.tournamentpool.domain.*;
 import utility.StringUtil;
 
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -200,7 +199,7 @@ public class PoolBean extends BracketHolderBean implements Comparable<PoolBean> 
 	}
 	
 	protected void addOtherAttributes(Bracket bracket, Pool pool, User user,
-			BracketBean<?> bracketBean, PoolBean poolBean) throws SQLException 
+			BracketBean<?> bracketBean, PoolBean poolBean)
 	{
 		if(pool != null) {
 			bracketBean.setMayRemove(pool.mayRemoveBracket(user, bracket));

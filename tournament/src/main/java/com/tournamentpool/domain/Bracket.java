@@ -28,7 +28,6 @@ import com.tournamentpool.broker.sql.insert.PickInsertBroker;
 import com.tournamentpool.domain.GameNode.Feeder;
 import utility.domain.Reference;
 
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -181,7 +180,7 @@ public class Bracket implements Reference {
 		changed = true;
 	}
 
-	public Iterable<Pick> getPicks(SingletonProvider sp) throws SQLException {
+	public Iterable<Pick> getPicks(SingletonProvider sp) {
 		retrievePicks(sp);
 		if (picks != null)
 			return picks.values();
@@ -191,16 +190,15 @@ public class Bracket implements Reference {
 
 	/**
 	 * @param sp
-	 * @throws SQLException
 	 */
-	private synchronized void retrievePicks(SingletonProvider sp) throws SQLException {
+	private synchronized void retrievePicks(SingletonProvider sp) {
 		if(picks == null) {
 			new PickGetBroker(sp, this.oid).execute();
 			changed = true;
 		}
 	}
 
-	public Pick getPick(SingletonProvider sp, GameNode game) throws SQLException {
+	public Pick getPick(SingletonProvider sp, GameNode game) {
 		retrievePicks(sp);
 		return getPickFromMemory(game);
 	}
@@ -229,9 +227,8 @@ public class Bracket implements Reference {
 
 	/**
 	 * @return
-	 * @throws SQLException
 	 */
-	public boolean isComplete(SingletonProvider sp) throws SQLException {
+	public boolean isComplete(SingletonProvider sp) {
 		retrievePicks(sp);
 		Map<Object, GameNode> nodes = tournament.getTournamentType().getGameNodes();  // expensive call
 		if(picks != null && picks.size() >= nodes.size()) { // then verify every game has a pick
@@ -244,7 +241,7 @@ public class Bracket implements Reference {
 		return false;
 	}
 
-	public boolean isInPool() throws SQLException {
+	public boolean isInPool() {
 		// assuming all brackets are already loaded in all relevant pools
 		User owner = getOwner();
 		Iterator<Group> groups = owner.getGroups();
@@ -259,11 +256,11 @@ public class Bracket implements Reference {
 		return false;
 	}
 	
-	public boolean mayDelete(User user) throws SQLException {
+	public boolean mayDelete(User user) {
 		return user != null && (user == getOwner() || user.isSiteAdmin()) && !isInPool();
 	}
 	
-	public boolean delete(User requestor, SingletonProvider sp) throws SQLException {
+	public boolean delete(User requestor, SingletonProvider sp) {
 		if(mayDelete(requestor)) {
 			ArrayList<Pick> deletePicks = new ArrayList<Pick>(picks.values());
 			new PickInsertBroker(sp, Collections.<Pick>emptyList(), Collections.<Pick>emptyList(), deletePicks).execute();
@@ -274,7 +271,7 @@ public class Bracket implements Reference {
 		return false;
 	}
 
-	public Iterator<Pool> getPools() throws SQLException {
+	public Iterator<Pool> getPools() {
 		User owner = getOwner();
 		Iterator<Group> groups = owner.getGroups();
 		Set<Pool> allPools = new LinkedHashSet<Pool>();
@@ -299,7 +296,7 @@ public class Bracket implements Reference {
 		getOwner().removeBracket(this);
 	}
 
-	public boolean mayEdit(User user) throws SQLException {
+	public boolean mayEdit(User user) {
 		return !(user == getOwner() && isInPool() && getTournament().isStarted());
 	}
 }

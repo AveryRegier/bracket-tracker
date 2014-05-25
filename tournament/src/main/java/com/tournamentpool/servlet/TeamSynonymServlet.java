@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 package com.tournamentpool.servlet;
 
 import com.tournamentpool.beans.TeamBean;
+import com.tournamentpool.broker.sql.DatabaseFailure;
 import com.tournamentpool.domain.Team;
 import com.tournamentpool.domain.TeamManager;
 
@@ -26,7 +27,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 
 public class TeamSynonymServlet extends RequiresLoginServlet {
 	/**
@@ -53,7 +53,7 @@ public class TeamSynonymServlet extends RequiresLoginServlet {
                 req.setAttribute("Team", bean);
                 produceJSPPage(req, res, "ManageTeamSynonymsJSP");
             }
-        } catch(SQLException e) {
+        } catch(DatabaseFailure e) {
             throw new ServletException(e);
         }
 	}
@@ -69,7 +69,7 @@ public class TeamSynonymServlet extends RequiresLoginServlet {
             teamManager.createTeamSynonym(team, req.getParameter("name"));
 
             res.sendRedirect(req.getHeader("referer"));
-		} catch (SQLException e) {
+		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
 		}
 	}

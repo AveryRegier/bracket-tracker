@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.servlet;
 
+import com.tournamentpool.broker.sql.DatabaseFailure;
 import com.tournamentpool.domain.User;
 
 import javax.servlet.ServletException;
@@ -30,7 +31,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.sql.SQLException;
 
 public class ProfileServlet extends RequiresLoginServlet {
 	/**
@@ -65,7 +65,7 @@ public class ProfileServlet extends RequiresLoginServlet {
 
             String redirect = getRedirect(req);
             res.sendRedirect(redirect);
-        } catch(SQLException e) {
+        } catch(DatabaseFailure e) {
             req.getSession().setAttribute("name", name);
             req.getSession().setAttribute("userIdTaken", "true");
             res.sendRedirect(getApp().getConfig().getProperty("ProfileURL")+

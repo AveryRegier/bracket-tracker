@@ -21,23 +21,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.servlet;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import utility.StringUtil;
-import utility.menu.Menu;
-
 import com.tournamentpool.beans.BracketBean;
 import com.tournamentpool.beans.PoolBean;
+import com.tournamentpool.broker.sql.DatabaseFailure;
 import com.tournamentpool.controller.GameVisitorCommon;
 import com.tournamentpool.domain.Bracket;
 import com.tournamentpool.domain.Pool;
 import com.tournamentpool.domain.User;
 import com.tournamentpool.domain.UserManager;
+import utility.StringUtil;
+import utility.menu.Menu;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author Avery J. Regier
@@ -114,7 +112,7 @@ public class AssignBracketToPool extends RequiresLoginServlet {
 			um.assignBracket(pool, bracket, tieBreakerAnswer);
 
 			res.sendRedirect(getApp().getConfig().getProperty("MyTournamentURL")+"?type=pool&id="+pool.getOid());
-		} catch (SQLException e) {
+		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
 		} catch (IllegalArgumentException e) {
 			throw new ServletException(e);

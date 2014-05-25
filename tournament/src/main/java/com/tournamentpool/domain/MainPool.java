@@ -30,7 +30,6 @@ import com.tournamentpool.broker.sql.delete.PoolDeleteBroker;
 import com.tournamentpool.broker.sql.get.BracketPoolGetBroker;
 import com.tournamentpool.domain.ScoreSystem.Score;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -98,7 +97,7 @@ public class MainPool implements Pool {
 	/* (non-Javadoc)
 	 * @see com.tournamentpool.domain.IPool#getOwner()
 	 */
-	public User getOwner() throws SQLException {
+	public User getOwner() {
 		return group.getAdministrator();
 	}
 
@@ -133,7 +132,7 @@ public class MainPool implements Pool {
 	/* (non-Javadoc)
 	 * @see com.tournamentpool.domain.IPool#getBrackets()
 	 */
-	public Iterable<Bracket> getBrackets() throws SQLException {
+	public Iterable<Bracket> getBrackets() {
 		if(brackets == null) {
 			brackets = new HashMap<Bracket, String>();
 			new BracketPoolGetBroker(sp, oid).execute();
@@ -144,12 +143,12 @@ public class MainPool implements Pool {
 	/* (non-Javadoc)
 	 * @see com.tournamentpool.domain.IPool#getRankedBrackets()
 	 */
-	public Iterator<PoolBracket> getRankedBrackets() throws SQLException {
+	public Iterator<PoolBracket> getRankedBrackets() {
 		return getRankedBrackets(getBrackets(), getGroup());
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Iterator<PoolBracket> getRankedBrackets(Iterable<Bracket> toEvaluate, Group group) throws SQLException {
+	public Iterator<PoolBracket> getRankedBrackets(Iterable<Bracket> toEvaluate, Group group) {
 		TreeSet<PoolBracket> poolBrackets = new TreeSet<PoolBracket>(); // this will put them in absolute order;
 		
 		for(Bracket bracket: toEvaluate) {
@@ -215,7 +214,7 @@ public class MainPool implements Pool {
 	/* (non-Javadoc)
 	 * @see com.tournamentpool.domain.IPool#hasBracket(com.tournamentpool.domain.Bracket)
 	 */
-	public boolean hasBracket(Bracket bracket) throws SQLException {
+	public boolean hasBracket(Bracket bracket) {
 		getBrackets();
 		return brackets.keySet().contains(bracket);
 	}
@@ -223,7 +222,7 @@ public class MainPool implements Pool {
 	/* (non-Javadoc)
 	 * @see com.tournamentpool.domain.IPool#mayDelete(com.tournamentpool.domain.User)
 	 */
-	public boolean mayDelete(User user) throws SQLException {
+	public boolean mayDelete(User user) {
 		return user != null 
 		    && (group.getAdministrator() == user || user.isSiteAdmin()) 
 		    && !getBrackets().iterator().hasNext();
@@ -232,7 +231,7 @@ public class MainPool implements Pool {
 	/* (non-Javadoc)
 	 * @see com.tournamentpool.domain.IPool#delete(com.tournamentpool.domain.User, com.tournamentpool.application.SingletonProvider)
 	 */
-	public boolean delete(User requestor, SingletonProvider sp) throws SQLException {
+	public boolean delete(User requestor, SingletonProvider sp) {
 		if(mayDelete(requestor)) {
 			new PoolDeleteBroker(sp, this).execute();
 			return true;
@@ -272,7 +271,7 @@ public class MainPool implements Pool {
 	/* (non-Javadoc)
 	 * @see com.tournamentpool.domain.IPool#hasReachedLimit(com.tournamentpool.domain.User)
 	 */
-	public boolean hasReachedLimit(User owner) throws SQLException {
+	public boolean hasReachedLimit(User owner) {
 		if(bracketLimit == 0) return false;
 		int count = 0;
 		for(Bracket bracket: getBrackets()) {
@@ -307,7 +306,7 @@ public class MainPool implements Pool {
 	/* (non-Javadoc)
 	 * @see com.tournamentpool.domain.IPool#isTiebreakerNeeded(com.tournamentpool.domain.User)
 	 */
-	public boolean isTiebreakerNeeded(User user) throws SQLException {
+	public boolean isTiebreakerNeeded(User user) {
 		if(user == group.getAdministrator()) { // security
 			return isTiebreakerNeeded();
 		}
@@ -348,7 +347,7 @@ public class MainPool implements Pool {
 	/* (non-Javadoc)
 	 * @see com.tournamentpool.domain.IPool#removeBracket(com.tournamentpool.domain.User, com.tournamentpool.domain.Bracket)
 	 */
-	public boolean removeBracket(User requestor, Bracket bracket) throws SQLException {
+	public boolean removeBracket(User requestor, Bracket bracket) {
 		if(mayRemoveBracket(requestor, bracket)) {
 			new BracketPoolDeleteBroker(sp, this, bracket).execute();
 			return true;
@@ -359,7 +358,7 @@ public class MainPool implements Pool {
 	/* (non-Javadoc)
 	 * @see com.tournamentpool.domain.IPool#mayRemoveBracket(com.tournamentpool.domain.User, com.tournamentpool.domain.Bracket)
 	 */
-	public boolean mayRemoveBracket(User requestor, Bracket bracket) throws SQLException {
+	public boolean mayRemoveBracket(User requestor, Bracket bracket) {
 		if(requestor != null && 
 			(requestor == group.getAdministrator() || requestor.isSiteAdmin() || requestor == bracket.getOwner())) 
 		{

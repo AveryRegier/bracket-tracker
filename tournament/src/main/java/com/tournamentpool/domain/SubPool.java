@@ -21,7 +21,6 @@ package com.tournamentpool.domain;
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.delete.BracketPoolDeleteBroker;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -71,8 +70,7 @@ public class SubPool implements Pool {
 		throw new UnsupportedOperationException("Only applies to parent pools");
 	}
 	@Override
-	public boolean delete(User requestor, SingletonProvider sp)
-			throws SQLException {
+	public boolean delete(User requestor, SingletonProvider sp) {
 		throw new UnsupportedOperationException("Only applies to parent pools");
 	}
 	@Override
@@ -88,7 +86,7 @@ public class SubPool implements Pool {
 		return getParentPool().getOid();
 	}
 	@Override
-	public User getOwner() throws SQLException {
+	public User getOwner() {
 		return getParentPool().getOwner();
 	}
 	@Override
@@ -112,7 +110,7 @@ public class SubPool implements Pool {
 		return getParentPool().getTournament();
 	}
 	@Override
-	public boolean hasReachedLimit(User owner) throws SQLException {
+	public boolean hasReachedLimit(User owner) {
 		return getParentPool().hasReachedLimit(owner);
 	}
 	@Override
@@ -128,7 +126,7 @@ public class SubPool implements Pool {
 		throw new UnsupportedOperationException("Only applies to parent pools");
 	}
 	@Override
-	public boolean removeBracket(User requestor, Bracket bracket) throws SQLException {
+	public boolean removeBracket(User requestor, Bracket bracket) {
 		if(mayRemoveBracket(requestor, bracket)) { // ensure SubPool version of this method is used
 			new BracketPoolDeleteBroker(((MainPool)parentPool).sp, getParentPool(), bracket).execute();
 			return true;
@@ -137,7 +135,7 @@ public class SubPool implements Pool {
 	}
 
 	@Override
-	public boolean isTiebreakerNeeded(User user) throws SQLException {
+	public boolean isTiebreakerNeeded(User user) {
 		return getParentPool().isTiebreakerNeeded(user);
 	}
 
@@ -147,7 +145,7 @@ public class SubPool implements Pool {
 	}
 
 	@Override
-	public Iterable<Bracket> getBrackets() throws SQLException {
+	public Iterable<Bracket> getBrackets() {
 		Set<Bracket> groupBrackets = new HashSet<Bracket>();
 		Iterable<Bracket> brackets = getParentPool().getBrackets();
 		for (Bracket bracket : brackets) {
@@ -159,17 +157,17 @@ public class SubPool implements Pool {
 	}
 
 	@Override
-	public Iterator<PoolBracket> getRankedBrackets() throws SQLException {
+	public Iterator<PoolBracket> getRankedBrackets() {
 		return getRankedBrackets(getBrackets(), getGroup());
 	}
 	
 	@Override
-	public Iterator<PoolBracket> getRankedBrackets(Iterable<Bracket> brackets, Group group) throws SQLException {
+	public Iterator<PoolBracket> getRankedBrackets(Iterable<Bracket> brackets, Group group) {
 		return getParentPool().getRankedBrackets(brackets, group);
 	}
 
 	@Override
-	public boolean hasBracket(Bracket bracket) throws SQLException {
+	public boolean hasBracket(Bracket bracket) {
 		if(getParentPool().hasBracket(bracket)) {
 			if(group.hasMember(bracket.getOwner().getOID())) {
 				return true;
@@ -179,14 +177,13 @@ public class SubPool implements Pool {
 	}
 
 	@Override
-	public boolean mayDelete(User user) throws SQLException {
+	public boolean mayDelete(User user) {
 		if(user == group.getAdministrator() && !getBrackets().iterator().hasNext()) return true;
 		return getParentPool().mayDelete(user);
 	}
 
 	@Override
-	public boolean mayRemoveBracket(User requestor, Bracket bracket)
-			throws SQLException {
+	public boolean mayRemoveBracket(User requestor, Bracket bracket) {
 		if(requestor != null && (requestor == group.getAdministrator())) {
 			return !getTournament().isStarted();
 		}

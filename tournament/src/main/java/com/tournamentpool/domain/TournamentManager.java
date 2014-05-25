@@ -21,19 +21,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import utility.menu.Menu;
-import utility.menu.reference.ReferenceMenu;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.application.SingletonProviderHolder;
 import com.tournamentpool.broker.sql.insert.SeedTeamInsertBroker;
@@ -41,6 +28,12 @@ import com.tournamentpool.broker.sql.insert.SubTournamentInsertBroker;
 import com.tournamentpool.broker.sql.insert.TournamentAdminInsertBroker;
 import com.tournamentpool.broker.sql.insert.TournamentInsertBroker;
 import com.tournamentpool.broker.sql.update.TournamentUpdateBroker;
+import utility.menu.Menu;
+import utility.menu.reference.ReferenceMenu;
+
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * @author Avery J. Regier
@@ -110,7 +103,6 @@ public class TournamentManager extends SingletonProviderHolder {
 	}
 
 	/**
-	 * @param gameOID
 	 * @param gameNodeOID
 	 * @param tournamentOID
 	 * @param winner
@@ -136,7 +128,7 @@ public class TournamentManager extends SingletonProviderHolder {
 		};
 	}
 
-	public Tournament createTournament(String name, TournamentType tournamentType, League league, Date startTime) throws SQLException {
+	public Tournament createTournament(String name, TournamentType tournamentType, League league, Date startTime) {
 		TournamentInsertBroker tournamentInsertBroker = new TournamentInsertBroker(
 				sp, name, tournamentType, league, startTime);
 		tournamentInsertBroker.execute();
@@ -144,14 +136,14 @@ public class TournamentManager extends SingletonProviderHolder {
 	}
 
 
-	public void addAdmins(Tournament tournament, int[] playerIDs) throws SQLException {
+	public void addAdmins(Tournament tournament, int[] playerIDs) {
 		for (int i = 0; i < playerIDs.length; i++) {
 			int j = playerIDs[i];
 			new TournamentAdminInsertBroker(sp, (MainTournament) tournament, j).execute();
 		}
 	}
 
-	public void updateTounamentSeeds(Tournament tournament, Map<Seed, Team> seedTeam) throws SQLException {
+	public void updateTounamentSeeds(Tournament tournament, Map<Seed, Team> seedTeam) {
 		Map<Seed, Team> updates = new HashMap<Seed, Team>();
 		Map<Seed, Team> inserts = new HashMap<Seed, Team>();
 		Set<Seed> deletes = new HashSet<Seed>();
@@ -181,19 +173,19 @@ public class TournamentManager extends SingletonProviderHolder {
 		}
 	}
 
-	public void updateTournament(Tournament tournament, String name, Timestamp startTime) throws SQLException {
+	public void updateTournament(Tournament tournament, String name, Timestamp startTime) {
 		TournamentUpdateBroker broker = new TournamentUpdateBroker(sp, tournament, name, startTime);
 		broker.execute();
 	}
 
-	public Tournament createSubTournament(String name, Tournament parenttournament, Level level, Date startTime) throws SQLException {
+	public Tournament createSubTournament(String name, Tournament parenttournament, Level level, Date startTime) {
 		SubTournamentInsertBroker tournamentInsertBroker =
 			new SubTournamentInsertBroker(sp, name, parenttournament, level, startTime);
 		tournamentInsertBroker.execute();
 		return getTournament(tournamentInsertBroker.getGeneratedOID());
 	}
 	
-	public boolean deleteTournament(User requestor, int id) throws SQLException {
+	public boolean deleteTournament(User requestor, int id) {
 		Tournament tournament = getTournament(id);
 		if(tournament != null && tournament.delete(requestor, sp)) {
 			tournaments.remove(new Integer(id));

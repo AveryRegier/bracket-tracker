@@ -23,7 +23,6 @@ import com.tournamentpool.broker.sql.delete.TournamentDeleteBroker;
 import com.tournamentpool.broker.sql.status.TournamentBracketStatusBroker;
 import com.tournamentpool.broker.sql.status.TournamentPoolStatusBroker;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Iterator;
@@ -159,7 +158,7 @@ class SubTournament implements Tournament {
 		return parent.getLastUpdated();
 	}
 
-	public boolean mayDelete(User requestor, SingletonProvider sp) throws SQLException {
+	public boolean mayDelete(User requestor, SingletonProvider sp) {
 		if(requestor != null && (isAdmin(requestor) || requestor.isSiteAdmin())) {
 			// no brackets created against this tournament (go to database)
 			if(new TournamentBracketStatusBroker(sp, this).isUsedByBrackets()) return false;
@@ -183,7 +182,7 @@ class SubTournament implements Tournament {
 		return parent.isAdmin(requestor);
 	}
 	
-	public boolean delete(User requestor, SingletonProvider sp) throws SQLException {
+	public boolean delete(User requestor, SingletonProvider sp) {
 		if(mayDelete(requestor, sp)) {
 			// remove tournament object only.  Nothing else applies to sub tournaments
 			new TournamentDeleteBroker(sp, this).execute();

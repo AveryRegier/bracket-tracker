@@ -21,15 +21,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql.get;
 
+import com.tournamentpool.application.SingletonProvider;
+import com.tournamentpool.broker.sql.PreparedStatementBroker;
+import com.tournamentpool.domain.Group;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.tournamentpool.application.SingletonProvider;
-import com.tournamentpool.broker.sql.PreparedStatementBroker;
-import com.tournamentpool.domain.Group;
 
 /**
  * @author Avery J. Regier
@@ -63,7 +63,7 @@ public class GroupAvailablePlayersGetBroker extends PreparedStatementBroker {
 		}
 	}
 	
-	public List<String[]> getPlayers() throws SQLException {
+	public List<String[]> getPlayers() {
 		execute();
 		return players;
 	}

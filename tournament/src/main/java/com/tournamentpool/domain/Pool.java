@@ -20,7 +20,6 @@ package com.tournamentpool.domain;
 
 import com.tournamentpool.application.SingletonProvider;
 
-import java.sql.SQLException;
 import java.util.Iterator;
 
 public interface Pool extends Comparable<Pool> {
@@ -36,9 +35,8 @@ public interface Pool extends Comparable<Pool> {
 
 	/**
 	 * @return User
-	 * @throws SQLException
 	 */
-	public abstract User getOwner() throws SQLException;
+	public abstract User getOwner();
 
 	/**
 	 * @return ScoringStrategy
@@ -64,29 +62,25 @@ public interface Pool extends Comparable<Pool> {
 
 	/**
 	 * @return
-	 * @throws SQLException
 	 */
-	public abstract Iterable<Bracket> getBrackets() throws SQLException;
+	public abstract Iterable<Bracket> getBrackets();
 
 	/**
 	 * Return values in iterator are of type PoolBracket.
 	 * @return
-	 * @throws SQLException
 	 */
-	public abstract Iterator<PoolBracket> getRankedBrackets()
-			throws SQLException;
+	public abstract Iterator<PoolBracket> getRankedBrackets();
 
 	/**
 	 * @return
 	 */
 	public abstract Group getGroup();
 
-	public abstract boolean hasBracket(Bracket bracket) throws SQLException;
+	public abstract boolean hasBracket(Bracket bracket);
 
-	public abstract boolean mayDelete(User user) throws SQLException;
+	public abstract boolean mayDelete(User user);
 
-	public abstract boolean delete(User requestor, SingletonProvider sp)
-			throws SQLException;
+	public abstract boolean delete(User requestor, SingletonProvider sp);
 
 	public abstract void commitUpdate(String name2, ScoreSystem scoreSystem2,
 			Tournament tournament2, int bracketLimit2,
@@ -97,7 +91,7 @@ public interface Pool extends Comparable<Pool> {
 
 	public abstract boolean isShowBracketsEarly();
 
-	public abstract boolean hasReachedLimit(User owner) throws SQLException;
+	public abstract boolean hasReachedLimit(User owner);
 
 	public abstract String getTieBreakerQuestion();
 
@@ -108,9 +102,8 @@ public interface Pool extends Comparable<Pool> {
 	/**
 	 * Does the tiebreaker question need answered now by this user?
 	 * @return
-	 * @throws SQLException
 	 */
-	public abstract boolean isTiebreakerNeeded(User user) throws SQLException;
+	public abstract boolean isTiebreakerNeeded(User user);
 
 	/**
 	 * Is a tie breaker needed to be answered
@@ -124,14 +117,12 @@ public interface Pool extends Comparable<Pool> {
 
 	public abstract void applyRemoveBracket(Bracket bracket);
 
-	public abstract boolean removeBracket(User requestor, Bracket bracket)
-			throws SQLException;
+	public abstract boolean removeBracket(User requestor, Bracket bracket);
 
-	public abstract boolean mayRemoveBracket(User requestor, Bracket bracket)
-			throws SQLException;
+	public abstract boolean mayRemoveBracket(User requestor, Bracket bracket);
 
 	public abstract Bracket getBracket(int bracketID);
 
-	public abstract Iterator<PoolBracket> getRankedBrackets(Iterable<Bracket> brackets, Group group) throws SQLException;
+	public abstract Iterator<PoolBracket> getRankedBrackets(Iterable<Bracket> brackets, Group group);
 
 }

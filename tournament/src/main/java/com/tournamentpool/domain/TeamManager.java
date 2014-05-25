@@ -31,7 +31,6 @@ import com.tournamentpool.broker.sql.insert.TeamSynonymInsertBroker;
 import utility.menu.Menu;
 import utility.menu.reference.ReferenceMenu;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -118,19 +117,19 @@ public class TeamManager extends SingletonProviderHolder {
 		return leagues.values().iterator();
 	}
 
-	public Team createTeam(String name) throws SQLException {
+	public Team createTeam(String name) {
 		TeamInsertBroker teamInsertBroker = new TeamInsertBroker(sp, name);
 		teamInsertBroker.execute();
 		return getTeam(teamInsertBroker.getOID());
 	}
 
-	public League createLeague(String name) throws SQLException {
+	public League createLeague(String name) {
 		LeagueInsertBroker leagueInsertBroker = new LeagueInsertBroker(sp, name);
 		leagueInsertBroker.execute();
 		return getLeague(leagueInsertBroker.getOID());
 	}
 
-	public void associateTeamToLeague(League league, Team team) throws SQLException {
+	public void associateTeamToLeague(League league, Team team) {
 		new LeagueTeamInsertBroker(sp, league, team).execute();
 	}
 
@@ -146,11 +145,11 @@ public class TeamManager extends SingletonProviderHolder {
 		teams.get(teamOID).addSynonym(name);
 	}
 
-    public void createTeamSynonym(Team team, String name) throws SQLException {
+    public void createTeamSynonym(Team team, String name) {
         new TeamSynonymInsertBroker(sp, team, name).execute();
     }
 
-    public void removeTeamSynonym(Team team, String name) throws SQLException {
+    public void removeTeamSynonym(Team team, String name) {
         new TeamSynonymDeleteBroker(sp, team, name).execute();
     }
 }

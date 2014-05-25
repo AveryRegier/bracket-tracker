@@ -29,7 +29,6 @@ import com.tournamentpool.broker.sql.delete.TeamDeleteBroker;
 import com.tournamentpool.broker.sql.delete.TeamSynonymDeleteBroker;
 import utility.domain.Reference;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -92,7 +91,7 @@ public class Team implements Reference, Comparable<Team> {
 		return true;
 	}
 
-	public void delete(User user, SingletonProvider sp) throws SQLException {
+	public void delete(User user, SingletonProvider sp) {
 		if(isDeletable(user, sp)) {
 			Iterator<League> leagues = sp.getSingleton().getTeamManager().getLeagues();
 			while (leagues.hasNext()) {

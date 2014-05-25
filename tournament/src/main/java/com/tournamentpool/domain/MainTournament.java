@@ -21,17 +21,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.delete.TournamentAdminDeleteBroker;
 import com.tournamentpool.broker.sql.delete.TournamentDeleteBroker;
@@ -41,6 +30,10 @@ import com.tournamentpool.broker.sql.insert.GameInsertBroker;
 import com.tournamentpool.broker.sql.insert.GameScoreInsertBroker;
 import com.tournamentpool.broker.sql.status.TournamentBracketStatusBroker;
 import com.tournamentpool.broker.sql.status.TournamentPoolStatusBroker;
+
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * @author avery
@@ -88,7 +81,6 @@ public class MainTournament implements Tournament {
 	}
 
 	/**
-	 * @param gameOID
 	 * @param gameNode
 	 * @param oponent
 	 * @param startTime
@@ -126,9 +118,6 @@ public class MainTournament implements Tournament {
 		return game;
 	}
 
-	/**
-	 * @param updatePicks
-	 */
 	private void applyGames(List<Game> updateGames) {
 		if(nodeGameMap == null) {
 			nodeGameMap = new HashMap<GameNode, Game>();
@@ -142,8 +131,7 @@ public class MainTournament implements Tournament {
 		this.lastUpdated = new Date(System.currentTimeMillis());
 	}
 
-	public void updateGames(SingletonProvider sp, WinnerSource winnerSource)
-			throws SQLException {
+	public void updateGames(SingletonProvider sp, WinnerSource winnerSource) {
 		GameScoreInsertBroker scoreReporter = new GameScoreInsertBroker(sp);
 		GameInsertBroker gameReporter = new GameInsertBroker(sp);
 		List<Game> updateGames = findGameUpdates(winnerSource, scoreReporter, gameReporter);
@@ -313,7 +301,7 @@ public class MainTournament implements Tournament {
 		return lastUpdated;
 	}
 	
-	public boolean mayDelete(User requestor, SingletonProvider sp) throws SQLException {
+	public boolean mayDelete(User requestor, SingletonProvider sp) {
 		if(requestor != null && (isAdmin(requestor) || requestor.isSiteAdmin())) {
 			// no brackets created against this tournament (go to database)
 			if(new TournamentBracketStatusBroker(sp, this).isUsedByBrackets()) return false;
@@ -337,7 +325,7 @@ public class MainTournament implements Tournament {
 		return admins.contains(new Integer(requestor.getOID()));
 	}
 	
-	public boolean delete(User requestor, SingletonProvider sp) throws SQLException {
+	public boolean delete(User requestor, SingletonProvider sp) {
 		if(mayDelete(requestor, sp)) {
 			// remove all games
 			new TournamentGamesDeleteBroker(sp, this).execute();

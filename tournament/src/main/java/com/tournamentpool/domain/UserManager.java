@@ -21,46 +21,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import javax.mail.MessagingException;
-
+import com.tournamentpool.application.SingletonProvider;
+import com.tournamentpool.application.SingletonProviderHolder;
+import com.tournamentpool.broker.mail.JavaMailEmailBroker;
+import com.tournamentpool.broker.sql.DatabaseFailure;
+import com.tournamentpool.broker.sql.delete.PlayerDeleteBroker;
+import com.tournamentpool.broker.sql.get.*;
+import com.tournamentpool.broker.sql.insert.*;
 import com.tournamentpool.broker.sql.update.*;
 import utility.StringUtil;
 import utility.menu.Menu;
 import utility.menu.reference.ReferenceMenu;
 
-import com.tournamentpool.application.SingletonProvider;
-import com.tournamentpool.application.SingletonProviderHolder;
-import com.tournamentpool.broker.mail.JavaMailEmailBroker;
-import com.tournamentpool.broker.sql.delete.PlayerDeleteBroker;
-import com.tournamentpool.broker.sql.get.GroupGetBroker;
-import com.tournamentpool.broker.sql.get.GroupGetByInvitationCodeBroker;
-import com.tournamentpool.broker.sql.get.GroupPlayersGetBroker;
-import com.tournamentpool.broker.sql.get.GroupPoolsGetBroker;
-import com.tournamentpool.broker.sql.get.PlayerBracketsGetBroker;
-import com.tournamentpool.broker.sql.get.PlayerGetByLoginBroker;
-import com.tournamentpool.broker.sql.get.PlayerGetByOIDBroker;
-import com.tournamentpool.broker.sql.get.PlayerGroupsGetBroker;
-import com.tournamentpool.broker.sql.get.PoolGetBroker;
-import com.tournamentpool.broker.sql.get.SiteAdminsGetBroker;
-import com.tournamentpool.broker.sql.get.SiteAvailableAdminsGetBroker;
-import com.tournamentpool.broker.sql.insert.BracketPoolInsertBroker;
-import com.tournamentpool.broker.sql.insert.GroupInsertBroker;
-import com.tournamentpool.broker.sql.insert.GroupPlayerInsertBroker;
-import com.tournamentpool.broker.sql.insert.PlayerInsertBroker;
-import com.tournamentpool.broker.sql.insert.PoolInsertBroker;
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 
 /**
  * @author avery
@@ -84,14 +59,14 @@ public class UserManager extends SingletonProviderHolder {
 	 * @param auth
 	 * @return User
 	 */
-	public User getUser(String userID, String auth) throws SQLException {
+	public User getUser(String userID, String auth) {
 		User user = getUserObject(userID);
 		// TODO: check the auth secure token
 		if(user.authenticate(auth)) return user;
 		else return null;
 	}
 
-	public boolean userHasEmail(String userID) throws SQLException {
+	public boolean userHasEmail(String userID) {
 		User user = users.get(userID);
 		if(user == null)  {
 			new PlayerGetByLoginBroker(sp, userID).execute();
@@ -101,7 +76,7 @@ public class UserManager extends SingletonProviderHolder {
 		return user != null && user.getEmail() != null;
 	}
 
-	public String registerUser(String userID, String password, String name, String email) throws SQLException {
+	public String registerUser(String userID, String password, String name, String email) {
 		userID = StringUtil.killWhitespace(userID);
 		password = StringUtil.killWhitespace(password);
 		name = StringUtil.killWhitespace(name);
@@ -124,8 +99,7 @@ public class UserManager extends SingletonProviderHolder {
 		return null;
 	}
 
-	private User getUserObject(String userID)
-		throws SQLException {
+	private User getUserObject(String userID) {
 		User user = users.get(userID);
 		if(user == null)  {
 			new PlayerGetByLoginBroker(sp, userID).execute();
@@ -136,8 +110,7 @@ public class UserManager extends SingletonProviderHolder {
 		return user;
 	}
 
-	public User getUserObject(int playerOID)
-		throws SQLException {
+	public User getUserObject(int playerOID) {
 		Integer oid = new Integer(playerOID);
 		User user = players.get(oid);
 		if(user == null)  {
@@ -151,9 +124,8 @@ public class UserManager extends SingletonProviderHolder {
 
 	/**
 	 * @param user
-	 * @throws SQLException
 	 */
-	private void fillUser(User user) throws SQLException {
+	private void fillUser(User user) {
 		new PlayerGroupsGetBroker(sp, user.getOID()).execute();
 		new PlayerBracketsGetBroker(sp, user.getOID()).execute();
 	}
@@ -163,7 +135,7 @@ public class UserManager extends SingletonProviderHolder {
 	 * @param password
 	 * @return String
 	 */
-	public String authenticate(String userID, String password) throws ClassNotFoundException, SQLException {
+	public String authenticate(String userID, String password) throws ClassNotFoundException {
 		try {
 			return getUserObject(userID).checkPassword(password);
 		} catch (IllegalArgumentException e) {
@@ -185,7 +157,7 @@ public class UserManager extends SingletonProviderHolder {
 	 * @param playerOID
 	 * @param groupOID
 	 */
-	public void associateGroupToUser(int playerOID, int groupOID) throws SQLException {
+	public void associateGroupToUser(int playerOID, int groupOID) {
 		User user = getUserObject(playerOID);
 		Group group = getGroupObject(groupOID);
 		user.addGroup(group);
@@ -201,8 +173,7 @@ public class UserManager extends SingletonProviderHolder {
 		return groups.get(new Integer(groupOID));
 	}
 
-	public Group getGroupObject(int groupOID)
-		throws SQLException {
+	public Group getGroupObject(int groupOID) {
 		Group group = getGroup(groupOID);
 		if(group == null)  {
 			new GroupGetBroker(sp, groupOID).execute();
@@ -216,11 +187,8 @@ public class UserManager extends SingletonProviderHolder {
 	 * @param name
 	 * @param adminID
 	 * @param invitationCode TODO
-	 * @throws SQLException 
 	 */
-	public void loadGroup(int groupOID, String name, int adminID, int invitationCode, int parentGroupID) 
-		throws SQLException 
-	{
+	public void loadGroup(int groupOID, String name, int adminID, int invitationCode, int parentGroupID) {
 		Group parent = null;
 		if(parentGroupID != 0) {
 			parent = getGroupObject(parentGroupID);
@@ -229,7 +197,7 @@ public class UserManager extends SingletonProviderHolder {
 		groups.put(new Integer(groupOID), group);
 	}
 
-	public void updateGroup(Group group, boolean enableInvitation) throws SQLException {
+	public void updateGroup(Group group, boolean enableInvitation) {
 		if(enableInvitation && group.getInvitationCode() == 0) {
 			int invitationCode = Math.abs((int)System.currentTimeMillis());
 			GroupUpdateBroker groupUpdateBroker = new GroupUpdateBroker(sp, group.getId(), invitationCode);
@@ -244,7 +212,6 @@ public class UserManager extends SingletonProviderHolder {
 
 	public void updatePool(Pool pool, String name, Tournament tournament, ScoreSystem scoreSystem,
 			int bracketLimit, boolean showBracketsEarly, int tieBreakerTypeID, String tieBreakerQuestion)
-		throws SQLException
 	{
 		tieBreakerQuestion = StringUtil.killWhitespace(tieBreakerQuestion);
 		TieBreakerType tieBreakerType = getTieBreakerType(tieBreakerTypeID);
@@ -261,16 +228,15 @@ public class UserManager extends SingletonProviderHolder {
 	}
 	/**
 	 * @param groupOID
-	 * @param i
 	 */
-	public void associatePoolsToGroup(int groupOID, int poolOID) throws SQLException {
+	public void associatePoolsToGroup(int groupOID, int poolOID) {
 		getGroup(groupOID).addPool(getPoolObject(poolOID));
 	}
 
 	/**
 	 * @param poolOID
 	 */
-	public Pool getPoolObject(int poolOID) throws SQLException {
+	public Pool getPoolObject(int poolOID) {
 		Pool pool = getPool(poolOID);
 		if(pool == null)  {
 			new PoolGetBroker(sp, poolOID).execute();
@@ -297,11 +263,10 @@ public class UserManager extends SingletonProviderHolder {
 	 * @param tieBreakerTypeID
 	 * @param tieBreakerQuestion
 	 * @param tieBreakerAnswer
-	 * @throws SQLException 
 	 */
 	public void loadPool(int poolOID, String name, int groupOID, int scoreSystemOID,
 			int tournamentOID, int bracketLimit, boolean showBracketsEarly,
-			int tieBreakerTypeID, String tieBreakerQuestion, String tieBreakerAnswer) throws SQLException
+			int tieBreakerTypeID, String tieBreakerQuestion, String tieBreakerAnswer)
 	{
 		Group group = getGroupObject(groupOID);
 		ScoreSystem scoreSystem = sp.getSingleton().getScoreSystemManager().getScoreSystem(scoreSystemOID);
@@ -314,9 +279,8 @@ public class UserManager extends SingletonProviderHolder {
 
 	/**
 	 * @param group
-	 * @throws SQLException
 	 */
-	public void loadGroupMembers(Group group) throws SQLException {
+	public void loadGroupMembers(Group group) {
 		new GroupPlayersGetBroker(sp, group.getId()).execute();
 	}
 
@@ -331,9 +295,8 @@ public class UserManager extends SingletonProviderHolder {
 	/**
 	 * @param playerOIDs
 	 * @return
-	 * @throws SQLException
 	 */
-	public Set<User> getPlayers(Set<Integer> playerOIDs) throws SQLException {
+	public Set<User> getPlayers(Set<Integer> playerOIDs) {
 		Set<User> these = new LinkedHashSet<User>();
 		for (Integer oid: playerOIDs) {
 			User user = players.get(oid);
@@ -349,18 +312,16 @@ public class UserManager extends SingletonProviderHolder {
 
 	/**
 	 * @param group
-	 * @throws SQLException
 	 */
-	public void loadPools(Group group) throws SQLException {
+	public void loadPools(Group group) {
 		new GroupPoolsGetBroker(sp, group.getId()).execute();
 	}
 
 	/**
 	 * @param poolOids
 	 * @return
-	 * @throws SQLException
 	 */
-	public Set<Pool> getPools(Set<Integer> poolOids) throws SQLException {
+	public Set<Pool> getPools(Set<Integer> poolOids) {
 		Set<Pool> these = new HashSet<Pool>();
 		for (Integer oid: poolOids) {
 			Pool user = getPoolObject(oid.intValue());
@@ -377,11 +338,9 @@ public class UserManager extends SingletonProviderHolder {
 	 * @param bracketLimit
 	 * @param tieBreakerTypeID
 	 * @param tieBreakerQuestion
-	 * @throws SQLException
 	 */
 	public void createPool(String name, Group group, Tournament tournament, ScoreSystem scoreSystem,
 			int bracketLimit, boolean showBracketsEarly, int tieBreakerTypeID, String tieBreakerQuestion)
-		throws SQLException
 	{
 		group.getPools(); // force the loading of the group's pool objects
 		TieBreakerType tieBreakerType = getTieBreakerType(tieBreakerTypeID);
@@ -396,9 +355,8 @@ public class UserManager extends SingletonProviderHolder {
 	 * @param pool
 	 * @param bracket
 	 * @param tieBreakerAnswer
-	 * @throws SQLException
 	 */
-	public void assignBracket(Pool pool, Bracket bracket, String tieBreakerAnswer) throws SQLException {
+	public void assignBracket(Pool pool, Bracket bracket, String tieBreakerAnswer) {
 		// first validate that this bracket is valid for this pool.
 		if(bracket.getTournament() != pool.getTournament()){
 			throw new IllegalArgumentException(
@@ -450,21 +408,17 @@ public class UserManager extends SingletonProviderHolder {
 				Set<Bracket> brackets = new HashSet<Bracket>();
 				try {
 					if(pool.hasReachedLimit(user)) return Collections.emptyMap();
-				} catch (SQLException e) {
+				} catch (DatabaseFailure e) {
 					throw new RuntimeException("Unable to load user "+user.getID(), e);
 				}
 				Iterator<Bracket> iter = user.getBrackets();
 				while (iter.hasNext()) { // add all user brackets
 					brackets.add(iter.next());
 				}
-				try {
-					iter = pool.getBrackets().iterator();
-					while (iter.hasNext()) { // remove any already assigned to this pool
-						brackets.remove(iter.next());
-					}
-				} catch (SQLException e) {
-					throw new RuntimeException(e);
-				}
+                iter = pool.getBrackets().iterator();
+                while (iter.hasNext()) { // remove any already assigned to this pool
+                    brackets.remove(iter.next());
+                }
 				// only allow those completed for this tournament.  Do last because it is expensive
 				Map<Integer, Bracket> theMap = new HashMap<Integer, Bracket>();
 				for (Bracket bracket : brackets) {
@@ -472,7 +426,7 @@ public class UserManager extends SingletonProviderHolder {
 						if(bracket.getTournament() == pool.getTournament() && bracket.isComplete(sp)) { // expensive call to isComplete()
 							theMap.put(bracket.getID(), bracket);
 						}
-					} catch (SQLException e) {
+					} catch (DatabaseFailure e) {
 						throw new RuntimeException("Unable to load picks for bracket "+bracket.getName(), e);
 					}
 				}
@@ -481,11 +435,11 @@ public class UserManager extends SingletonProviderHolder {
 		};
 	}
 
-	protected void addPlayersTo(Group group, int[] playerIDs) throws SQLException {
+	protected void addPlayersTo(Group group, int[] playerIDs) {
 		new GroupPlayerInsertBroker(sp, group, playerIDs).execute();
 	}
 
-	public int createGroup(User user, String name, boolean createInvitationCode, int parentID) throws SQLException {
+	public int createGroup(User user, String name, boolean createInvitationCode, int parentID) {
 		int invitationCode = 0;
 		if(createInvitationCode) {
 			invitationCode = Math.abs((int)System.currentTimeMillis());
@@ -501,7 +455,7 @@ public class UserManager extends SingletonProviderHolder {
 		return groupOID;
 	}
 
-	public Group getGroup(String invitationCode) throws SQLException {
+	public Group getGroup(String invitationCode) {
 		Group toReturn = null;
 		// first iterate through loaded groups looking for one that matches.
 		for (Group group: groups.values()) {
@@ -521,13 +475,13 @@ public class UserManager extends SingletonProviderHolder {
 		return toReturn;
 	}
 
-	public void addSiteAdmins(int[] playerIDs) throws SQLException {
+	public void addSiteAdmins(int[] playerIDs) {
 		for (int playerID : playerIDs) {
 			new SiteAdminUpdateBroker(sp, getUserObject(playerID), true).execute();
 		}
 	}
 
-	public void removeSiteAdmins(User current, int[] playerIDs) throws SQLException {
+	public void removeSiteAdmins(User current, int[] playerIDs) {
 		for (int playerID : playerIDs) {
 			if(current.getOID() != playerID) { // you may not remove yourself
 				new SiteAdminUpdateBroker(sp, getUserObject(playerID), false).execute();
@@ -535,11 +489,11 @@ public class UserManager extends SingletonProviderHolder {
 		}
 	}
 	
-	public List<String[]> getAvailableSiteAdmins() throws SQLException {
+	public List<String[]> getAvailableSiteAdmins() {
 		return new SiteAvailableAdminsGetBroker(sp).getPlayers();
 	}
 
-	public List<String[]> getSiteAdmins() throws SQLException {
+	public List<String[]> getSiteAdmins() {
 		return new SiteAdminsGetBroker(sp).getPlayers();
 	}
 
@@ -555,11 +509,11 @@ public class UserManager extends SingletonProviderHolder {
 		return pools != null ? pools.size() : 0;
 	}
 
-	public void resetPassword(String userID) throws UnsupportedEncodingException, MessagingException, SQLException {
+	public void resetPassword(String userID) throws UnsupportedEncodingException, MessagingException {
 		new JavaMailEmailBroker(sp).sendPasswordChange(getUserObject(userID));
 	}
 
-	public String resetPassword(String userID, String auth, String newPassword) throws SQLException {
+	public String resetPassword(String userID, String auth, String newPassword) {
 		User user = getUser(userID, auth);
 		PasswordResetBroker emailResetBroker = new PasswordResetBroker(sp, user.getOID(), newPassword);
 		emailResetBroker.execute();
@@ -598,7 +552,7 @@ public class UserManager extends SingletonProviderHolder {
 		};
 	}
 
-	public void closePool(Pool pool, String tieBreakerAnswer) throws SQLException {
+	public void closePool(Pool pool, String tieBreakerAnswer) {
 		pool.getTieBreakerType().validate(tieBreakerAnswer);
 		TieBreakerAnswerBroker emailResetBroker = new TieBreakerAnswerBroker(sp, pool, tieBreakerAnswer);
 		emailResetBroker.execute();
@@ -624,7 +578,7 @@ public class UserManager extends SingletonProviderHolder {
 		groups.remove(new Integer(group.getId()));
 	}
 	
-	public boolean removeUser(User requestor, User toRemove) throws SQLException {
+	public boolean removeUser(User requestor, User toRemove) {
 		if(mayRemoveUser(requestor, toRemove)) {
 			// first, remove this player from any groups that he is in.
 			// site administrators are the only ones who may remove players, and 
@@ -649,7 +603,7 @@ public class UserManager extends SingletonProviderHolder {
 		return false;
 	}
 
-	public boolean mayRemoveUser(User requestor, User toRemove) throws SQLException {
+	public boolean mayRemoveUser(User requestor, User toRemove) {
 		if(requestor != null && 
 			(requestor.isSiteAdmin())) 
 		{
@@ -675,7 +629,7 @@ public class UserManager extends SingletonProviderHolder {
 		users.remove(player.getID());
 	}
 
-    public void updateProfile(User user, String userID, String name, String email) throws SQLException {
+    public void updateProfile(User user, String userID, String name, String email) {
         String oldID = user.getID();
         ProfileUpdateBroker broker = new ProfileUpdateBroker(sp, user.getOID(), userID, name, email);
         broker.execute();

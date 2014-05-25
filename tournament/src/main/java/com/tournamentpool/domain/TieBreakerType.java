@@ -18,11 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.domain;
 
-import java.sql.SQLException;
-
-import utility.domain.Reference;
-
+import com.tournamentpool.broker.sql.DatabaseFailure;
 import com.tournamentpool.controller.ShowTournamentController;
+import utility.domain.Reference;
 
 public abstract class TieBreakerType implements Reference {
 	@SuppressWarnings("rawtypes")
@@ -102,7 +100,7 @@ public abstract class TieBreakerType implements Reference {
 					}
 				}
 				return new Delta(delta);
-			} catch (SQLException e) {
+			} catch (DatabaseFailure e) {
 				e.printStackTrace();
 				return EQUALIZER;
 			}
@@ -113,9 +111,7 @@ public abstract class TieBreakerType implements Reference {
 		}
 	}
 	
-	private static Integer calculateUpsetDelta(Pool pool, Bracket bracket)
-		throws SQLException 
-	{
+	private static Integer calculateUpsetDelta(Pool pool, Bracket bracket) {
 		return new Integer(new ShowTournamentController(null).getUpsetPredictionDelta(bracket, pool.getScoreSystem()));
 	}
 	
@@ -162,7 +158,7 @@ public abstract class TieBreakerType implements Reference {
 					}
 				}
 				return new CombinedDelta(upsetDelta, closestNumberDelta);
-			} catch (SQLException e) {
+			} catch (DatabaseFailure e) {
 				e.printStackTrace();
 				return EQUALIZER;
 			}

@@ -21,16 +21,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.controller;
 
-import java.sql.SQLException;
-
 import com.tournamentpool.application.SingletonProvider;
-import com.tournamentpool.domain.Bracket;
+import com.tournamentpool.domain.*;
 import com.tournamentpool.domain.Bracket.Pick;
-import com.tournamentpool.domain.GameNode;
-import com.tournamentpool.domain.Opponent;
-import com.tournamentpool.domain.Seed;
-import com.tournamentpool.domain.Team;
-import com.tournamentpool.domain.Tournament;
 
 /**
  * @author Avery J. Regier
@@ -93,9 +86,8 @@ public class BracketVisitor extends GameVisitorCommon<BracketVisitor.Node> {
 
 	/**
 	 * @param tournament
-	 * @throws SQLException
 	 */
-	public BracketVisitor(SingletonProvider sp, Tournament tournament, Bracket bracket) throws SQLException {
+	public BracketVisitor(SingletonProvider sp, Tournament tournament, Bracket bracket) {
 		super(tournament);
 		this.bracket = bracket;
 		bracket.getPicks(sp); // preretrieve picks

@@ -18,17 +18,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.servlet;
 
-import java.io.IOException;
-import java.sql.SQLException;
+import com.tournamentpool.beans.LeagueBean;
+import com.tournamentpool.broker.sql.DatabaseFailure;
+import com.tournamentpool.domain.League;
+import com.tournamentpool.domain.Team;
+import com.tournamentpool.domain.Tournament;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.tournamentpool.beans.LeagueBean;
-import com.tournamentpool.domain.League;
-import com.tournamentpool.domain.Team;
-import com.tournamentpool.domain.Tournament;
+import java.io.IOException;
 
 public class AddTeamsToLeague extends RequiresLoginServlet {
 	/**
@@ -89,7 +88,7 @@ public class AddTeamsToLeague extends RequiresLoginServlet {
 			} else {
 				res.sendRedirect(getApp().getConfig().getProperty("CreateTournamentURL"));
 			}
-		} catch (SQLException e) {
+		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
 		}
 	}

@@ -21,26 +21,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.servlet;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.StringTokenizer;
+import com.tournamentpool.broker.sql.DatabaseFailure;
+import com.tournamentpool.broker.sql.insert.BracketPoolInsertBroker;
+import com.tournamentpool.broker.sql.insert.PickInsertBroker;
+import com.tournamentpool.domain.*;
+import com.tournamentpool.domain.Bracket.Pick;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.tournamentpool.broker.sql.insert.BracketPoolInsertBroker;
-import com.tournamentpool.broker.sql.insert.PickInsertBroker;
-import com.tournamentpool.domain.Bracket;
-import com.tournamentpool.domain.Bracket.Pick;
-import com.tournamentpool.domain.GameNode;
-import com.tournamentpool.domain.Group;
-import com.tournamentpool.domain.Opponent;
-import com.tournamentpool.domain.Pool;
-import com.tournamentpool.domain.User;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * @author Avery J. Regier
@@ -203,7 +197,7 @@ public class Importer extends RequiresLoginServlet {
 
 			res.sendRedirect(getApp().getConfig().getProperty("MyTournamentURL") + 
 					"?request=show&type=pool&id="+pool.getOid()+"&groupID="+group.getId());
-		} catch(SQLException e) {
+		} catch(DatabaseFailure e) {
 			throw new ServletException(e);
 		}
 	}

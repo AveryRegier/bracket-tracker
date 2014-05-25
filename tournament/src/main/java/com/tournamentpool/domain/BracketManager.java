@@ -21,15 +21,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.application.SingletonProviderHolder;
 import com.tournamentpool.broker.sql.get.BracketGetBroker;
 import com.tournamentpool.broker.sql.insert.BracketInsertBroker;
 import com.tournamentpool.broker.sql.update.BracketUpdateBroker;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Avery J. Regier
@@ -45,7 +44,7 @@ public class BracketManager extends SingletonProviderHolder {
 	}
 	
 	public Bracket loadBracket(
-		int bracketOID, int tournamentOID, int playerOID, String name) throws SQLException 
+		int bracketOID, int tournamentOID, int playerOID, String name)
 	{
 		Bracket bracket = getCachedBracket(bracketOID);
 		if(bracket == null) { 
@@ -65,7 +64,7 @@ public class BracketManager extends SingletonProviderHolder {
 	 * @param bracketOID
 	 * @return
 	 */
-	public Bracket getBracket(int bracketOID) throws SQLException {
+	public Bracket getBracket(int bracketOID) {
 		Bracket bracket = getCachedBracket(bracketOID);
 		if(bracket == null) {
 			new BracketGetBroker(sp, bracketOID).execute();
@@ -79,15 +78,14 @@ public class BracketManager extends SingletonProviderHolder {
 	 * @param tournament
 	 * @param name
 	 * @return
-	 * @throws SQLException
 	 */
-	public Bracket createBracket(User user, Tournament tournament, String name) throws SQLException {
+	public Bracket createBracket(User user, Tournament tournament, String name) {
 		BracketInsertBroker broker = new BracketInsertBroker(sp, name, user, tournament);
 		broker.execute();
 		return broker.getBracket();
 	}
 
-	public void updateBracket(Bracket bracket, String name) throws SQLException {
+	public void updateBracket(Bracket bracket, String name) {
 		BracketUpdateBroker broker = new BracketUpdateBroker(sp, bracket, name);
 		broker.execute();
 	}

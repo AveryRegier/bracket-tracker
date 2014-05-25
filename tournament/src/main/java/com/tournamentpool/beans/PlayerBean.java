@@ -27,7 +27,6 @@ import com.tournamentpool.domain.Group;
 import com.tournamentpool.domain.Pool;
 import com.tournamentpool.domain.User;
 
-import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -83,7 +82,7 @@ public class PlayerBean extends BracketHolderBean implements Comparable<PlayerBe
 		return groupBeans.iterator();
 	}
 	
-	public void setGroups(Iterator<Group> groups) throws SQLException {
+	public void setGroups(Iterator<Group> groups) {
 		while (groups.hasNext()) {
 			Group group = groups.next();
 			if(group != null) {
@@ -95,7 +94,7 @@ public class PlayerBean extends BracketHolderBean implements Comparable<PlayerBe
 		}
 	}
 
-	public void setGroups(Iterator<Group> groups, Filter filter, User user) throws SQLException {
+	public void setGroups(Iterator<Group> groups, Filter filter, User user) {
 		while (groups.hasNext()) {
 			Group group = groups.next();
 			if(filter.pass(group)) { // already does a null check
@@ -117,7 +116,7 @@ public class PlayerBean extends BracketHolderBean implements Comparable<PlayerBe
 	}
 	
 	protected void addOtherAttributes(Bracket bracket, Pool pool, User user,
-			BracketBean<?> bracketBean, PoolBean poolBean) throws SQLException {
+			BracketBean<?> bracketBean, PoolBean poolBean) {
 		if(pool != null && poolBean != null) {
 			poolBean.setMayRemove(pool.mayRemoveBracket(user, bracket));
 		}

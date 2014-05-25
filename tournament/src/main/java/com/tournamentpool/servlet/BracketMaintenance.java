@@ -23,6 +23,7 @@ package com.tournamentpool.servlet;
 
 import com.tournamentpool.beans.GroupBean;
 import com.tournamentpool.beans.PoolBean;
+import com.tournamentpool.broker.sql.DatabaseFailure;
 import com.tournamentpool.broker.sql.insert.PickInsertBroker;
 import com.tournamentpool.domain.*;
 import com.tournamentpool.domain.Bracket.Pick;
@@ -35,7 +36,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -80,8 +80,7 @@ public class BracketMaintenance extends RequiresLoginServlet {
 		}
 	}
 
-	private void setupPools(HttpServletRequest req, User user, Bracket bracket)
-			throws SQLException {
+	private void setupPools(HttpServletRequest req, User user, Bracket bracket) {
 		if(user ==  bracket.getOwner() && bracket.isComplete(getApp().getSingletonProvider()) && !bracket.getTournament().isStarted()) {
 			Set<PoolBean> poolsAvailable = new HashSet<PoolBean>();
 			Iterator<Group> groups = user.getGroupsInHierarchy();
@@ -119,7 +118,7 @@ public class BracketMaintenance extends RequiresLoginServlet {
 			);
 		} catch (NumberFormatException e) {
 			throw new ServletException(e);
-		} catch (SQLException e) {
+		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
 		}
 	}
@@ -148,7 +147,7 @@ public class BracketMaintenance extends RequiresLoginServlet {
 			} else { // continue
 				res.sendRedirect(getApp().getConfig().getProperty("MyTournamentURL"));
 			}
-		} catch (SQLException e) {
+		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
 		} catch (IllegalAccessException e) {
 			throw new ServletException(e);
@@ -156,7 +155,7 @@ public class BracketMaintenance extends RequiresLoginServlet {
 	}
 
 	private Bracket createOrUpdateBracket(HttpServletRequest req, User user)
-			throws SQLException, IllegalAccessException {
+			throws IllegalAccessException {
 		String name = StringUtil.killWhitespace(req.getParameter("name"));
 		// first check for a bracket oid, if doesn't exist, create new
 		Bracket bracket = user.getBracket(getInt(req, "id", -1));
@@ -187,7 +186,7 @@ public class BracketMaintenance extends RequiresLoginServlet {
 	}
 
 	private void applyPicks(DecisionMaker decider, Bracket bracket)
-			throws IllegalAccessException, SQLException 
+			throws IllegalAccessException
 	{
 		List<Pick> insertPicks = new LinkedList<Pick>();
 		List<Pick> updatePicks = new LinkedList<Pick>();

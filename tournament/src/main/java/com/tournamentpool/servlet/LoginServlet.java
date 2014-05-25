@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.sql.SQLException;
 
 /**
  * @author avery
@@ -84,8 +83,7 @@ public final class LoginServlet extends TournamentServlet {
 		return redirect;
 	}
 
-	private void loginFailed(HttpServletRequest req, String userID)
-			throws SQLException {
+	private void loginFailed(HttpServletRequest req, String userID) {
 		req.getSession().setAttribute("uid", userID);
 		req.getSession().setAttribute("loginFailed", "true");
 		req.getSession().removeAttribute("passwordReset");
@@ -109,8 +107,7 @@ public final class LoginServlet extends TournamentServlet {
 	}
 
 	private void resetPassword(HttpServletRequest req, String userID)
-			throws UnsupportedEncodingException, MessagingException,
-			SQLException {
+			throws UnsupportedEncodingException, MessagingException {
 		JavaMailEmailBroker.setBaseURL(req.getScheme(), req.getServerName(), req.getServerPort());
 		getApp().getUserManager().resetPassword(userID);
 		req.getSession().setAttribute("uid", userID);

@@ -33,7 +33,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.net.*;
-import java.sql.SQLException;
 import java.util.*;
 
 import static utility.StringUtil.killWhitespace;
@@ -120,7 +119,7 @@ public class AutoUpdateController extends TournamentController {
 			throws URISyntaxException, IOException,
 			ClassNotFoundException, InstantiationException,
 			IllegalAccessException, MalformedURLException,
-			UnsupportedEncodingException, SQLException 
+			UnsupportedEncodingException
 	{
 		// TODO: make it possible to have multiple sources
 		
@@ -160,7 +159,7 @@ public class AutoUpdateController extends TournamentController {
 	}
 	
 	private boolean applyToTournaments(final League sourceLeague,
-			final Map<String, LiveGame> teamGameMap) throws SQLException {
+			final Map<String, LiveGame> teamGameMap) {
 		boolean tournamentsPaused = true;
 		for (Tournament tournament : getTournaments()) {
 			if (isOngoing(sourceLeague, tournament)) {

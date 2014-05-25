@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 package com.tournamentpool.servlet;
 
 import com.tournamentpool.beans.BracketBean;
+import com.tournamentpool.broker.sql.DatabaseFailure;
 import com.tournamentpool.controller.TournamentVisitor.Node;
 import com.tournamentpool.domain.*;
 import com.tournamentpool.domain.MainTournament.WinnerSource;
@@ -30,7 +31,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Date;
 
 /**
@@ -52,7 +52,7 @@ public class Tournament extends RequiresLoginServlet {
 				getApp().getTournamentManager().deleteTournament(user, tournament.getOid());
 				// TODO: send message on deletion failure
 				res.sendRedirect(req.getHeader("Referer"));
-			} catch (SQLException e) {
+			} catch (DatabaseFailure e) {
 				throw new ServletException(e);
 			}
 		} else if(!tournament.hasAllSeedsAssigned() && tournament.mayEdit(user)) {
@@ -132,7 +132,7 @@ public class Tournament extends RequiresLoginServlet {
 			} else { // continue
 				res.sendRedirect(getApp().getConfig().getProperty("MyTournamentURL"));
 			}
-		} catch (SQLException e) {
+		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
 		}
 	}

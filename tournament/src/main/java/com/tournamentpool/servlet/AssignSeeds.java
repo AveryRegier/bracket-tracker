@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.servlet;
 
+import com.tournamentpool.broker.sql.DatabaseFailure;
 import com.tournamentpool.domain.Seed;
 import com.tournamentpool.domain.Team;
 import com.tournamentpool.domain.User;
@@ -27,7 +28,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -97,7 +97,7 @@ public class AssignSeeds extends RequiresLoginServlet {
 			} else { // continue to update games
 				res.sendRedirect(getApp().getConfig().getProperty("TournamentURL")+"?edit=true&tournament="+tournament.getOid());
 			}
-		} catch (SQLException e) {
+		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
 		}
 	}

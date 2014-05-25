@@ -21,17 +21,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.servlet;
 
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.sql.SQLException;
+import com.tournamentpool.broker.sql.DatabaseFailure;
+import com.tournamentpool.domain.User;
+import com.tournamentpool.domain.UserManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.tournamentpool.domain.User;
-import com.tournamentpool.domain.UserManager;
+import java.io.IOException;
+import java.net.URLEncoder;
 
 /**
  * @author avery
@@ -69,7 +68,7 @@ public final class ResetPasswordServlet extends TournamentServlet {
 						"?redirect="+URLEncoder.encode(
 						getApp().getConfig().getProperty("MyTournamentURL"), "UTF-8"));
 			}
-		} catch (SQLException e) {
+		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
 		}
 	}

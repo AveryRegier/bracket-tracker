@@ -18,8 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.controller;
 
-import java.sql.SQLException;
-
 import com.tournamentpool.domain.Bracket;
 import com.tournamentpool.domain.Group;
 import com.tournamentpool.domain.Pool;
@@ -32,7 +30,7 @@ public class TournamentFilter implements Filter {
 		this.tournamentID = tournamentID;
 	}
 	
-	public boolean pass(Group group) throws SQLException {
+	public boolean pass(Group group) {
 		for(Pool pool: group.getPools()) {
 			if(pass(pool)) return true;
 		}

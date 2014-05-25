@@ -21,11 +21,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.beans;
 
+import com.tournamentpool.broker.sql.DatabaseFailure;
 import com.tournamentpool.controller.Filter;
 import com.tournamentpool.domain.*;
 import com.tournamentpool.domain.ScoreSystem.Score;
 
-import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
@@ -87,7 +87,7 @@ public class BracketHolderBean {
 	}
 
 	protected void addOtherAttributes(Bracket bracket, Pool pool, User user, 
-			BracketBean<?> bracketBean, PoolBean poolBean) throws SQLException {
+			BracketBean<?> bracketBean, PoolBean poolBean) {
 		
 	}
 
@@ -118,17 +118,16 @@ public class BracketHolderBean {
 					}
 				}
 			}
-		} catch (SQLException e) {
+		} catch (DatabaseFailure e) {
 		}
 	}
 
 	/**
 	 * @param brackets
-	 * @param user 
-	 * @throws SQLException
+	 * @param user
 	 */
 	@SuppressWarnings({ "rawtypes" })
-	public void setPoolBrackets(Pool apool, Iterator<PoolBracket> brackets, User user) throws SQLException {
+	public void setPoolBrackets(Pool apool, Iterator<PoolBracket> brackets, User user) {
 		if(brackets != null) {
 			while (brackets.hasNext()) {
 				PoolBracket poolBracket = brackets.next();

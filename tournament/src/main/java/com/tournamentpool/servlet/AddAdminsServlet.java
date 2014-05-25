@@ -21,18 +21,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.servlet;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.tournamentpool.beans.TournamentBean;
+import com.tournamentpool.broker.sql.DatabaseFailure;
 import com.tournamentpool.broker.sql.get.TournamentAvailableAdminsGetBroker;
 import com.tournamentpool.domain.MainTournament;
 import com.tournamentpool.domain.Tournament;
 import com.tournamentpool.domain.User;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class AddAdminsServlet extends RequiresLoginServlet {
 	/**
@@ -57,7 +56,7 @@ public class AddAdminsServlet extends RequiresLoginServlet {
 			req.setAttribute("Tournament", bean);
 			req.setAttribute("Players", new TournamentAvailableAdminsGetBroker(getApp().getSingletonProvider(), (MainTournament) tournament).getPlayers());
 			produceJSPPage(req, res, "AddAdminsToTournamentJSP");
-		} catch (SQLException e) {
+		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
 		}
 	}
@@ -76,7 +75,7 @@ public class AddAdminsServlet extends RequiresLoginServlet {
 			int[] playerIDs = convertToIntegers(req.getParameterValues("player"));
 			getApp().getTournamentManager().addAdmins(tournament, playerIDs);
 			res.sendRedirect(getApp().getConfig().getProperty("MyTournamentURL"));
-		} catch (SQLException e) {
+		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
 		}
 	}
