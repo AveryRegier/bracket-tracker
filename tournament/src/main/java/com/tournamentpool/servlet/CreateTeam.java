@@ -59,11 +59,11 @@ public class CreateTeam extends RequiresLoginServlet {
 			TeamManager teamManager = getApp().getTeamManager();
 			Team team = teamManager.createTeam(req.getParameter("name"));
 			String[] leagueIDs = req.getParameterValues("addToLeague");
-			for (int i = 0; i < leagueIDs.length; i++) {
-				int id = Integer.parseInt(leagueIDs[i]);
-				League league = getApp().getTeamManager().getLeague(id);
-				teamManager.associateTeamToLeague(league, team);
-			}
+            for (String leagueID : leagueIDs) {
+                int id = Integer.parseInt(leagueID);
+                League league = getApp().getTeamManager().getLeague(id);
+                teamManager.associateTeamToLeague(league, team);
+            }
 			Object attribute = req.getSession().getAttribute("tournament");
 			if(attribute != null) {
 				res.sendRedirect(getApp().getConfig().getProperty("AssignSeedsURL")+"?tournament="+attribute);

@@ -97,9 +97,7 @@ public class League implements Reference, Comparable<League> {
 
 	public boolean isDeletable(User user, SingletonProvider sp) {
 		if(!user.isSiteAdmin()) return false;
-		Iterator<Tournament> tournaments = sp.getSingleton().getTournamentManager().getTournaments();
-		while (tournaments.hasNext()) {
-			Tournament tournament = tournaments.next();
+		for(Tournament tournament: sp.getSingleton().getTournamentManager().getTournaments()) {
 			if(tournament.getLeague() == this) return false;
 		}
 		return true;

@@ -25,7 +25,6 @@ import com.tournamentpool.broker.sql.status.TournamentPoolStatusBroker;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.Iterator;
 
 class SubTournament implements Tournament {
 
@@ -167,9 +166,7 @@ class SubTournament implements Tournament {
 			if(new TournamentPoolStatusBroker(sp, this).isUsedByPools()) return false;
 			
 			// no sub tournaments against this tournament (can be determined in memory)
-			Iterator<Tournament> tournaments = sp.getSingleton().getTournamentManager().getTournaments();
-			while (tournaments.hasNext()) {
-				Tournament tourney = tournaments.next();
+			for(Tournament tourney: sp.getSingleton().getTournamentManager().getTournaments()) {
 				if(tourney instanceof SubTournament && ((SubTournament)tourney).getParentTournament() == this)
 					return false;
 			}

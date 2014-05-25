@@ -136,71 +136,9 @@ public class PoolMaintenance extends RequiresLoginServlet {
 			UserManager um = getApp().getUserManager();
 
 			if(req.getParameter("closePool") != null) {
-				String poolParam = StringUtil.killWhitespace(req.getParameter("pool"));
-				if(poolParam != null) {
-					int poolID = Integer.parseInt(poolParam);
-					Pool pool = um.getPoolObject(poolID);
-					if(!pool.getGroup().getAdministrator().equals(user)) {
-						throw new IllegalAccessException("You are not the administrator of this group");
-					}
-					um.closePool(pool, req.getParameter("tieBreakerAnswer"));
-					res.sendRedirect(getApp().getConfig().getProperty("MyTournamentURL")+"?request=show&type=pool&id=" + poolParam);
-				} else {
-					res.sendRedirect(getApp().getConfig().getProperty("MyTournamentURL"));
-				}
+                closePool(req, res, user, um);
 			} else {
-
-				int tournamentID = Integer.parseInt(req.getParameter("tournament"));
-				Tournament tournament = getApp().getTournamentManager()
-						.getTournament(tournamentID);
-				int scoresystemID = Integer.parseInt(req
-						.getParameter("scoreSystem"));
-				ScoreSystem scoreSystem = getApp().getScoreSystemManager()
-						.getScoreSystem(scoresystemID);
-				boolean showBracketsEarly = req.getParameter("showBracketsEarly") != null;
-				int bracketLimit = Integer.parseInt(req.getParameter("bracketLimit"));
-				int tieBreakerTypeID = Integer.parseInt(req.getParameter("tieBreakerType"));
-				String tieBreakerQuestion = StringUtil.killWhitespace(req.getParameter("tieBreakerQuestion"));
-
-				String name = StringUtil.killWhitespace(req.getParameter("name"));
-				if(name == null) {
-					throw new IllegalArgumentException("A pool name is required.");
-				}
-				if(scoreSystem == null) {
-					throw new IllegalArgumentException("A pool score system is required.");
-				}
-				if(tournament == null) {
-					throw new IllegalArgumentException("A pool tournament is required.");
-				}
-				if(um.getTieBreakerType(tieBreakerTypeID).mustAnswer()) {
-					if(tieBreakerQuestion == null) {
-						throw new IllegalArgumentException("A tie breaker question is required.");
-					}
-				}
-
-				int groupID = -1;
-				String poolParam = StringUtil.killWhitespace(req.getParameter("pool"));
-				if(poolParam != null) {
-					int poolID = Integer.parseInt(poolParam);
-					Pool pool = um.getPoolObject(poolID);
-					if(!pool.getGroup().getAdministrator().equals(user)) {
-						throw new IllegalAccessException("You are not the administrator of this group");
-					}
-					groupID = pool.getGroup().getId();
-					um.updatePool(pool, name, tournament, scoreSystem, bracketLimit, showBracketsEarly,
-							tieBreakerTypeID, tieBreakerQuestion);
-				} else {
-					groupID = Integer.parseInt(req.getParameter("group"));
-					Group group = um.getGroupObject(groupID);
-					if(group == null) {
-						throw new IllegalArgumentException("A group is required.");
-					}
-					if(!group.getAdministrator().equals(user)) {
-						throw new IllegalAccessException("You are not the administrator of this group");
-					}
-					um.createPool(name, group, tournament, scoreSystem, bracketLimit, showBracketsEarly, tieBreakerTypeID, tieBreakerQuestion);
-				}
-				res.sendRedirect(getApp().getConfig().getProperty("ShowGroupURL") + groupID);
+                changePool(req, res, user, um);
 			}
 		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
@@ -208,4 +146,89 @@ public class PoolMaintenance extends RequiresLoginServlet {
 			throw new ServletException(e);
 		}
 	}
+
+    private void changePool(HttpServletRequest req, HttpServletResponse res, User user, UserManager um) throws IllegalAccessException, IOException {
+        int tournamentID = Integer.parseInt(req.getParameter("tournament"));
+        Tournament tournament = getApp().getTournamentManager()
+                .getTournament(tournamentID);
+        int scoresystemID = Integer.parseInt(req
+                .getParameter("scoreSystem"));
+        ScoreSystem scoreSystem = getApp().getScoreSystemManager()
+                .getScoreSystem(scoresystemID);
+        boolean showBracketsEarly = req.getParameter("showBracketsEarly") != null;
+        int bracketLimit = Integer.parseInt(req.getParameter("bracketLimit"));
+        int tieBreakerTypeID = Integer.parseInt(req.getParameter("tieBreakerType"));
+        String tieBreakerQuestion = StringUtil.killWhitespace(req.getParameter("tieBreakerQuestion"));
+
+        String name = StringUtil.killWhitespace(req.getParameter("name"));
+        validateInputs(um, tournament, scoreSystem, tieBreakerTypeID, tieBreakerQuestion, name);
+
+        int groupID = -1;
+        String poolParam = StringUtil.killWhitespace(req.getParameter("pool"));
+        if(poolParam != null) {
+            groupID = updatePool(user, um, tournament, scoreSystem, showBracketsEarly, bracketLimit, tieBreakerTypeID, tieBreakerQuestion, name, poolParam);
+        } else {
+            groupID = createPool(req, user, um, tournament, scoreSystem, showBracketsEarly, bracketLimit, tieBreakerTypeID, tieBreakerQuestion, name);
+        }
+        res.sendRedirect(getApp().getConfig().getProperty("ShowGroupURL") + groupID);
+    }
+
+    private void validateInputs(UserManager um, Tournament tournament, ScoreSystem scoreSystem, int tieBreakerTypeID, String tieBreakerQuestion, String name) {
+        if(name == null) {
+            throw new IllegalArgumentException("A pool name is required.");
+        }
+        if(scoreSystem == null) {
+            throw new IllegalArgumentException("A pool score system is required.");
+        }
+        if(tournament == null) {
+            throw new IllegalArgumentException("A pool tournament is required.");
+        }
+        if(um.getTieBreakerType(tieBreakerTypeID).mustAnswer()) {
+            if(tieBreakerQuestion == null) {
+                throw new IllegalArgumentException("A tie breaker question is required.");
+            }
+        }
+    }
+
+    private int createPool(HttpServletRequest req, User user, UserManager um, Tournament tournament, ScoreSystem scoreSystem, boolean showBracketsEarly, int bracketLimit, int tieBreakerTypeID, String tieBreakerQuestion, String name) throws IllegalAccessException {
+        int groupID;
+        groupID = Integer.parseInt(req.getParameter("group"));
+        Group group = um.getGroupObject(groupID);
+        if(group == null) {
+            throw new IllegalArgumentException("A group is required.");
+        }
+        if(!group.getAdministrator().equals(user)) {
+            throw new IllegalAccessException("You are not the administrator of this group");
+        }
+        um.createPool(name, group, tournament, scoreSystem, bracketLimit, showBracketsEarly, tieBreakerTypeID, tieBreakerQuestion);
+        return groupID;
+    }
+
+    private int updatePool(User user, UserManager um, Tournament tournament, ScoreSystem scoreSystem, boolean showBracketsEarly, int bracketLimit, int tieBreakerTypeID, String tieBreakerQuestion, String name, String poolParam) throws IllegalAccessException {
+        int groupID;
+        int poolID = Integer.parseInt(poolParam);
+        Pool pool = um.getPoolObject(poolID);
+        if(!pool.getGroup().getAdministrator().equals(user)) {
+            throw new IllegalAccessException("You are not the administrator of this group");
+        }
+        groupID = pool.getGroup().getId();
+        um.updatePool(pool, name, tournament, scoreSystem, bracketLimit, showBracketsEarly,
+                tieBreakerTypeID, tieBreakerQuestion);
+        return groupID;
+    }
+
+    private void closePool(HttpServletRequest req, HttpServletResponse res, User user, UserManager um) throws IllegalAccessException, IOException {
+        String poolParam = StringUtil.killWhitespace(req.getParameter("pool"));
+        if(poolParam != null) {
+            int poolID = Integer.parseInt(poolParam);
+            Pool pool = um.getPoolObject(poolID);
+            if(!pool.getGroup().getAdministrator().equals(user)) {
+                throw new IllegalAccessException("You are not the administrator of this group");
+            }
+            um.closePool(pool, req.getParameter("tieBreakerAnswer"));
+            res.sendRedirect(getApp().getConfig().getProperty("MyTournamentURL")+"?request=show&type=pool&id=" + poolParam);
+        } else {
+            res.sendRedirect(getApp().getConfig().getProperty("MyTournamentURL"));
+        }
+    }
 }

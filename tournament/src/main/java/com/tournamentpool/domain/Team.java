@@ -83,10 +83,8 @@ public class Team implements Reference, Comparable<Team> {
 
 	public boolean isDeletable(User user, SingletonProvider sp) {
 		if(!user.isSiteAdmin()) return false;
-		Iterator<Tournament> tournaments = sp.getSingleton().getTournamentManager().getTournaments();
-		while (tournaments.hasNext()) {
-			Tournament tournament = tournaments.next();
-			if(tournament.hasTeam(this)) return false;
+        for(Tournament tournament: sp.getSingleton().getTournamentManager().getTournaments()) {
+            if(tournament.hasTeam(this)) return false;
 		}
 		return true;
 	}

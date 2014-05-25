@@ -23,8 +23,6 @@ import com.tournamentpool.controller.TournamentController;
 import com.tournamentpool.domain.League;
 import com.tournamentpool.domain.MainTournament;
 import com.tournamentpool.domain.Tournament;
-import utility.IterableIterator;
-import utility.IteratorUtility;
 import utility.StringUtil;
 
 import java.io.File;
@@ -258,12 +256,11 @@ public class AutoUpdateController extends TournamentController {
 		return contents;
 	}
 
-	private IterableIterator<Tournament> getTournaments() {
-		return IteratorUtility.adapt(
-				sp
+	private Iterable<Tournament> getTournaments() {
+		return sp
 				.getSingleton()
 				.getTournamentManager()
-				.getTournaments());
+				.getTournaments();
 	}
 
 	private static String convertStreamToString(java.io.InputStream is) {

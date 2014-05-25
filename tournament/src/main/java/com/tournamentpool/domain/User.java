@@ -111,7 +111,7 @@ public class User {
 		return null;
 	}
 
-	public Iterator<Group> getGroupsInHierarchy() {
+	public Iterable<Group> getGroupsInHierarchy() {
 
 		Set<Group> allGroups = new TreeSet<Group>();
 		for(Group group: groups) {
@@ -120,7 +120,7 @@ public class User {
 				group = group.getParent();				
 			} while(group != null);
 		}
-		return allGroups.iterator();
+		return allGroups;
 	}
 
     public Iterable<Group> getMembershipGroupsInHierarchy(Group parent) {

@@ -115,9 +115,7 @@ public class AdminListServlet extends RequiresLoginServlet {
 		
 		// for efficiency, just run these counts once
 		Map<League, int[]> tournamentCounter = new HashMap<League, int[]>();
-		Iterator<Tournament> tournaments = getApp().getTournamentManager().getTournaments();
-		while (tournaments.hasNext()) {
-			Tournament tournament = tournaments.next();
+		for(Tournament tournament: getApp().getTournamentManager().getTournaments()) {
 			League league = tournament.getLeague();
 			Object counter = tournamentCounter.get(league);
 			if(counter == null) {

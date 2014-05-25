@@ -116,8 +116,8 @@ public class TournamentManager extends SingletonProviderHolder {
 		((MainTournament) tournament).loadGame(gameNode, oponent, startTime);
 	}
 
-	public Iterator<Tournament> getTournaments() {
-		return tournaments.values().iterator();
+	public Iterable<Tournament> getTournaments() {
+		return tournaments.values();
 	}
 
 	public Menu getTournamentMenu() {

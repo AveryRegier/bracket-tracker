@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Avery J. Regier
@@ -83,21 +84,18 @@ public class BracketMaintenance extends RequiresLoginServlet {
 	private void setupPools(HttpServletRequest req, User user, Bracket bracket) {
 		if(user ==  bracket.getOwner() && bracket.isComplete(getApp().getSingletonProvider()) && !bracket.getTournament().isStarted()) {
 			Set<PoolBean> poolsAvailable = new HashSet<PoolBean>();
-			Iterator<Group> groups = user.getGroupsInHierarchy();
-			while (groups.hasNext()) {
-				Group group = groups.next();
+			for(Group group: user.getGroupsInHierarchy()) {
 				GroupBean gBean = new GroupBean(group);
-				for(Pool pool: group.getMyPools()) {
-					if(pool != null) {
-						if(pool.getTournament() == bracket.getTournament() &&
-								!pool.hasBracket(bracket) && !pool.hasReachedLimit(user))
-						{
-							PoolBean pBean = new PoolBean(pool.getOid(), pool.getName());
-							pBean.setGroup(gBean);
-							poolsAvailable.add(pBean);
-						}
-					}
-				}
+                group.getMyPools().stream()
+                        .filter(pool -> pool != null)
+                        .forEach(pool -> {
+                            if (pool.getTournament() == bracket.getTournament() &&
+                                    !pool.hasBracket(bracket) && !pool.hasReachedLimit(user)) {
+                                PoolBean pBean = new PoolBean(pool.getOid(), pool.getName());
+                                pBean.setGroup(gBean);
+                                poolsAvailable.add(pBean);
+                            }
+                        });
 			}
 			if(poolsAvailable.size() > 0) {
 				req.setAttribute("Pools", poolsAvailable);
@@ -221,9 +219,9 @@ public class BracketMaintenance extends RequiresLoginServlet {
 			Object o = nodes.remove(0);
 			if(o instanceof GameNode) {
 				GameNode node = (GameNode)o;
-				for (Feeder feeder : node.getFeeders()) {
-					nodes.add(feeder.getFeeder());
-				}
+                nodes.addAll(node.getFeeders().stream()
+                        .map(Feeder::getFeeder)
+                        .collect(Collectors.toList()));
                 int decision = decider.getDecision(node);
                 Opponent winner = tournamentType.getOpponentByOrder(decision);
 				Bracket.Pick pick = bracket.createPick(node);

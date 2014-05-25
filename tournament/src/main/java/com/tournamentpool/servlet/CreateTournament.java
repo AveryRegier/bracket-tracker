@@ -62,9 +62,7 @@ public class CreateTournament extends RequiresLoginServlet {
 					startTime);
 			getApp().getTournamentManager().addAdmins(tournament, new int[] {user.getOID()});
 			res.sendRedirect(getApp().getConfig().getProperty("AssignSeedsURL")+"?tournament="+tournament.getOid());
-		} catch (NullPointerException e) {
-			throw new ServletException("Tournament Type is required.", e);
-		} catch (NumberFormatException e) {
+		} catch (NullPointerException | NumberFormatException e) {
 			throw new ServletException("Tournament Type is required.", e);
 		} catch (DatabaseFailure e) {
 			throw new ServletException(e);

@@ -91,40 +91,35 @@ public class Tournament extends RequiresLoginServlet {
                         req.getParameter("name"),
                         getDate(req));
 
-				WinnerSource winnerSource = new WinnerSource() {
-					@Override
-					public GameInfo getGameInfo(final TournamentType tournamentType, final GameNode node) {
-						return new GameInfo() {
-							// defer to in-memory object for information we don't know from the UI
-							private Game game = tournament.getGame(node);
-							
-							@Override
-							public String getGameID() {
-								return game != null ? game.getGameID() : null;
-							}
-							
-							@Override
-							public Integer getScore(Opponent opponent) {
-								return game != null ? game.getScore(opponent) : null;
-							}
-							
-							@Override
-							public Date getDate() {
-								return game != null ? game.getDate() : getWinner() != null ? new Date() : null;
-							}
-							
-							@Override
-							public String getStatus() {
-								return game != null ? game.getStatus() : null;
-							}
-							
-							@Override
-							public Opponent getWinner() {
-								return tournamentType.getOpponentByOrder(getInt(req, "game"+node.getOid(), -1));
-							}
-						};
-					}
-				};
+				WinnerSource winnerSource = (tournamentType, node) -> new GameInfo() {
+                    // defer to in-memory object for information we don't know from the UI
+                    private Game game = tournament.getGame(node);
+
+                    @Override
+                    public String getGameID() {
+                        return game != null ? game.getGameID() : null;
+                    }
+
+                    @Override
+                    public Integer getScore(Opponent opponent) {
+                        return game != null ? game.getScore(opponent) : null;
+                    }
+
+                    @Override
+                    public Date getDate() {
+                        return game != null ? game.getDate() : getWinner() != null ? new Date() : null;
+                    }
+
+                    @Override
+                    public String getStatus() {
+                        return game != null ? game.getStatus() : null;
+                    }
+
+                    @Override
+                    public Opponent getWinner() {
+                        return tournamentType.getOpponentByOrder(getInt(req, "game"+node.getOid(), -1));
+                    }
+                };
 				
 				tournament.updateGames(getApp().getSingletonProvider(), winnerSource);
 			

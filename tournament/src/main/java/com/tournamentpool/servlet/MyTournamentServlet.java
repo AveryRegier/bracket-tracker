@@ -35,7 +35,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author avery
@@ -251,9 +254,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 
 	private void addTournamentBeans(HttpServletRequest req, User user) {
 		List<TournamentBean> tournamentBeans = new ArrayList<TournamentBean>(getApp().getTournamentManager().getNumTournaments());
-		Iterator<Tournament> iter = getApp().getTournamentManager().getTournaments();
-		while (iter.hasNext()) {
-			Tournament tournament = (Tournament) iter.next();
+		for(Tournament tournament: getApp().getTournamentManager().getTournaments()) {
 			tournamentBeans.add(new TournamentBean(tournament, tournament.mayEdit(user),
 					tournament.hasAllSeedsAssigned(),
 					tournament.getStartTime(), tournament.getLastUpdated(), tournament.mayDelete(user, getApp().getSingletonProvider())));
