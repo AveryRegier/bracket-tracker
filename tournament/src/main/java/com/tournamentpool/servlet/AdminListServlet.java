@@ -224,7 +224,7 @@ public class AdminListServlet extends RequiresLoginServlet {
 			if(pool != null) {
 				PoolBean poolBean = new PoolBean(pool.getOid(), pool.getName());
 				poolBean.setGroup(new GroupBean(pool.getGroup()));
-				poolBean.setBrackets(pool.getBrackets().iterator(), user);
+				poolBean.setBrackets(pool.getBrackets(), user);
 				poolBean.setShowBracketsEarly(pool.isShowBracketsEarly());
 				poolBean.setBracketLimit(pool.getBracketLimit());
 				poolBean.setScoreSystem(pool.getScoreSystem());

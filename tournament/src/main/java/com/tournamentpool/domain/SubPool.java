@@ -21,6 +21,7 @@ package com.tournamentpool.domain;
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.delete.BracketPoolDeleteBroker;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -145,18 +146,22 @@ public class SubPool implements Pool {
 	}
 
 	@Override
-	public Iterable<Bracket> getBrackets() {
+	public Collection<Bracket> getBrackets() {
 		Set<Bracket> groupBrackets = new HashSet<Bracket>();
 		Iterable<Bracket> brackets = getParentPool().getBrackets();
 		for (Bracket bracket : brackets) {
-			if(group.hasMember(bracket.getOwner().getOID())) {
+			if(ownerIsInGroup(bracket)) {
 				groupBrackets.add(bracket);
 			}
 		}
 		return groupBrackets;
 	}
 
-	@Override
+    private boolean ownerIsInGroup(Bracket bracket) {
+        return group.hasMember(bracket.getOwner().getOID());
+    }
+
+    @Override
 	public Iterator<PoolBracket> getRankedBrackets() {
 		return getRankedBrackets(getBrackets(), getGroup());
 	}
@@ -169,7 +174,7 @@ public class SubPool implements Pool {
 	@Override
 	public boolean hasBracket(Bracket bracket) {
 		if(getParentPool().hasBracket(bracket)) {
-			if(group.hasMember(bracket.getOwner().getOID())) {
+			if(ownerIsInGroup(bracket)) {
 				return true;
 			}
 		}

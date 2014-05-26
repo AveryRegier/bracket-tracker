@@ -30,10 +30,7 @@ import com.tournamentpool.broker.sql.delete.PoolDeleteBroker;
 import com.tournamentpool.broker.sql.get.BracketPoolGetBroker;
 import com.tournamentpool.domain.ScoreSystem.Score;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * @author avery
@@ -132,17 +129,21 @@ public class MainPool implements Pool {
 	/* (non-Javadoc)
 	 * @see com.tournamentpool.domain.IPool#getBrackets()
 	 */
-	public Iterable<Bracket> getBrackets() {
-		if(brackets == null) {
-			brackets = new HashMap<Bracket, String>();
-			new BracketPoolGetBroker(sp, oid).execute();
-		}
-		return brackets.keySet();
+	public Collection<Bracket> getBrackets() {
+        loadBrackets();
+        return brackets.keySet();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tournamentpool.domain.IPool#getRankedBrackets()
-	 */
+    private void loadBrackets() {
+        if(brackets == null) {
+            brackets = new HashMap<Bracket, String>();
+            new BracketPoolGetBroker(sp, oid).execute();
+        }
+    }
+
+    /* (non-Javadoc)
+         * @see com.tournamentpool.domain.IPool#getRankedBrackets()
+         */
 	public Iterator<PoolBracket> getRankedBrackets() {
 		return getRankedBrackets(getBrackets(), getGroup());
 	}
@@ -216,7 +217,7 @@ public class MainPool implements Pool {
 	 */
 	public boolean hasBracket(Bracket bracket) {
 		getBrackets();
-		return brackets.keySet().contains(bracket);
+		return brackets.containsKey(bracket);
 	}
 	
 	/* (non-Javadoc)

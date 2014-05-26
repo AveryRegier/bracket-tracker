@@ -134,7 +134,7 @@ public class GroupBean implements Comparable<GroupBean>{
 				Pool pool = pools.next();
 				if(pool != null) {
 					PoolBean poolBean = new PoolBean(pool.getOid(), pool.getName());
-					poolBean.setBrackets(pool.getBrackets().iterator(), null);
+					poolBean.setBrackets(pool.getBrackets(), null);
 					poolBean.setShowBracketsEarly(pool.isShowBracketsEarly());
 					poolBean.setBracketLimit(pool.getBracketLimit());
 					poolBean.setMayDelete(pool.mayDelete(user));
@@ -161,7 +161,7 @@ public class GroupBean implements Comparable<GroupBean>{
 				Pool pool = pools.next();
 				if(filter.pass(pool)) { // already does a null check
 					PoolBean poolBean = new PoolBean(pool.getOid(), pool.getName());
-					poolBean.setBrackets(pool.getBrackets().iterator(), filter, null);
+					poolBean.setBrackets(pool.getBrackets(), filter, null);
 					poolBean.setShowBracketsEarly(pool.isShowBracketsEarly());
 					poolBean.setBracketLimit(pool.getBracketLimit());
 					poolBean.setMayDelete(pool.mayDelete(user));

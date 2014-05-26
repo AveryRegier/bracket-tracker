@@ -148,14 +148,7 @@ public class User {
 		return brackets.get(new Integer(bracketOid));
 	}
 
-	/**
-	 * @return
-	 */
-	public Iterator<Bracket> getBrackets() {
-		return brackets.values().iterator();
-	}
-
-	public Iterable<Bracket> getBracketsIterable() {
+	public Collection<Bracket> getBrackets() {
 		return brackets.values();
 	}
 
@@ -202,6 +195,10 @@ public class User {
 
     public void setID(String userID) {
         this.id = userID;
+    }
+
+    public boolean hasBrackets() {
+        return !brackets.isEmpty();
     }
 
     // what organizations does the user belong to?

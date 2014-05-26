@@ -20,6 +20,7 @@ package com.tournamentpool.domain;
 
 import com.tournamentpool.application.SingletonProvider;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 public interface Pool extends Comparable<Pool> {
@@ -63,7 +64,7 @@ public interface Pool extends Comparable<Pool> {
 	/**
 	 * @return
 	 */
-	public abstract Iterable<Bracket> getBrackets();
+	public abstract Collection<Bracket> getBrackets();
 
 	/**
 	 * Return values in iterator are of type PoolBracket.
@@ -124,5 +125,4 @@ public interface Pool extends Comparable<Pool> {
 	public abstract Bracket getBracket(int bracketID);
 
 	public abstract Iterator<PoolBracket> getRankedBrackets(Iterable<Bracket> brackets, Group group);
-
 }

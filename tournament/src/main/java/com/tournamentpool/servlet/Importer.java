@@ -108,7 +108,7 @@ public class Importer extends RequiresLoginServlet {
 					for(User auser: group.getMembers()) {
 						if(userID.equals(auser.getID())) {
 							user = auser;
-							for(Bracket abracket: user.getBracketsIterable()) {
+							for(Bracket abracket: user.getBrackets()) {
 								if("imported".equals(abracket.getName())) {
 									bracket = abracket;
 								}

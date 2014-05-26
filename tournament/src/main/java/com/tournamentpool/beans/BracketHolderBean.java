@@ -82,7 +82,7 @@ public class BracketHolderBean {
 	 * @param brackets
 	 * @param user 
 	 */
-	public void setBrackets(Iterator<Bracket> brackets, User user) {
+	public void setBrackets(Iterable<Bracket> brackets, User user) {
 		setBrackets(brackets, (Filter)null, user);
 	}
 
@@ -92,11 +92,10 @@ public class BracketHolderBean {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public void setBrackets(Iterator<Bracket> brackets, Filter filter, User user) {
+	public void setBrackets(Iterable<Bracket> brackets, Filter filter, User user) {
 		try {
 			if(brackets != null) {
-				while (brackets.hasNext()) {
-					Bracket bracket = brackets.next();
+                for(Bracket bracket: brackets) {
 					// if the filter exists, use it, else ignore
 					if(bracket != null && (filter != null ? filter.pass(bracket) : true)) { 
 						BracketBean<?> bracketBean = new BracketBean();

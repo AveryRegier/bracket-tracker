@@ -36,6 +36,8 @@ import utility.menu.reference.ReferenceMenu;
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author avery
@@ -405,37 +407,47 @@ public class UserManager extends SingletonProviderHolder {
 	public Menu getBracketsAvailableForPoolMenu(final User user, final Pool pool) {
 		return new ReferenceMenu<Bracket>("tournaments") {
 			protected Map<Integer, Bracket> getReferences() {
-				Set<Bracket> brackets = new HashSet<Bracket>();
-				try {
-					if(pool.hasReachedLimit(user)) return Collections.emptyMap();
-				} catch (DatabaseFailure e) {
-					throw new RuntimeException("Unable to load user "+user.getID(), e);
-				}
-				Iterator<Bracket> iter = user.getBrackets();
-				while (iter.hasNext()) { // add all user brackets
-					brackets.add(iter.next());
-				}
-                iter = pool.getBrackets().iterator();
-                while (iter.hasNext()) { // remove any already assigned to this pool
-                    brackets.remove(iter.next());
-                }
+                if(checkPoolLimit(pool, user)) return Collections.emptyMap();
+
+                // add all user brackets
+                return user.getBrackets().stream()
+                        // ignore any already assigned to this pool
+                        .filter((bracket) -> !pool.hasBracket(bracket))
+
+                        // expensive call to isComplete()
+                        .filter((bracket) -> bracket.getTournament() == pool.getTournament() && bracket.isComplete(sp))
+
+                        .collect(Collectors.toMap(Bracket::getID, Function.identity()));
+
+                // remove any already assigned to this pool
+                // attempting to do this above with filter
+                //pool.getBrackets().forEach(brackets::remove);
+
 				// only allow those completed for this tournament.  Do last because it is expensive
-				Map<Integer, Bracket> theMap = new HashMap<Integer, Bracket>();
-				for (Bracket bracket : brackets) {
-					try {
-						if(bracket.getTournament() == pool.getTournament() && bracket.isComplete(sp)) { // expensive call to isComplete()
-							theMap.put(bracket.getID(), bracket);
-						}
-					} catch (DatabaseFailure e) {
-						throw new RuntimeException("Unable to load picks for bracket "+bracket.getName(), e);
-					}
-				}
-				return theMap;
+//				Map<Integer, Bracket> theMap = new HashMap<Integer, Bracket>();
+//				for (Bracket bracket : brackets) {
+//					try {
+//						if(bracket.getTournament() == pool.getTournament() && bracket.isComplete(sp)) { // expensive call to isComplete()
+//							theMap.put(bracket.getID(), bracket);
+//						}
+//					} catch (DatabaseFailure e) {
+//						throw new RuntimeException("Unable to load picks for bracket "+bracket.getName(), e);
+//					}
+//				}
+//				return theMap;
 			}
 		};
 	}
 
-	protected void addPlayersTo(Group group, int[] playerIDs) {
+    private boolean checkPoolLimit(Pool pool, User user) {
+        try {
+            return pool.hasReachedLimit(user);
+        } catch (DatabaseFailure e) {
+            throw new RuntimeException("Unable to load user "+user.getID(), e);
+        }
+    }
+
+    protected void addPlayersTo(Group group, int[] playerIDs) {
 		new GroupPlayerInsertBroker(sp, group, playerIDs).execute();
 	}
 
@@ -610,7 +622,7 @@ public class UserManager extends SingletonProviderHolder {
 			// a player with saved brackets shouldn't be deleted.  An administrator 
 			// should go through the process of removing brackets from pools and 
 			// deleting or moving the brackets before deleting the player.
-			if(!toRemove.getBrackets().hasNext()) {
+			if(!toRemove.hasBrackets()) {
 				Iterator<Group> groups2 = toRemove.getGroups();
 				while (groups2.hasNext()) {
 					Group group = groups2.next();
