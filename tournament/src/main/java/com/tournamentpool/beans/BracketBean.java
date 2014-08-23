@@ -22,20 +22,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.beans;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.tournamentpool.controller.GameVisitorCommon;
+import com.tournamentpool.domain.*;
+import com.tournamentpool.domain.ScoreSystem.Score;
 import utility.StringUtil;
 
-import com.tournamentpool.controller.GameVisitorCommon;
-import com.tournamentpool.domain.Group;
-import com.tournamentpool.domain.Opponent;
-import com.tournamentpool.domain.Pool;
-import com.tournamentpool.domain.ScoreSystem.Score;
-import com.tournamentpool.domain.Seed;
-import com.tournamentpool.domain.Tournament;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Avery J. Regier
@@ -171,7 +164,7 @@ public class BracketBean<T extends GameVisitorCommon.Node> {
 
 	public PoolBean addPool(Pool pool) {
 		if(pool != null) {
-			if(pools == null) pools = new ArrayList<PoolBean>();
+			if(pools == null) pools = new ArrayList<>();
 			PoolBean poolBean = new PoolBean(pool.getOid(), pool.getName());
 			if(pool.getGroup() != null) {
 				poolBean.setGroup(new GroupBean(pool.getGroup()));
@@ -249,14 +242,14 @@ public class BracketBean<T extends GameVisitorCommon.Node> {
 			return;
 		}
 		StringBuffer sb = new StringBuffer("Rooting for ");
-		for (int i = 0; i < rootingFor.length; i++) {
-			sb.append(pool.getTournament().getTeam(rootingFor[i]).getName());
-			if(i < rootingFor.length - 1) {
-				sb.append(", ");
-			} else {
-				sb.append('.');
-			}
-		}
+        List<String> rootingForList = Arrays.asList(rootingFor)
+                .stream()
+                .map(r -> pool.getTournament().getTeam(r).getName())
+                .collect(Collectors.toList());
+
+        sb.append(String.join(",", rootingForList));
+        sb.append('.');
+
 		if(beatBy != null) {
 			if(sb.length() > 0) sb.append(" ");
 			sb.append("Beat by ");

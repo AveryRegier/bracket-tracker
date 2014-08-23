@@ -22,9 +22,7 @@ import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.delete.BracketPoolDeleteBroker;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SubPool implements Pool {
 
@@ -147,14 +145,18 @@ public class SubPool implements Pool {
 
 	@Override
 	public Collection<Bracket> getBrackets() {
-		Set<Bracket> groupBrackets = new HashSet<Bracket>();
-		Iterable<Bracket> brackets = getParentPool().getBrackets();
-		for (Bracket bracket : brackets) {
-			if(ownerIsInGroup(bracket)) {
-				groupBrackets.add(bracket);
-			}
-		}
-		return groupBrackets;
+        return getParentPool().getBrackets().stream()
+                .filter(this::ownerIsInGroup)
+                .collect(Collectors.toSet());
+
+//		Set<Bracket> groupBrackets = new HashSet<>();
+//		Iterable<Bracket> brackets = getParentPool().getBrackets();
+//		for (Bracket bracket : brackets) {
+//			if(ownerIsInGroup(bracket)) {
+//				groupBrackets.add(bracket);
+//			}
+//		}
+//		return groupBrackets;
 	}
 
     private boolean ownerIsInGroup(Bracket bracket) {
@@ -162,12 +164,12 @@ public class SubPool implements Pool {
     }
 
     @Override
-	public Iterator<PoolBracket> getRankedBrackets() {
+	public Collection<PoolBracket> getRankedBrackets() {
 		return getRankedBrackets(getBrackets(), getGroup());
 	}
 	
 	@Override
-	public Iterator<PoolBracket> getRankedBrackets(Iterable<Bracket> brackets, Group group) {
+	public Collection<PoolBracket> getRankedBrackets(Collection<Bracket> brackets, Group group) {
 		return getParentPool().getRankedBrackets(brackets, group);
 	}
 

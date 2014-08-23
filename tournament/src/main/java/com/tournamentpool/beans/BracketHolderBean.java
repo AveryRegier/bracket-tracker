@@ -107,12 +107,10 @@ public class BracketHolderBean {
 							bracketBean.setMayDelete(bracket.mayDelete(user));
 						}
 						bracketBean.setTournament(bracket.getTournament());
-						Iterator<Pool> pools = bracket.getPools();
-						while (pools.hasNext()) {
-							Pool pool = pools.next();
-							PoolBean poolBean = bracketBean.addPool(pool);
-							addOtherAttributes(bracket, pool, user, bracketBean, poolBean);
-						}
+                        for (Pool pool : bracket.getPools()) {
+                            PoolBean poolBean = bracketBean.addPool(pool);
+                            addOtherAttributes(bracket, pool, user, bracketBean, poolBean);
+                        }
 						this.bracketBeans.add(bracketBean);
 					}
 				}
@@ -126,40 +124,35 @@ public class BracketHolderBean {
 	 * @param user
 	 */
 	@SuppressWarnings({ "rawtypes" })
-	public void setPoolBrackets(Pool apool, Iterator<PoolBracket> brackets, User user) {
-		if(brackets != null) {
-			while (brackets.hasNext()) {
-				PoolBracket poolBracket = brackets.next();
-				if(poolBracket != null) {
-					BracketBean<?> bracketBean = new BracketBean();
-					Bracket bracket = poolBracket.getBracket();
-					bracketBean.setOid(bracket.getOID());
-					bracketBean.setName(bracket.getName());
-					User owner = bracket.getOwner();
-					if(owner != null) {
-						bracketBean.setUserName(owner.getName());
-					}
-					bracketBean.setTournament(bracket.getTournament());
-					bracketBean.setGroup(poolBracket.getGroup());
-					bracketBean.setScore(poolBracket.getScore());
-					bracketBean.setRank(poolBracket.getRank());
-					bracketBean.setMaxRank(poolBracket.getMaxRank());
-					bracketBean.setBeatBy(poolBracket.getBeatBy());
-					bracketBean.setRootingFor(poolBracket.getScore().getRootingFor(), apool);
-					bracketBean.setTieBreakerAnswer(poolBracket.getTieBreakerAnswer());
-					Iterator<Pool> pools = bracket.getPools();
-					while (pools.hasNext()) {
-						Pool pool = pools.next();
-						PoolBean poolBean = bracketBean.addPool(pool);
-						addOtherAttributes(bracket, pool, user, bracketBean, poolBean);
-					}
-                    if(apool.getGroup().hasChildren()) {
-                        setupTeamScores(bracketBean, owner.getMembershipGroupsInHierarchy(apool.getGroup()));
-                    }
-					bracketBeans.add(bracketBean);
-				}
-			}
-		}
+	public void setPoolBrackets(Pool apool, Iterable<PoolBracket> brackets, User user) {
+        for(PoolBracket poolBracket: brackets) {
+            if(poolBracket != null) {
+                BracketBean<?> bracketBean = new BracketBean();
+                Bracket bracket = poolBracket.getBracket();
+                bracketBean.setOid(bracket.getOID());
+                bracketBean.setName(bracket.getName());
+                User owner = bracket.getOwner();
+                if(owner != null) {
+                    bracketBean.setUserName(owner.getName());
+                }
+                bracketBean.setTournament(bracket.getTournament());
+                bracketBean.setGroup(poolBracket.getGroup());
+                bracketBean.setScore(poolBracket.getScore());
+                bracketBean.setRank(poolBracket.getRank());
+                bracketBean.setMaxRank(poolBracket.getMaxRank());
+                bracketBean.setBeatBy(poolBracket.getBeatBy());
+                bracketBean.setRootingFor(poolBracket.getScore().getRootingFor(), apool);
+                bracketBean.setTieBreakerAnswer(poolBracket.getTieBreakerAnswer());
+                for (Pool pool : bracket.getPools()) {
+                    PoolBean poolBean = bracketBean.addPool(pool);
+                    addOtherAttributes(bracket, pool, user, bracketBean, poolBean);
+                }
+                if(apool.getGroup().hasChildren()) {
+                    setupTeamScores(bracketBean, owner.getMembershipGroupsInHierarchy(apool.getGroup()));
+                }
+                bracketBeans.add(bracketBean);
+            }
+        }
 	}
 
     protected void setupTeamScores(BracketBean<?> bracketBean, Iterable<Group> membershipGroupsInHierarchy) {

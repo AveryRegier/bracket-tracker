@@ -29,6 +29,8 @@ import com.tournamentpool.domain.GameNode.Feeder;
 import utility.domain.Reference;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author avery
@@ -103,7 +105,6 @@ public class Bracket implements Reference {
 	private Tournament tournament;
 	private int oid;
 	private final User owner;
-	private int tiebreak_score; // should somehow tie into the scoring strategy
 	private Map<GameNode, Pick> picks;
 	private boolean changed = true;
 
@@ -124,21 +125,6 @@ public class Bracket implements Reference {
 	 */
 	public User getOwner() {
 		return owner;
-	}
-
-	/**
-	 * @return int
-	 */
-	public int getTiebreak_score() {
-		return tiebreak_score;
-	}
-
-	/**
-	 * Sets the tiebreak_score.
-	 * @param tiebreak_score The tiebreak_score to set
-	 */
-	public void setTiebreak_score(int tiebreak_score) {
-		this.tiebreak_score = tiebreak_score;
 	}
 
 	/**
@@ -180,7 +166,7 @@ public class Bracket implements Reference {
 		changed = true;
 	}
 
-	public Iterable<Pick> getPicks(SingletonProvider sp) {
+	public Collection<Pick> getPicks(SingletonProvider sp) {
 		retrievePicks(sp);
 		if (picks != null)
 			return picks.values();
@@ -230,38 +216,47 @@ public class Bracket implements Reference {
 	 */
 	public boolean isComplete(SingletonProvider sp) {
 		retrievePicks(sp);
-		Map<Object, GameNode> nodes = tournament.getTournamentType().getGameNodes();  // expensive call
-		if(picks != null && picks.size() >= nodes.size()) { // then verify every game has a pick
-			for(GameNode node: nodes.values()) {
-				Pick pick = picks.get(node);
-				if(pick == null || pick.getWinner() == null) return false;
-			}
-			return true;
-		} // else something must be missing, so
-		return false;
+//		Collection<GameNode> nodes = tournament.getTournamentType().getGameNodes();  // expensive call
+//		if(picks != null && picks.size() >= nodes.size()) { // then verify every game has a pick
+//			for(GameNode node: nodes) {
+//				Pick pick = picks.get(node);
+//				if(!(pick != null && pick.getWinner() != null)) return false;
+//			}
+//			return true;
+//		} // else something must be missing, so
+//		return false;
+
+        return tournament.getTournamentType().streamGameNodes()
+                .map(n->picks.get(n))
+                .allMatch(p->p!=null && p.getWinner() != null);
 	}
 
 	public boolean isInPool() {
 		// assuming all brackets are already loaded in all relevant pools
-		User owner = getOwner();
-		Iterator<Group> groups = owner.getGroups();
-		while (groups.hasNext()) {
-			Group group = groups.next();
-			for(Pool pool: group.getPools()) {
-				if(pool.hasBracket(this)) {
-					return true;
-				}
-			}
-		}
-		return false;
+        return getPoolStream()
+                .anyMatch(p -> p.hasBracket(this));
+//        for(Group group: getOwner().getGroups()) {
+//			for(Pool pool: group.getPools()) {
+//				if(pool.hasBracket(this)) {
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
 	}
-	
-	public boolean mayDelete(User user) {
+
+    private Stream<Pool> getPoolStream() {
+        return getOwner().getGroups().stream()
+                    .flatMap(g -> g.getPools().stream());
+    }
+
+    public boolean mayDelete(User user) {
 		return user != null && (user == getOwner() || user.isSiteAdmin()) && !isInPool();
 	}
 	
 	public boolean delete(User requestor, SingletonProvider sp) {
 		if(mayDelete(requestor)) {
+            retrievePicks(sp);
 			ArrayList<Pick> deletePicks = new ArrayList<Pick>(picks.values());
 			new PickInsertBroker(sp, Collections.<Pick>emptyList(), Collections.<Pick>emptyList(), deletePicks).execute();
 			picks.clear();
@@ -271,21 +266,10 @@ public class Bracket implements Reference {
 		return false;
 	}
 
-	public Iterator<Pool> getPools() {
-		User owner = getOwner();
-		Iterator<Group> groups = owner.getGroups();
-		Set<Pool> allPools = new LinkedHashSet<Pool>();
-        while (groups.hasNext()) {
-            Group group = groups.next();
-            allPools.addAll(group.getPools());
-        }
-        Set<Pool> poolsToReturn = new TreeSet<Pool>();
-        for(Pool pool: allPools) {
-            if(pool.hasBracket(this)) {
-                poolsToReturn.add(pool);
-            }
-        }
-		return poolsToReturn.iterator();
+	public Collection<Pool> getPools() {
+		return getPoolStream()
+                .filter(pool -> pool.hasBracket(this))
+                .collect(Collectors.toCollection(TreeSet::new));
 	}
 
 	public void setName(String name) {

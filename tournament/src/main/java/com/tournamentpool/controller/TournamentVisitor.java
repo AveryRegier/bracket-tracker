@@ -22,12 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 package com.tournamentpool.controller;
 
 import com.tournamentpool.domain.Bracket.Pick;
-import com.tournamentpool.domain.Game;
-import com.tournamentpool.domain.GameNode;
-import com.tournamentpool.domain.Opponent;
-import com.tournamentpool.domain.Seed;
-import com.tournamentpool.domain.Team;
-import com.tournamentpool.domain.Tournament;
+import com.tournamentpool.domain.*;
 
 /**
  * @author Avery J. Regier
@@ -84,34 +79,34 @@ public class TournamentVisitor extends GameVisitorCommon<TournamentVisitor.Node>
 		super(tournament);
 	}
 
-	public void visit(Seed winner, Opponent oponent, GameNode node, GameNode nextNode) {
+	public void visit(Seed winner, Opponent opponent, GameNode node, GameNode nextNode) {
 		Game game = tournament.getGame(node.getIdentityNode());
 		list.add(
 			new Node(winner, 
 					tournament.getTeam(winner), 
-					oponent, 
+					opponent,
 					node.getLevel().getRoundNo(), 
 					node, 
 					game != null ? game.getStatus() : null,
-					getScore(oponent, nextNode)));
+					getScore(opponent, nextNode)));
 	}
 
-	private Integer getScore(Opponent oponent, GameNode nextNode) {
+	private Integer getScore(Opponent opponent, GameNode nextNode) {
 		if(nextNode != null) {
 			Game nextGame = tournament.getGame(nextNode.getIdentityNode());
 			if(nextGame != null) {
-				return nextGame.getScore(oponent);
+				return nextGame.getScore(opponent);
 			}
 		}
 		return null;
 	}
 
-	public void visit(Opponent oponent, Seed seed, int roundNo, GameNode nextNode) {
+	public void visit(Opponent opponent, Seed seed, int roundNo, GameNode nextNode) {
 		list.add(new Node(seed, 
 						tournament.getTeam(seed), 
-						oponent, 
+						opponent,
 						roundNo,
-						getScore(oponent, nextNode)));
+						getScore(opponent, nextNode)));
 	}
 	
 	public Opponent getWinner(GameNode node) {

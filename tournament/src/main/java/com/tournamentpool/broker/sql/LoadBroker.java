@@ -42,8 +42,9 @@ public abstract class LoadBroker extends SQLBroker {
 		super(sp);
 	}
 	
-	public void addDependency(LoadBroker dependency) {
+	public LoadBroker addDependency(LoadBroker dependency) {
 		dependencies.add(dependency);
+        return this;
 	}
 	
 	void setManager(LoadManager lm){

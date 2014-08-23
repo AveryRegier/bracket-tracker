@@ -97,8 +97,8 @@ public class User {
 		groups.add(group);
 	}
 
-	public Iterator<Group> getGroups() {
-		return groups.iterator();
+	public Collection<Group> getGroups() {
+		return Collections.unmodifiableCollection(groups);
 	}
 	
 	public Group getGroupInHierarchy(Group parent) {

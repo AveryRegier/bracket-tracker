@@ -30,7 +30,11 @@ import com.tournamentpool.broker.sql.delete.PoolDeleteBroker;
 import com.tournamentpool.broker.sql.get.BracketPoolGetBroker;
 import com.tournamentpool.domain.ScoreSystem.Score;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * @author avery
@@ -144,70 +148,85 @@ public class MainPool implements Pool {
     /* (non-Javadoc)
          * @see com.tournamentpool.domain.IPool#getRankedBrackets()
          */
-	public Iterator<PoolBracket> getRankedBrackets() {
+	public Collection<PoolBracket> getRankedBrackets() {
 		return getRankedBrackets(getBrackets(), getGroup());
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Iterator<PoolBracket> getRankedBrackets(Iterable<Bracket> toEvaluate, Group group) {
-		TreeSet<PoolBracket> poolBrackets = new TreeSet<PoolBracket>(); // this will put them in absolute order;
-		
-		for(Bracket bracket: toEvaluate) {
-			Score score = scoreSystem.calculate(bracket, sp); // force brackets to load
-			String bracketTieBreakerAnswer = this.brackets.get(bracket);
-			Comparable<?> tieBreakerDelta = tieBreakerType.getTieBreakerDelta(
-										tieBreakerAnswer, bracketTieBreakerAnswer,
-										this, bracket);
-			bracketTieBreakerAnswer = tieBreakerType.getTieBreakerReport(bracketTieBreakerAnswer, tieBreakerDelta);
-			PoolBracket poolBracket = new PoolBracket(
-					bracket,
-					score,
-					bracketTieBreakerAnswer,
-					tieBreakerDelta,
-					bracket.getOwner().getGroupInHierarchy(group));
-			poolBrackets.add(poolBracket);
-		}
-		int rank = 0;
-		int nextRank = 1; // tie situations skip the next rank
-		int previous = Integer.MAX_VALUE;
-		Comparable previousDelta = null;
-		
-		for (PoolBracket poolBracket : poolBrackets) {
-			Score bracketScore = poolBracket.getScore();
-			int current = bracketScore.getCurrent();
-			if(current < previous ||
-				(previousDelta != null &&
-				 previousDelta.compareTo(poolBracket.getTieBreakerDelta()) < 0)) // tiebreaker
-			{
-				rank = nextRank;
-			}
-			poolBracket.setRank(rank);
-			previous = current;
-			previousDelta = poolBracket.getTieBreakerDelta();
-			nextRank++;
+	public Collection<PoolBracket> getRankedBrackets(Collection<Bracket> toEvaluate, Group group) {
+        TreeSet<PoolBracket> scoredBrackets = collectScores(toEvaluate, group);
 
-			// determine max rank and set up rooting for
-			for(PoolBracket toCompare: poolBrackets) {
-				if(poolBracket != toCompare) { // never compare against yourself
-					if(!bracketScore.canTieOrBeat(toCompare.getScore())) {
-						poolBracket.reduceMaxRank(toCompare);
-					}
-				}
-			}
-			// since we've collected stats against everyone at canTieOrBeat,
-			// we can now do this analysis
-			if(bracketScore.willGetBeatByOneOfThoseICanIndividuallyTieOrBeat(getTournament())) {
-				poolBracket.reduceMaxRank(null);
-			}
-		}
-
-		GameNodeAdapter.clearPossibleWinningSeedsCache();
-		return poolBrackets.iterator();
+        rankBrackets(scoredBrackets);
+		return scoredBrackets;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tournamentpool.domain.IPool#getGroup()
-	 */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private void rankBrackets(TreeSet<PoolBracket> scoredBrackets) {
+        int rank = 0;
+        int nextRank = 1; // tie situations skip the next rank
+        int previous = Integer.MAX_VALUE;
+        Comparable previousDelta = null;
+
+        for (PoolBracket poolBracket : scoredBrackets) {
+            Score bracketScore = poolBracket.getScore();
+            int current = bracketScore.getCurrent();
+            if(current < previous ||
+                (previousDelta != null &&
+                 previousDelta.compareTo(poolBracket.getTieBreakerDelta()) < 0)) // tiebreaker
+            {
+                rank = nextRank;
+            }
+            poolBracket.setRank(rank);
+            previous = current;
+            previousDelta = poolBracket.getTieBreakerDelta();
+            nextRank++;
+        }
+
+        scoredBrackets.parallelStream().forEach(b->setMaxRank(scoredBrackets, b));
+
+        GameNodeAdapter.clearPossibleWinningSeedsCache();
+    }
+
+    private void setMaxRank(TreeSet<PoolBracket> scoredBrackets, PoolBracket poolBracket) {
+
+        Score bracketScore = poolBracket.getScore();
+        // determine max rank and set up rooting for
+        // never compare against yourself
+        scoredBrackets.stream()
+                .filter(toCompare -> poolBracket != toCompare) // never compare against yourself
+                .filter(toCompare -> !bracketScore.canTieOrBeat(toCompare.getScore()))
+                .forEach(poolBracket::reduceMaxRank);
+
+        // since we've collected stats against everyone at canTieOrBeat,
+        // we can now do this analysis
+        if(bracketScore.willGetBeatByOneOfThoseICanIndividuallyTieOrBeat(getTournament())) {
+            poolBracket.reduceMaxRank(null);
+        }
+    }
+
+    private TreeSet<PoolBracket> collectScores(Collection<Bracket> toEvaluate, Group group) {
+        return toEvaluate.parallelStream()
+                .map(b -> score(group, b))
+                .collect(Collectors.toCollection(() ->  new TreeSet<>()));// this will put them in absolute order;
+    }
+
+    private PoolBracket score(Group group, Bracket bracket) {
+        Score score = scoreSystem.calculate(bracket, sp); // force brackets to load
+        String bracketTieBreakerAnswer = this.brackets.get(bracket);
+        Comparable<?> tieBreakerDelta = tieBreakerType.getTieBreakerDelta(
+                                    tieBreakerAnswer, bracketTieBreakerAnswer,
+                                    this, bracket);
+        bracketTieBreakerAnswer = tieBreakerType.getTieBreakerReport(bracketTieBreakerAnswer, tieBreakerDelta);
+        return new PoolBracket(
+                bracket,
+                score,
+                bracketTieBreakerAnswer,
+                tieBreakerDelta,
+                bracket.getOwner().getGroupInHierarchy(group));
+    }
+
+    /* (non-Javadoc)
+     * @see com.tournamentpool.domain.IPool#getGroup()
+     */
 	public Group getGroup() {
 		return group;
 	}
@@ -274,12 +293,9 @@ public class MainPool implements Pool {
 	 */
 	public boolean hasReachedLimit(User owner) {
 		if(bracketLimit == 0) return false;
-		int count = 0;
-		for(Bracket bracket: getBrackets()) {
-			if(bracket.getOwner() == owner) {
-				count++;
-			}
-		}
+        long count = getBrackets().stream()
+                .filter(b -> b.getOwner() == owner)
+                .count();
 		return count >= bracketLimit;
 	}
 
@@ -359,9 +375,9 @@ public class MainPool implements Pool {
 	/* (non-Javadoc)
 	 * @see com.tournamentpool.domain.IPool#mayRemoveBracket(com.tournamentpool.domain.User, com.tournamentpool.domain.Bracket)
 	 */
-	public boolean mayRemoveBracket(User requestor, Bracket bracket) {
-		if(requestor != null && 
-			(requestor == group.getAdministrator() || requestor.isSiteAdmin() || requestor == bracket.getOwner())) 
+	public boolean mayRemoveBracket(User requester, Bracket bracket) {
+		if(requester != null &&
+			(requester == group.getAdministrator() || requester.isSiteAdmin() || requester == bracket.getOwner()))
 		{
 			return !getTournament().isStarted();
 		}

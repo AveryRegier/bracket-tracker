@@ -18,81 +18,67 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
-import utility.domain.Reference;
 import utility.menu.Menu;
 import utility.menu.reference.ReferenceMenu;
 
-import com.tournamentpool.domain.GameNode.Feeder;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public abstract class TournamentTypeAdapter implements TournamentType {
 
-	public Map<Object, GameNode> getGameNodes() {
-			Map<Object, GameNode> toReturn = new TreeMap<Object, GameNode>();
-			List<GameNode> nodes = new ArrayList<GameNode>(getNumSeeds() * 2);
-			nodes.add(getChampionshipGameNode());
-			while(!nodes.isEmpty()) {
-				GameNode node = nodes.remove(0);
-				toReturn.put(node.getID(), node);
-	//			if(node.getLevel() != startLevel) { // let the feeder wrapping take care of this
-					for (Feeder feeder: node.getFeeders()) {
-						Reference reference = feeder.getFeeder();
-						if(reference instanceof GameNode) {
-							nodes.add((GameNode)reference);
-						}
-					}
-	//			}
-			}
-			return toReturn;
-		}
+	public Collection<GameNode> getGameNodes() {
+        return streamGameNodes()
+                .collect(Collectors.toList());
+    }
 
 	public List<GameNode> getGameNodesInLevelOrder() {
-		Map<Level, List<GameNode>> levelMap = new TreeMap<Level, List<GameNode>>();
-		
-		Collection<GameNode> values = getGameNodes().values();
-		for (GameNode gameNode : values) {
-			List<GameNode> nodes = levelMap.get(gameNode.getLevel());
-			if(nodes == null) {
-				nodes = new ArrayList<GameNode>();
-				levelMap.put(gameNode.getLevel(), nodes);
-			}
-			nodes.add(gameNode);
-		}
-		
-		List<GameNode> nodes = new ArrayList<GameNode>(getNumSeeds() * 2);
-		for (Entry<Level, List<GameNode>> entry : levelMap.entrySet()) {
-			nodes.addAll(entry.getValue());
-		}
-		
-		return nodes;
+        return streamGameNodesInLevelOrder()
+                .collect(Collectors.toList());
 	}
 
-	public Menu getLevelMenu() {
+    public Stream<GameNode> streamGameNodesInLevelOrder() {
+        return streamGameNodes()
+                .collect(Collectors.groupingBy(GameNode::getLevel))
+                .values().stream()
+                .flatMap((l) -> l.stream());
+    }
+
+    public Menu getLevelMenu() {
 		return new ReferenceMenu<Level>("levels") {
 			protected Map<Integer, Level> getReferences() {
-				Map<Integer, Level> levels = new TreeMap<Integer, Level>();
-				List<GameNode> nodes = new ArrayList<GameNode>(getNumSeeds() * 2);
-				nodes.add(getChampionshipGameNode());
-				while(!nodes.isEmpty()) {
-					GameNode node = nodes.remove(0);
-					Level level = node.getLevel();
-					levels.put(level.getID(), level);
-					for (GameNode.Feeder feeder: node.getFeeders()) {
-						Reference reference = feeder.getFeeder();
-						if(reference instanceof GameNode) {
-							nodes.add((GameNode)reference);
-						}
-					}
-				}
-				return levels;
+                return streamGameNodes()
+                        .map(GameNode::getLevel)
+                        .collect(toTreeMap(Level::getID));
 			}
 		};
 	}
+
+    private static <K,U> Collector<U, ?, TreeMap<K, U>> toTreeMap(Function<U, K> keyMapper) {
+        return Collectors.toMap(
+            keyMapper,
+            Function.identity(),
+            (a,b) -> {
+                if(a != b) {
+                    throw new IllegalStateException(
+                            String.format(
+                                    "Attempting to accumulate objects that aren't the same: %s != %s", a, b));
+                }
+                return a;
+            },
+            TreeMap::new
+        );
+    }
+
+    public Stream<GameNode> streamGameNodes() {
+        return StreamSupport.stream(new GameNodeSpliterator(this), false);
+    }
+
 
 }

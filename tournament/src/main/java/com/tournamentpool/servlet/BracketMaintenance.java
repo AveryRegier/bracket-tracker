@@ -27,17 +27,14 @@ import com.tournamentpool.broker.sql.DatabaseFailure;
 import com.tournamentpool.broker.sql.insert.PickInsertBroker;
 import com.tournamentpool.domain.*;
 import com.tournamentpool.domain.Bracket.Pick;
-import com.tournamentpool.domain.GameNode.Feeder;
 import com.tournamentpool.domain.Tournament;
 import utility.StringUtil;
-import utility.domain.Reference;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author Avery J. Regier
@@ -212,32 +209,23 @@ public class BracketMaintenance extends RequiresLoginServlet {
 	private void sortPicks(DecisionMaker decider,
 			Bracket bracket, List<Pick> insertPicks, List<Pick> updatePicks,
 			List<Pick> deletePicks) {
-		TournamentType tournamentType = bracket.getTournament().getTournamentType();
-		List<Reference> nodes = new LinkedList<Reference>();
-		nodes.add(tournamentType.getChampionshipGameNode());
-		while(!nodes.isEmpty()) {
-			Object o = nodes.remove(0);
-			if(o instanceof GameNode) {
-				GameNode node = (GameNode)o;
-                nodes.addAll(node.getFeeders().stream()
-                        .map(Feeder::getFeeder)
-                        .collect(Collectors.toList()));
-                int decision = decider.getDecision(node);
-                Opponent winner = tournamentType.getOpponentByOrder(decision);
-				Bracket.Pick pick = bracket.createPick(node);
-				if(pick.isNew()) {
-					if(winner != null) {
-						pick.setWinner(winner);
-						insertPicks.add(pick);
-					}
-				} else if(winner != null) {
-					pick.setWinner(winner);
-					updatePicks.add(pick);
-				} else {
-					deletePicks.add(pick);
-				}
-			}
-		}
+        TournamentType tournamentType = bracket.getTournament().getTournamentType();
+        tournamentType.streamGameNodes().forEach(node -> {
+            int decision = decider.getDecision(node);
+            Opponent winner = tournamentType.getOpponentByOrder(decision);
+            Bracket.Pick pick = bracket.createPick(node);
+            if(pick.isNew()) {
+                if(winner != null) {
+                    pick.setWinner(winner);
+                    insertPicks.add(pick);
+                }
+            } else if(winner != null) {
+                pick.setWinner(winner);
+                updatePicks.add(pick);
+            } else {
+                deletePicks.add(pick);
+            }
+        });
 	}
 
     interface DecisionMaker {

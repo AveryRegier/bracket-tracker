@@ -18,13 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import com.tournamentpool.controller.TournamentVisitor;
 import utility.domain.Reference;
 
-import com.tournamentpool.controller.TournamentVisitor;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 
 /**
@@ -46,7 +44,6 @@ class SubGameNode extends GameNodeAdapter implements GameNode {
 			if(isSeed()) {
 				visitor.visit(oponent, getSeed(), getLevel().getRoundNo()-1, nextNode);
 			} else {
-//				parent.visit(visitor);
 				wrap((GameNode)getFeeder()).visit(visitor, oponent, nextNode);
 			}
 		}
@@ -55,7 +52,6 @@ class SubGameNode extends GameNodeAdapter implements GameNode {
 			if(isSeed()) {
 				return getSeed();
 			} else {
-//				return parent.visitForWinner(visitor);
 				return wrap((GameNode)getFeeder()).visitForWinner(visitor);
 			}
 		}
@@ -76,8 +72,7 @@ class SubGameNode extends GameNodeAdapter implements GameNode {
 		}
 
 		public boolean isSeed() {
-			boolean isSeed = parent.isSeed();
-			return isSeed ? isSeed : isAtStartLevel(parent.getFeeder());
+            return parent.isSeed() || isAtStartLevel(parent.getFeeder());
 		}
 
 		private boolean isAtStartLevel(Reference feeder) {
@@ -108,12 +103,9 @@ class SubGameNode extends GameNodeAdapter implements GameNode {
 	}
 
 	public Collection<Feeder> getFeeders() {
-		Collection<Feeder> feeders = parent.getFeeders();
-		List<Feeder> toReturn = new ArrayList<Feeder>(feeders.size());
-		for (Feeder feeder: feeders) {
-			toReturn.add(new SubFeeder(feeder));
-		}
-		return toReturn;
+        return parent.getFeeders().stream()
+                .map(f -> new SubFeeder(f))
+                .collect(Collectors.toList());
 	}
 
 	public Feeder getFeeder(Opponent winner) {

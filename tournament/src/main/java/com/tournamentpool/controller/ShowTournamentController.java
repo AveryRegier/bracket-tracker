@@ -190,11 +190,11 @@ public class ShowTournamentController extends TournamentController {
 		for (GameVisitorCommon.Node node: nodes) {
 			GameNode gameNode = tournamentType.getGameNode(node.getGameNodeOid());
 			if(gameNode != null) {
-				Seed winner = gameNode.visitForWinner(tournamentVisitor);
 				Game game = tournament.getGame(gameNode);
-				boolean played = game != null && game.getWinner() != null;
-				if(played) {
-					Seed loser = gameNode.visitForLoser(tournamentVisitor);
+                boolean played = game != null && game.getWinner() != null;
+                if(played) {
+                    Seed winner = gameNode.visitForWinner(tournamentVisitor);
+                    Seed loser = gameNode.visitForLoser(tournamentVisitor);
 					if(loser != null) {
 						node.setUpset(winner.getSeedNo() > loser.getSeedNo());
 //						node.setUpset(winner.getSeedNo() > loser.getSeedNo(), winner, loser);
@@ -210,11 +210,11 @@ public class ShowTournamentController extends TournamentController {
 		for (BracketVisitor.Node node: nodes) {
 			GameNode gameNode = tournamentType.getGameNode(node.getGameNodeOid());
 			if(gameNode != null) {
-				Seed winner = gameNode.visitForWinner(bracketVisitor);
 				Pick pick = bracket.getPick(sp, gameNode);
-				boolean picked = pick != null && pick.getWinner() != null;
-				if(picked) {
-					Seed loser = gameNode.visitForLoser(bracketVisitor);
+                boolean picked = pick != null && pick.getWinner() != null;
+                if(picked) {
+                    Seed winner = gameNode.visitForWinner(bracketVisitor);
+                    Seed loser = gameNode.visitForLoser(bracketVisitor);
 					if(loser != null) {
 						node.setUpsetPicked(winner.getSeedNo() > loser.getSeedNo());
 //						node.setUpsetPicked(winner.getSeedNo() > loser.getSeedNo(), winner, loser);

@@ -39,8 +39,8 @@ public class BracketVisitor extends GameVisitorCommon<BracketVisitor.Node> {
 			super(seed, team, opponent, level);
 		}
 
-		public Node(Seed winner, Team team, Opponent oponent, int roundNo, GameNode node) {
-			super(winner, team, oponent, roundNo, node);
+		public Node(Seed winner, Team team, Opponent opponent, int roundNo, GameNode node) {
+			super(winner, team, opponent, roundNo, node);
 		}
 
 		public void setDecided(boolean correct, int score) {
@@ -93,14 +93,14 @@ public class BracketVisitor extends GameVisitorCommon<BracketVisitor.Node> {
 		bracket.getPicks(sp); // preretrieve picks
 	}
 
-	public void visit(Seed winner, Opponent oponent, GameNode node, GameNode nextNode) {
+	public void visit(Seed winner, Opponent opponent, GameNode node, GameNode nextNode) {
 		list.add(
-			new Node(winner, tournament.getTeam(winner), oponent,
+			new Node(winner, tournament.getTeam(winner), opponent,
 					node.getLevel().getRoundNo(), node));
 	}
 
-	public void visit(Opponent oponent, Seed seed, int roundNo, GameNode nextNode) {
-		list.add(new Node(seed, tournament.getTeam(seed), oponent, roundNo));
+	public void visit(Opponent opponent, Seed seed, int roundNo, GameNode nextNode) {
+		list.add(new Node(seed, tournament.getTeam(seed), opponent, roundNo));
 	}
 
 	public Opponent getWinner(GameNode node) {

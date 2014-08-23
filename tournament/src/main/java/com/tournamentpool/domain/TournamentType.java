@@ -21,12 +21,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
+import utility.domain.Reference;
+import utility.menu.Menu;
+
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import utility.domain.Reference;
-import utility.menu.Menu;
+import java.util.stream.Stream;
 
 /**
  * @author Avery J. Regier
@@ -66,7 +68,7 @@ public interface TournamentType extends Reference {
 	 */
 	public abstract Set<Map.Entry<Integer, Opponent>> getOpponents();
 
-	public abstract Map<Object, GameNode> getGameNodes();
+	public abstract Collection<GameNode> getGameNodes();
 	public List<GameNode> getGameNodesInLevelOrder();
 	
 	public abstract GameNode getGameNode(int gameNodeOID);
@@ -80,5 +82,7 @@ public interface TournamentType extends Reference {
 	public abstract int getNumSeeds();
 
 	public abstract Menu getLevelMenu();
+
+    public Stream<GameNode> streamGameNodes();
 
 }

@@ -38,13 +38,13 @@ exception statement from your version. */
  */
 package utility.menu.reference;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import utility.domain.Reference;
 import utility.menu.Menu;
 import utility.menu.MenuItem;
 import utility.menu.SimpleMenuItem;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @author Avery J. Regier
@@ -82,7 +82,7 @@ public abstract class ReferenceMenu<T extends Reference> implements Menu {
 	}
 
 	public MenuItem resolve(String value) {
-		Reference ref = (Reference)getReferences().get(value);
+		Reference ref = getReferences().get(value);
 		return createMenuItem(ref);
 	}
 	

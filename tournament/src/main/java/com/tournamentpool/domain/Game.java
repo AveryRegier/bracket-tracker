@@ -43,7 +43,7 @@ public class Game implements GameInfo {
 	
 	/**
 	 * @param gameNode
-	 * @param oponent
+	 * @param winner
 	 * @param startTime
 	 */
 	public Game(Tournament tournament, GameNode gameNode, Opponent winner, Date startTime) {

@@ -82,9 +82,8 @@ public class PlayerBean extends BracketHolderBean implements Comparable<PlayerBe
 		return groupBeans.iterator();
 	}
 	
-	public void setGroups(Iterator<Group> groups) {
-		while (groups.hasNext()) {
-			Group group = groups.next();
+	public void setGroups(Iterable<Group> groups) {
+		for(Group group: groups) {
 			if(group != null) {
 				GroupBean groupBean = new GroupBean(group);
 				groupBean.setPools(group.getPools(), (User)null);

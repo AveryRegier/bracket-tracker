@@ -21,10 +21,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
+import com.tournamentpool.controller.GameVisitorCommon.Node;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.tournamentpool.controller.GameVisitorCommon.Node;
 
 /**
  * @author Avery J. Regier
@@ -38,7 +38,7 @@ public abstract class GameVisitor<T extends Node> {
 		int round = tournamentType.getChampionshipGameNode().getLevel().getRoundNo();
 		int numOponents = tournamentType.getNumOponents();
 		// this will be the number of games + seeds, if the structure is rational
-		this.list = new ArrayList<T>((int)Math.pow(numOponents, round+1));
+		this.list = new ArrayList<>((int)Math.pow(numOponents, round+1));
 	}
 	
 	public List<T> visit() {

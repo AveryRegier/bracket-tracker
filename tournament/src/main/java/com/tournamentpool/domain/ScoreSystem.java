@@ -28,6 +28,7 @@ import utility.domain.Reference;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * @author Avery J. Regier
@@ -36,8 +37,8 @@ public class ScoreSystem implements Reference {
 	public class Score {
 		private int current;
 		private int remaining;
-		private Map<GameNode, Pick> remainingNodes = new HashMap<GameNode, Pick>();
-		private Map<GameNode, Set<Seed>> otherPicks = new HashMap<GameNode, Set<Seed>>();
+		private Map<GameNode, Pick> remainingNodes = new HashMap<>();
+		private Map<GameNode, Set<Seed>> otherPicks = new HashMap<>();
 		private Map<GameNode, Set<Seed>> unforseenPicksMap;
 
 		public int getCurrent() {
@@ -68,19 +69,14 @@ public class ScoreSystem implements Reference {
 
 			// we can check the difference between the brackets
 			// this is a superset of the first check
-			Map<GameNode, Pick> uniquePicksLeft = new HashMap<GameNode, Pick>();
-			Set<Entry<GameNode, Pick>> entrySet = remainingNodes.entrySet();
-			for (Entry<GameNode, Pick> entry : entrySet) {
-				if(getSeed(other.remainingNodes.get(entry.getKey())) != getSeed(entry.getValue())) {
-					uniquePicksLeft.put(entry.getKey(), entry.getValue());
-				}
-			}
-			if(current < other.current) {
-				// if all my remaining picks are in another bracket and I have less points, then I can't win.
+            Set<GameNode> uniquePicksLeft = gamesWithUniquePicks(other);
+
+            if(current < other.current) {
+				// if all my remaining picks are in another bracket and I have fewer points, then I can't win.
 				if(uniquePicksLeft.size() == 0) return false;
 
 				// if the difference is greater than my unique points left, then I can't win
-				if((other.current - current) > uniquePointsRemaining(uniquePicksLeft) ) {
+                if((other.current - current) > uniquePointsRemaining(uniquePicksLeft)) {
 					checkUnforseen(other);
 					return false;
 				}
@@ -90,26 +86,33 @@ public class ScoreSystem implements Reference {
 				// only do this if we don't already know we're beaten.
 				// that way we know we can push this guy down in rank if the analysis proves
 				// someone else will be able to get points
-				Map<GameNode, Pick> otherUniquePicksLeft = getOtherPicksLeft(other);
-				if(otherUniquePicksLeft.size() > 0 &&
-					(current < other.current + getPossibleScore(otherUniquePicksLeft.values())))
-				{
-					for (Map.Entry<GameNode, Pick> entry: otherUniquePicksLeft.entrySet()) {
-						Set<Seed> set = this.otherPicks.get(entry.getKey());
-						if(set == null) {
-							set = new HashSet<Seed>();
-							this.otherPicks.put(entry.getKey(), set);
-						}
-						set.add(getSeed(entry.getValue()));
-					}
-				}
+                setupBeatBySomeoneAnalyses(other);
 			}
 			// TODO: other, more complex scenarios
 			checkUnforseen(other);
 			return true;
 		}
 
-		private void checkUnforseen(Score other) {
+        private void setupBeatBySomeoneAnalyses(Score other) {
+            Map<GameNode, Pick> otherUniquePicksLeft = getOtherPicksLeft(other);
+            if(otherUniquePicksLeft.size() > 0 &&
+                (current < other.current + uniquePointsRemaining(otherUniquePicksLeft.keySet())))
+            {
+                otherUniquePicksLeft.entrySet()
+                        .forEach(e -> this.otherPicks
+                                .computeIfAbsent(e.getKey(), k -> new HashSet<>())
+                                .add(getSeed(e.getValue())));
+            }
+        }
+
+        private Set<GameNode> gamesWithUniquePicks(Score other) {
+            return remainingNodes.entrySet().stream()
+                            .filter(e -> getSeed(other.remainingNodes.get(e.getKey())) != getSeed(e.getValue()))
+                            .map(e->e.getKey())
+                            .collect(Collectors.toSet());
+        }
+
+        private void checkUnforseen(Score other) {
 			if(other.getMax() >= current) {
 				// if it is at all possible for this guy to beat me, but isn't already, I want to
 				// see what teams I can root for, for whom the other guy won't get 
@@ -127,16 +130,14 @@ public class ScoreSystem implements Reference {
 			return pick == null ? null : pick.getSeed();
 		}
 
-		private int uniquePointsRemaining(Map<GameNode, Pick> uniquePicksLeft) {
-			int pointsLeft = 0;
-			Set<GameNode> keySet = uniquePicksLeft.keySet();
-			for (GameNode node : keySet) {
-				pointsLeft += getScore(node.getLevel());
-			}
-			return pointsLeft;
-		}
+        private int uniquePointsRemaining(Set<GameNode> gameNodes) {
+            return gameNodes.stream()
+                    .map(n -> n.getLevel())
+                    .mapToInt(l -> getScore(l))
+                    .sum();
+        }
 
-		/**
+        /**
 		 * Get picks the other guy has that are still viable for games that this bracket
 		 * has no viable picks for.  Use this to determine the potential this other bracket
 		 * has to defeat the current bracket.
@@ -144,15 +145,10 @@ public class ScoreSystem implements Reference {
 		 * @return
 		 */
 		private Map<GameNode, Pick> getOtherPicksLeft(Score other) {
-			Map<GameNode, Pick> uniquePicksLeft = new HashMap<GameNode, Pick>();
-			for (Map.Entry<GameNode, Pick> entry: other.remainingNodes.entrySet()) {
-				//if I don't have a pick for this node, but the other guy does, I care
-				GameNode gameNode = entry.getKey();
-				if(remainingNodes.get(gameNode) == null) {
-					uniquePicksLeft.put(gameNode, entry.getValue());
-				}
-			}
-			return uniquePicksLeft;
+            return other.remainingNodes.entrySet().stream()
+                    //if I don't have a pick for this node, but the other guy does, I care
+                    .filter(e->remainingNodes.get(e.getKey()) == null)
+                    .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 		}
 		
 		/**
@@ -161,51 +157,48 @@ public class ScoreSystem implements Reference {
 		 */
 		private void visitForTeamsThatNoOneElseGetsPointsFrom(Score other) {
 			if(unforseenPicksMap == null) {
-				unforseenPicksMap = new HashMap<GameNode, Set<Seed>>();
+				unforseenPicksMap = new HashMap<>();
 			}
-			for (Map.Entry<GameNode, Pick> entry: other.remainingNodes.entrySet()) {
+            other.remainingNodes.entrySet().forEach(e->{
 				//if I don't have a pick for this node, but the other guy does, I care
-				GameNode gameNode = entry.getKey();
+				GameNode gameNode = e.getKey();
 				if(!remainingNodes.containsKey(gameNode)) {
-					Set<Seed> unforseenPicks = unforseenPicksMap.get(gameNode);
-					if(unforseenPicks == null) {
-						Tournament tournament = entry.getValue().getBracket().getTournament();
-						Set<Seed> stillInPlay = gameNode.getPossibleWinningSeeds(tournament);
-						// make a copy because we're going to start removing seeds
-						unforseenPicks = new HashSet<Seed>();
-						Game game = tournament.getGame(gameNode);
-						if(stillInPlay != null && (game == null || game.getWinner() == null) ){
-							unforseenPicks.addAll(stillInPlay);
-						}
-						unforseenPicksMap.put(gameNode, unforseenPicks);
-					}
-					unforseenPicks.remove(entry.getValue().getSeed());
+                    unforseenPicksMap
+                        .computeIfAbsent(gameNode, k->
+                                getAllPossibleWinners(gameNode, e.getValue().getBracket().getTournament()))
+                        .remove(e.getValue().getSeed());
 				}
-			}
+			});
 		}
 
-		public boolean willGetBeatByOneOfThoseICanIndividuallyTieOrBeat(Tournament tournament) {
-			for (Map.Entry<GameNode, Set<Seed>> entry: this.otherPicks.entrySet()) {
-				GameNode gameNode = entry.getKey();
-				Set<Seed> set = entry.getValue();
-				// if there is a game node where all remaining teams that can get to that game
-				// are picked by someone that this bracket can otherwise tie, then
-				// this bracket cannot win.
-				Set<Seed> possibleWinners = gameNode.getPossibleWinningSeeds(tournament);
-				if(set.containsAll(possibleWinners)) {
-					return true;
-				}
-			}
-			return false;
+        private Set<Seed> getAllPossibleWinners(GameNode gameNode, Tournament tournament) {
+            // make a copy of the cached result because we're going to start removing seeds
+            Set<Seed> unforseenPicks = new HashSet<>();
+            Game game = tournament.getGame(gameNode);
+            if(game == null || game.getWinner() == null){
+                Set<Seed> stillInPlay = gameNode.getPossibleWinningSeeds(tournament);
+                if(stillInPlay != null) {
+                    unforseenPicks.addAll(stillInPlay);
+                }
+            }
+            return unforseenPicks;
+        }
+
+        public boolean willGetBeatByOneOfThoseICanIndividuallyTieOrBeat(Tournament tournament) {
+            // if there is a game node where all remaining teams that can get to that game
+            // are picked by someone that this bracket can otherwise tie, then
+            // this bracket cannot win.
+            return this.otherPicks.entrySet().stream()
+                    .anyMatch(e -> e.getValue().containsAll(e.getKey().getPossibleWinningSeeds(tournament)));
 		}
 
-		/**
+        /**
 		 * Get the most important teams for this player to win
 		 * @return
 		 */
 		public Seed[] getRootingFor() {
 			int max = 0;
-			Set<Seed> seeds = new LinkedHashSet<Seed>();
+			Set<Seed> seeds = new LinkedHashSet<>();
 			for (Entry<GameNode, Pick> entry : remainingNodes.entrySet()) {
 				GameNode node = entry.getKey();
 				int currentRound = node.getLevel().getRoundNo();
@@ -238,7 +231,7 @@ public class ScoreSystem implements Reference {
 
 	private int oid;
 	private String name;
-	private Map<Integer, int[]> levels = new HashMap<Integer, int[]>();
+	private Map<Integer, int[]> levels = new HashMap<>();
 
 	/**
 	 * @param scoreSystemOID
@@ -247,14 +240,6 @@ public class ScoreSystem implements Reference {
 	public ScoreSystem(int scoreSystemOID, String name) {
 		this.oid = scoreSystemOID;
 		this.name = name;
-	}
-
-	private int getPossibleScore(Collection<Pick> picks) {
-		int score = 0;
-		for (Bracket.Pick pick: picks) {
-			score += getScore(pick.getGameNode().getLevel());
-		}
-		return score;
 	}
 
 	/**
@@ -295,29 +280,42 @@ public class ScoreSystem implements Reference {
 		for (Bracket.Pick pick: bracket.getPicks(sp)) {
 			GameNode gameNode = pick.getGameNode();
 			if(gameNode != null) {
-				Seed winner = gameNode.visitForWinner(tournamentVisitor);
-				int score = getScore(gameNode.getLevel());
-				Game game = tournament.getGame(gameNode);
-				boolean played = game != null && game.getWinner() != null;
-				if(played) {
-					if(winner == pick.getSeed())
-						theScore.add(score);
+                if(isPlayed(tournament, gameNode)) {
+					if(gameNode.visitForWinner(tournamentVisitor) == pick.getSeed()) {
+                        theScore.add(getScore(gameNode.getLevel()));
+                    }
 				} else {
 					// if the game has not been played, then need to determine
 					// if the pick has not already been defeated.
-					Seed preWinner;
-					do {
-						GameNode.Feeder feeder = gameNode.getFeeder(bracket.getPickFromMemory(gameNode).getWinner());
-						preWinner = feeder.visitForWinner(tournamentVisitor);
-						Reference ref = feeder.getFeeder();
-						if(ref instanceof GameNode) {
-							gameNode = (GameNode) ref;
-						}
-					} while( preWinner == null);
-					if(preWinner == pick.getSeed())	theScore.predict(score, pick);
+                    if(isPickStillAlive(bracket, tournamentVisitor, pick, gameNode)) {
+                        theScore.predict(getScore(gameNode.getLevel()), pick);
+                    }
 				}
 			}
 		}
 		return theScore;
 	}
+
+    private boolean isPlayed(Tournament tournament, GameNode gameNode) {
+        Game game = tournament.getGame(gameNode);
+        return game != null && game.getWinner() != null;
+    }
+
+    private boolean isPickStillAlive(Bracket bracket, TournamentVisitor tournamentVisitor, Pick pick, GameNode gameNode) {
+        Seed preWinner = getPreWinner(bracket, tournamentVisitor, gameNode);
+        return preWinner == pick.getSeed();
+    }
+
+    private Seed getPreWinner(Bracket bracket, TournamentVisitor tournamentVisitor, GameNode gameNode) {
+        Seed preWinner;
+        do {
+            GameNode.Feeder feeder = gameNode.getFeeder(bracket.getPickFromMemory(gameNode).getWinner());
+            preWinner = feeder.visitForWinner(tournamentVisitor);
+            Reference ref = feeder.getFeeder();
+            if(ref instanceof GameNode) {
+                gameNode = (GameNode) ref;
+            }
+        } while(preWinner == null);
+        return preWinner;
+    }
 }

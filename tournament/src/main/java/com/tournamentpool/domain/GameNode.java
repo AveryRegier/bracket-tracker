@@ -21,11 +21,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
 import utility.domain.Reference;
+
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * @author Avery J. Regier
@@ -54,7 +53,7 @@ public interface GameNode extends Reference {
 
 	Seed visitForLoser(GameVisitor<?> visitor);
 
-	void visit(GameVisitor<?> visitor, Opponent oponent, GameNode nextNode);
+	void visit(GameVisitor<?> visitor, Opponent opponent, GameNode nextNode);
 
 	Level getLevel();
 
@@ -73,5 +72,4 @@ public interface GameNode extends Reference {
 	GameNode getIdentityNode();
 
 	public abstract Set<Seed> getPossibleWinningSeeds(Tournament tournament);
-	public List<GameNode> getAllGameNodes();
 }

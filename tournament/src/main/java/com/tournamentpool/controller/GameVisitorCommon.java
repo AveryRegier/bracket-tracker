@@ -23,9 +23,9 @@ package com.tournamentpool.controller;
 
 import com.tournamentpool.domain.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 /**
  * @author Avery J. Regier
@@ -68,54 +68,35 @@ public abstract class GameVisitorCommon<T extends GameVisitorCommon.Node> extend
 			this.level = level;
 			this.isSeed = true;
 		}
-		/**
-		 * @param winner
-		 * @param team2
-		 * @param oponent2
-		 * @param roundNo
-		 * @param oid
-		 */
+
 		public Node(Seed seed, Team team, Opponent opponent, int level, GameNode gameNode) {
 			this.seed = seed;
 			this.team = team;
 			this.opponent = opponent;
 			this.level = level;
 			this.gameNodeOID = gameNode.getOid();
-			this.feeders = new ArrayList<Feeder>();
 			this.isSeed = false;
 
-            for (GameNode.Feeder feeder : gameNode.getFeeders()) {
-                this.feeders.add(new Feeder(
+            this.feeders = gameNode.getFeeders().stream()
+                    .map(feeder -> new Feeder(
                         feeder.getOpponent(),
                         feeder.getFeeder().getID(),
-                        feeder.isSeed()));
-            }
+                        feeder.isSeed()))
+                    .collect(Collectors.toList());
 		}
 
-		/**
-		 * @return
-		 */
 		public int getLevel() {
 			return level;
 		}
 
-		/**
-		 * @return
-		 */
 		public Opponent getOpponent() {
 			return opponent;
 		}
 
-		/**
-		 * @return
-		 */
 		public Team getTeam() {
 			return team;
 		}
 
-		/**
-		 * @return
-		 */
 		public Seed getSeed() {
 			return seed;
 		}
@@ -145,9 +126,6 @@ public abstract class GameVisitorCommon<T extends GameVisitorCommon.Node> extend
 		}
 	}
 
-	/**
-	 * @param tournament
-	 */
 	public GameVisitorCommon(Tournament tournament) {
 		super(tournament);
 	}

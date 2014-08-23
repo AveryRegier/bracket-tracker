@@ -34,6 +34,7 @@ import com.tournamentpool.broker.sql.status.TournamentPoolStatusBroker;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * @author avery
@@ -168,7 +169,7 @@ public class MainTournament implements Tournament {
 	}
 
 	private List<GameNode> getAllGameNodes() {
-		return getTournamentType().getChampionshipGameNode().getAllGameNodes();
+		return getTournamentType().streamGameNodes().collect(Collectors.toList());
 	}
 
 

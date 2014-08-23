@@ -414,27 +414,12 @@ public class UserManager extends SingletonProviderHolder {
                         // ignore any already assigned to this pool
                         .filter((bracket) -> !pool.hasBracket(bracket))
 
-                        // expensive call to isComplete()
-                        .filter((bracket) -> bracket.getTournament() == pool.getTournament() && bracket.isComplete(sp))
+                        .filter((bracket) -> bracket.getTournament() == pool.getTournament())
+
+                        // only allow those completed for this tournament.  Do last because it is expensive
+                        .parallel().filter((bracket) -> bracket.isComplete(sp))
 
                         .collect(Collectors.toMap(Bracket::getID, Function.identity()));
-
-                // remove any already assigned to this pool
-                // attempting to do this above with filter
-                //pool.getBrackets().forEach(brackets::remove);
-
-				// only allow those completed for this tournament.  Do last because it is expensive
-//				Map<Integer, Bracket> theMap = new HashMap<Integer, Bracket>();
-//				for (Bracket bracket : brackets) {
-//					try {
-//						if(bracket.getTournament() == pool.getTournament() && bracket.isComplete(sp)) { // expensive call to isComplete()
-//							theMap.put(bracket.getID(), bracket);
-//						}
-//					} catch (DatabaseFailure e) {
-//						throw new RuntimeException("Unable to load picks for bracket "+bracket.getName(), e);
-//					}
-//				}
-//				return theMap;
 			}
 		};
 	}
@@ -596,7 +581,7 @@ public class UserManager extends SingletonProviderHolder {
 			// site administrators are the only ones who may remove players, and 
 			// site administrators can remove players from any group, so removing 
 			// should succeed from all groups
-			Iterator<Group> groups2 = toRemove.getGroups();
+			Iterator<Group> groups2 = toRemove.getGroups().iterator();
 			while (groups2.hasNext()) {
 				Group group = groups2.next();
 				// FIXME: if the person removed is administrator of a group they aren't in, 
@@ -605,7 +590,7 @@ public class UserManager extends SingletonProviderHolder {
 					if(!group.delete(requestor, sp)) return false;
 				}
 				if(!group.removeMember(requestor, toRemove, sp)) return false;
-				groups2 = toRemove.getGroups(); // avoid the concurrent modification exception
+				groups2 = toRemove.getGroups().iterator(); // avoid the concurrent modification exception
 			}
 			
 			// then delete the player
@@ -623,9 +608,7 @@ public class UserManager extends SingletonProviderHolder {
 			// should go through the process of removing brackets from pools and 
 			// deleting or moving the brackets before deleting the player.
 			if(!toRemove.hasBrackets()) {
-				Iterator<Group> groups2 = toRemove.getGroups();
-				while (groups2.hasNext()) {
-					Group group = groups2.next();
+				for(Group group: toRemove.getGroups()) {
 					if(group.getAdministrator() == toRemove) {
 						if(!group.mayDelete(requestor)) return false;
 					}
