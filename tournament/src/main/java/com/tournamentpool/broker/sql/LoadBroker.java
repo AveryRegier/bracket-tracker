@@ -70,15 +70,13 @@ public abstract class LoadBroker extends SQLBroker {
         for (LoadBroker dependency : dependencies) {
             if (!(dependency.hasRun() && dependency.isSuccessful())) return false;
         }
-		new Thread(new Runnable() {
-			public void run() {
-				try {
-					execute();
-				} catch (Throwable e) {
-					e.printStackTrace();
-				}
-			}
-		}, getSQLKey()).start();
+		new Thread(() -> {
+            try {
+                execute();
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }, getSQLKey()).start();
 		return true;
 	}
 

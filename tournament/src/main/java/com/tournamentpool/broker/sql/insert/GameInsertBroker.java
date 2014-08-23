@@ -38,12 +38,12 @@ import java.util.List;
 /**
  * @author Avery J. Regier
  */
-public class GameInsertBroker extends TransactionBroker implements GameReporter {
-	private List<Game> insertedGames = new LinkedList<Game>();
-	private List<Game> updatedGames = new LinkedList<Game>();
-	private List<Game> deletedGames = new LinkedList<Game>();
+public class GameInsertBroker extends TransactionBroker<TransactionBroker.MultipleQuery> implements GameReporter {
+	private List<Game> insertedGames = new LinkedList<>();
+	private List<Game> updatedGames = new LinkedList<>();
+	private List<Game> deletedGames = new LinkedList<>();
 
-	public class MultipleGameQuery extends Query {
+	public class MultipleGameQuery extends MultipleQuery {
 		private Iterator<Game> queries;
 		public MultipleGameQuery(String key, Iterator<Game> queries) {
 			super(key);
@@ -97,7 +97,7 @@ public class GameInsertBroker extends TransactionBroker implements GameReporter 
 	}
 
 	protected boolean hasMore() {
-		return ((MultipleGameQuery)current).hasMore();
+		return current.map(c->c.hasMore()).orElse(false);
 	}
 
 	/* (non-Javadoc)

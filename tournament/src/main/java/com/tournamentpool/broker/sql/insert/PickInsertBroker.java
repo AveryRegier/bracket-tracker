@@ -35,8 +35,8 @@ import java.util.List;
 /**
  * @author Avery J. Regier
  */
-public class PickInsertBroker extends TransactionBroker {
-	public class MultiplePickQuery extends Query {
+public class PickInsertBroker extends TransactionBroker<TransactionBroker.MultipleQuery> {
+	public static class MultiplePickQuery extends MultipleQuery {
 		private Iterator<Bracket.Pick> queries;
 		public MultiplePickQuery(String key, Iterator<Pick> queries) {
 			super(key);
@@ -81,6 +81,6 @@ public class PickInsertBroker extends TransactionBroker {
 	}
 
 	protected boolean hasMore() {
-		return ((MultiplePickQuery)current).hasMore();
+		return current.map(c->c.hasMore()).orElse(false);
 	}
 }

@@ -21,22 +21,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql.insert;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.TransactionBroker;
 import com.tournamentpool.domain.Seed;
 import com.tournamentpool.domain.Team;
 import com.tournamentpool.domain.Tournament;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * @author Avery J. Regier
  */
-public class SeedTeamInsertBroker extends TransactionBroker {
+public class SeedTeamInsertBroker extends TransactionBroker<TransactionBroker.MultipleQuery> {
 	private final Tournament tournament;
 	public class MultipleSeedTeamQuery extends MultipleQuery {
 		private Map<Seed,Team> map;
@@ -97,6 +97,6 @@ public class SeedTeamInsertBroker extends TransactionBroker {
 	}
 
 	protected boolean hasMore() {
-		return ((MultipleQuery)current).hasMore();
+		return current.map(c->c.hasMore()).orElse(false);
 	}
 }

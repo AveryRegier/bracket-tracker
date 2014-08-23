@@ -42,26 +42,17 @@ public abstract class SQLBroker extends SingletonProviderHolder {
 	}
 
 	public void execute() {
-		Connection conn = null;
-		try {
-			Properties config = sp.getSingleton().getConfig();
-			conn = DriverManager.getConnection(
+        Properties config = sp.getSingleton().getConfig();
+        boolean ok = false;
+        try (Connection conn = DriverManager.getConnection(
 				config.getProperty("jdbcURL"),
 				config.getProperty("userid"),
-				config.getProperty("password")
-			);
+				config.getProperty("password"))) {
 			execute(conn);
+            ok = true;
 		} catch (SQLException e) {
-            throw new DatabaseFailure(e);
-        } finally {
-			if(conn != null) {
-                try {
-                    conn.close();
-                } catch(SQLException e) {
-                    e.printStackTrace(); // silence it
-                }
-			}
-		}
+            if(!ok) throw new DatabaseFailure(e);
+        }
 	}
 
 	private static boolean loaded = false;
@@ -85,11 +76,7 @@ public abstract class SQLBroker extends SingletonProviderHolder {
 	protected void executeSimpleQuery(Connection conn) throws SQLException {
 		Statement statement = createStatement(conn);
 		while(hasMore()) {
-			boolean results = execute(statement);//, Statement.RETURN_GENERATED_KEYS);
-	//		ResultSet generated = statement.getGeneratedKeys();
-	//		if(generated != null) {
-	//			processGeneratedKeys(generated);
-	//		}
+			boolean results = execute(statement);
 			if(results) {
 				do {
 					processResults(statement.getResultSet());

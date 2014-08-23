@@ -21,19 +21,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql;
 
+import com.tournamentpool.application.SingletonProvider;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.tournamentpool.application.SingletonProvider;
+import java.util.Optional;
 
 /**
  * @author Avery J. Regier
  */
-public class TransactionBroker extends PreparedStatementBroker {
-	public abstract class Query {
+public class TransactionBroker<Q extends TransactionBroker.Query> extends PreparedStatementBroker {
+	public abstract static class Query {
 		private String key;
 		public Query(String key) {
 			this.key = key;
@@ -43,38 +44,38 @@ public class TransactionBroker extends PreparedStatementBroker {
 			return key;
 		}
 	}
-	
-	public abstract class MultipleQuery extends Query {
+
+	public abstract static class MultipleQuery extends Query {
 		public MultipleQuery(String key) {
 			super(key);
 		}
 		public abstract boolean hasMore();
 	}
-	
-	private List<Query> queries = new LinkedList<Query>();
-	protected Query current = null;
-	
+
+	private List<Q> queries = new LinkedList<>();
+	protected Optional<Q> current = Optional.empty();
+
 	/**
 	 * @param sp
 	 */
 	public TransactionBroker(SingletonProvider sp) {
 		super(sp);
 	}
-	
-	protected void addQuery(Query query) {
+
+	protected void addQuery(Q query) {
 		queries.add(query);
 	}
-	
+
 	protected boolean hasMoreQueries() {
 		if(queries.isEmpty()) {
-			current = null;
+			current = Optional.empty();
 		} else {
-			current = queries.remove(0);
+			current = Optional.of(queries.remove(0));
 			reset();
 		}
-		return current != null;
+		return current.isPresent();
 	}
-	
+
 	protected void execute(Connection conn) throws SQLException {
 		try {
 			conn.setAutoCommit(false);
@@ -89,12 +90,12 @@ public class TransactionBroker extends PreparedStatementBroker {
 			conn.setAutoCommit(true);
 		}
 	}
-	
+
 	protected void prepare(PreparedStatement stmt) throws SQLException {
-		current.prepare(stmt);
+		current.get().prepare(stmt);
 	}
 
 	protected String getSQLKey() {
-		return current.getSQLKey();
+		return current.map(c->c.getSQLKey()).orElse("");
 	}
 }
