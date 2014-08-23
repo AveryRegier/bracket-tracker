@@ -189,43 +189,20 @@ public class Bracket implements Reference {
 		return getPickFromMemory(game);
 	}
 
-	/**
-	 * @param game
-	 * @return
-	 */
 	public Pick getPickFromMemory(GameNode game) {
 		return picks.get(game);
 	}
 
-	/**
-	 * @return
-	 */
 	public Tournament getTournament() {
 		return tournament;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getName() {
 		return name;
 	}
 
-	/**
-	 * @return
-	 */
 	public boolean isComplete(SingletonProvider sp) {
 		retrievePicks(sp);
-//		Collection<GameNode> nodes = tournament.getTournamentType().getGameNodes();  // expensive call
-//		if(picks != null && picks.size() >= nodes.size()) { // then verify every game has a pick
-//			for(GameNode node: nodes) {
-//				Pick pick = picks.get(node);
-//				if(!(pick != null && pick.getWinner() != null)) return false;
-//			}
-//			return true;
-//		} // else something must be missing, so
-//		return false;
-
         return tournament.getTournamentType().streamGameNodes()
                 .map(n->picks.get(n))
                 .allMatch(p->p!=null && p.getWinner() != null);
@@ -235,14 +212,6 @@ public class Bracket implements Reference {
 		// assuming all brackets are already loaded in all relevant pools
         return getPoolStream()
                 .anyMatch(p -> p.hasBracket(this));
-//        for(Group group: getOwner().getGroups()) {
-//			for(Pool pool: group.getPools()) {
-//				if(pool.hasBracket(this)) {
-//					return true;
-//				}
-//			}
-//		}
-//		return false;
 	}
 
     private Stream<Pool> getPoolStream() {
