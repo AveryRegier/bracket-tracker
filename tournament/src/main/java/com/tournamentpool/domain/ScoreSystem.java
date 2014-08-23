@@ -164,7 +164,7 @@ public class ScoreSystem implements Reference {
 				GameNode gameNode = e.getKey();
 				if(!remainingNodes.containsKey(gameNode)) {
                     unforseenPicksMap
-                        .computeIfAbsent(gameNode, k->
+                        .computeIfAbsent(gameNode, k ->
                                 getAllPossibleWinners(gameNode, e.getValue().getBracket().getTournament()))
                         .remove(e.getValue().getSeed());
 				}
@@ -174,8 +174,8 @@ public class ScoreSystem implements Reference {
         private Set<Seed> getAllPossibleWinners(GameNode gameNode, Tournament tournament) {
             // make a copy of the cached result because we're going to start removing seeds
             Set<Seed> unforseenPicks = new HashSet<>();
-            Game game = tournament.getGame(gameNode);
-            if(game == null || game.getWinner() == null){
+            Optional<Opponent> winner = tournament.getWinner(gameNode);
+            if(!winner.isPresent()){
                 Set<Seed> stillInPlay = gameNode.getPossibleWinningSeeds(tournament);
                 if(stillInPlay != null) {
                     unforseenPicks.addAll(stillInPlay);
@@ -297,8 +297,8 @@ public class ScoreSystem implements Reference {
 	}
 
     private boolean isPlayed(Tournament tournament, GameNode gameNode) {
-        Game game = tournament.getGame(gameNode);
-        return game != null && game.getWinner() != null;
+        Optional<Game> game = tournament.getGame(gameNode);
+        return game.isPresent() && game.get().getWinner().isPresent();
     }
 
     private boolean isPickStillAlive(Bracket bracket, TournamentVisitor tournamentVisitor, Pick pick, GameNode gameNode) {
@@ -309,7 +309,10 @@ public class ScoreSystem implements Reference {
     private Seed getPreWinner(Bracket bracket, TournamentVisitor tournamentVisitor, GameNode gameNode) {
         Seed preWinner;
         do {
-            GameNode.Feeder feeder = gameNode.getFeeder(bracket.getPickFromMemory(gameNode).getWinner());
+            GameNode.Feeder feeder = gameNode.getFeeder(
+                    bracket.getPickFromMemory(gameNode)
+                            .orElseThrow(IllegalStateException::new)
+                            .getWinner().orElseThrow(IllegalStateException::new));
             preWinner = feeder.visitForWinner(tournamentVisitor);
             Reference ref = feeder.getFeeder();
             if(ref instanceof GameNode) {

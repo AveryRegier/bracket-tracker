@@ -21,16 +21,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql.insert;
 
+import com.tournamentpool.application.SingletonProvider;
+import com.tournamentpool.broker.sql.TransactionBroker;
+import com.tournamentpool.domain.Bracket;
+import com.tournamentpool.domain.Bracket.Pick;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Iterator;
 import java.util.List;
-
-import com.tournamentpool.application.SingletonProvider;
-import com.tournamentpool.broker.sql.TransactionBroker;
-import com.tournamentpool.domain.Bracket;
-import com.tournamentpool.domain.Bracket.Pick;
 
 /**
  * @author Avery J. Regier
@@ -49,8 +49,8 @@ public class PickInsertBroker extends TransactionBroker {
 			prepare(stmt, queries.next());
 		}
 		protected void prepare(PreparedStatement stmt, Bracket.Pick pick) throws SQLException {
-			if(pick.getWinner() != null) {
-				stmt.setInt(1, pick.getWinner().getOid());
+			if(pick.getWinner().isPresent()) {
+				stmt.setInt(1, pick.getWinner().get().getOid());
 			} else {
 				stmt.setNull(1, Types.INTEGER);
 			}

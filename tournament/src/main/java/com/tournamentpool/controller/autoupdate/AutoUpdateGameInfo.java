@@ -1,12 +1,14 @@
 package com.tournamentpool.controller.autoupdate;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.Map.Entry;
-
+import com.tournamentpool.domain.Game;
 import com.tournamentpool.domain.GameInfo;
 import com.tournamentpool.domain.Opponent;
 import com.tournamentpool.domain.Team;
+
+import java.util.Date;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 
 /* 
 Copyright (C) 2003-20013 Avery J. Regier.
@@ -30,17 +32,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 final class AutoUpdateGameInfo implements GameInfo {
 	private final LiveGame game;
 	private final Map<Opponent, Team> teams;
-	private final GameInfo oldGame;
+	private final Optional<Game> oldGame;
 
 	AutoUpdateGameInfo(LiveGame game, Map<Opponent, Team> teams,
-			GameInfo oldGame) {
+			Optional<Game> oldGame) {
 		this.game = game;
 		this.teams = teams;
 		this.oldGame = oldGame;
 	}
 
 	@Override
-	public Opponent getWinner() {
+	public java.util.Optional<Opponent> getWinner() {
 		if(game.isFinal()) {
 			String winnerTeamName = game.getWinner().toUpperCase();
 			// making the assumption for now that team names actually match
@@ -48,7 +50,7 @@ final class AutoUpdateGameInfo implements GameInfo {
 				Team team = entry.getValue();
 				if(team.anyNamesMatch(winnerTeamName)) {
 					System.out.println("Winner of "+game+" is "+team.getName());
-					return entry.getKey();
+					return Optional.of(entry.getKey());
 				}
 			}
 			System.out.println("No winner found for "+game);
@@ -79,7 +81,8 @@ final class AutoUpdateGameInfo implements GameInfo {
 
 	@Override
 	public Date getDate() {
-		if(oldGame != null && oldGame.getDate() != null) return oldGame.getDate();
+		if(oldGame.isPresent() && oldGame.get().getDate() != null)
+            return oldGame.get().getDate();
 		else return game.getStartDate();
 	}
 }

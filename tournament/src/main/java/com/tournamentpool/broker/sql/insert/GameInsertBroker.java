@@ -56,8 +56,8 @@ public class GameInsertBroker extends TransactionBroker implements GameReporter 
 			prepare(stmt, queries.next());
 		}
 		protected void prepare(PreparedStatement stmt, Game pick) throws SQLException {
-			if(pick.getWinner() != null) {
-				stmt.setInt(1, pick.getWinner().getOid());
+			if(pick.getWinner().isPresent()) {
+				stmt.setInt(1, pick.getWinner().get().getOid());
 			} else {
 				stmt.setNull(1, Types.INTEGER);
 			}

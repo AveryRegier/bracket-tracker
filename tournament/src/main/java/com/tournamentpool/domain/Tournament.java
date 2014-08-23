@@ -26,6 +26,7 @@ import utility.domain.Reference;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * @author avery
@@ -40,13 +41,13 @@ public interface Tournament extends Reference {
 	/**
 	 * @return
 	 */
-	public Game getChampionshipGame();
+	public Optional<Game> getChampionshipGame();
 
 	/**
 	 * @param node
 	 * @return
 	 */
-	public Game getGame(GameNode node);
+	public Optional<Game> getGame(GameNode node);
 
 	/**
 	 * @param seed
@@ -90,4 +91,6 @@ public interface Tournament extends Reference {
 	public java.util.Date getNextStartTime();
 
     void setStartTime(Timestamp startTime);
+
+    Optional<Opponent> getWinner(GameNode node);
 }

@@ -25,6 +25,7 @@ import com.tournamentpool.broker.sql.status.TournamentPoolStatusBroker;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Optional;
 
 class SubTournament implements Tournament {
 
@@ -76,10 +77,9 @@ class SubTournament implements Tournament {
 
     private boolean checkStarted(GameNode node) {
 		if(node == null) return false;
-		Level level = node.getLevel();
-		if(level == startLevel) {
-			Game game = getGame(node);
-			return game != null && game.isStarted();
+        if(node.getLevel() == startLevel) {
+			Optional<Game> game = getGame(node);
+			return game.isPresent() && game.get().isStarted();
 		} else {
 			for (GameNode.Feeder feeder: node.getFeeders()) {
 				if(!feeder.isSeed()) {
@@ -98,9 +98,9 @@ class SubTournament implements Tournament {
 	private boolean checkReadyForBrackets(GameNode node) {
 		if(node == null) return false;
 		Level level = node.getLevel();
-		if(level.getRoundNo() == startLevel.getRoundNo() - 1) { //TODO: should be startLevel.previous()
-			Game game = getGame(node);
-			return game != null && game.getWinner() != null;
+		if(level.getRoundNo() == startLevel.getPrevious()) {
+			Optional<Opponent> winner = getWinner(node);
+			return winner.isPresent();
 		} else {
 			for (GameNode.Feeder feeder: node.getFeeders()) {
 				if(!feeder.isSeed()) {
@@ -116,11 +116,11 @@ class SubTournament implements Tournament {
 		return subTournamentType;
 	}
 
-	public Game getChampionshipGame() {
+	public Optional<Game> getChampionshipGame() {
 		return parent.getChampionshipGame();
 	}
 
-	public Game getGame(GameNode node) {
+	public Optional<Game> getGame(GameNode node) {
 		return parent.getGame(node.getIdentityNode());
 	}
 
@@ -196,4 +196,9 @@ class SubTournament implements Tournament {
 	public Date getNextStartTime() {
 		return parent.getNextStartTime();
 	}
+
+    @Override
+    public Optional<Opponent> getWinner(GameNode node) {
+        return parent.getWinner(node);
+    }
 }

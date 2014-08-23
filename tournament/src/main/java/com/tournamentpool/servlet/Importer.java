@@ -31,10 +31,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * @author Avery J. Regier
@@ -137,13 +134,13 @@ public class Importer extends RequiresLoginServlet {
 				}
 				if(commaSeparator.hasMoreTokens()) {
 					bracket.getPicks(getApp().getSingletonProvider()); // just ensure loaded
-					List<Pick> insertPicks = new LinkedList<Pick>();
-					List<Pick> updatePicks = new LinkedList<Pick>();
-					List<Pick> deletePicks = new LinkedList<Pick>();
+					List<Pick> insertPicks = new LinkedList<>();
+					List<Pick> updatePicks = new LinkedList<>();
+					List<Pick> deletePicks = new LinkedList<>();
 
 					String sixtyFour = commaSeparator.nextToken();
-					Opponent home = pool.getTournament().getTournamentType().getOpponentByOrder(1);
-					Opponent visitor = pool.getTournament().getTournamentType().getOpponentByOrder(2);
+					Optional<Opponent> home = pool.getTournament().getTournamentType().getOpponentByOrder(1);
+					Optional<Opponent> visitor = pool.getTournament().getTournamentType().getOpponentByOrder(2);
 					Iterator<GameNode> nodes = pool.getTournament().getTournamentType().getGameNodesInLevelOrder().iterator();
 					for(int i=0; i<sixtyFour.length() && nodes.hasNext(); i+=2) {
 						GameNode node = nodes.next();
@@ -154,9 +151,9 @@ public class Importer extends RequiresLoginServlet {
 						Opponent winner;
 						if(a) { // a pick was made
 							if(b) { // bottom pick
-								winner = visitor;
+								winner = visitor.orElse(null);
 							} else { // top pick
-								winner = home;								
+								winner = home.orElse(null);
 							}
 						} else { // should probably clear the pick
 							winner = null;

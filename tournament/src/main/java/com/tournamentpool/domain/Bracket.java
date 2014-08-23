@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  * @author avery
  */
 public class Bracket implements Reference {
-	public class Pick {
+	public class Pick implements HasWinner {
 		private final GameNode game;
 		private Opponent winner;
 		private boolean isnew = true;
@@ -51,8 +51,8 @@ public class Bracket implements Reference {
 			this.winner = winner;
 		}
 
-		public Opponent getWinner() {
-			return winner;
+		public Optional<Opponent> getWinner() {
+			return Optional.ofNullable(winner);
 		}
 
 		public void setWinner(Opponent winner) {
@@ -88,7 +88,7 @@ public class Bracket implements Reference {
 									if (ref instanceof Seed) {
 										seed = (Seed) ref;
 									} else {
-										seed = getPickFromMemory((GameNode) ref).getSeed();
+										seed = getPickFromMemory((GameNode) ref).map(Pick::getSeed).orElse(null);
 									}
 								}
 							}
@@ -184,13 +184,13 @@ public class Bracket implements Reference {
 		}
 	}
 
-	public Pick getPick(SingletonProvider sp, GameNode game) {
+	public Optional<Pick> getPick(SingletonProvider sp, GameNode game) {
 		retrievePicks(sp);
 		return getPickFromMemory(game);
 	}
 
-	public Pick getPickFromMemory(GameNode game) {
-		return picks.get(game);
+	public Optional<Pick> getPickFromMemory(GameNode game) {
+		return Optional.ofNullable(picks.get(game));
 	}
 
 	public Tournament getTournament() {
@@ -205,7 +205,7 @@ public class Bracket implements Reference {
 		retrievePicks(sp);
         return tournament.getTournamentType().streamGameNodes()
                 .map(n->picks.get(n))
-                .allMatch(p->p!=null && p.getWinner() != null);
+                .allMatch(p->p!=null && p.getWinner().isPresent());
 	}
 
 	public boolean isInPool() {
@@ -226,7 +226,7 @@ public class Bracket implements Reference {
 	public boolean delete(User requestor, SingletonProvider sp) {
 		if(mayDelete(requestor)) {
             retrievePicks(sp);
-			ArrayList<Pick> deletePicks = new ArrayList<Pick>(picks.values());
+			ArrayList<Pick> deletePicks = new ArrayList<>(picks.values());
 			new PickInsertBroker(sp, Collections.<Pick>emptyList(), Collections.<Pick>emptyList(), deletePicks).execute();
 			picks.clear();
 			new BracketDeleteBroker(sp, this).execute();

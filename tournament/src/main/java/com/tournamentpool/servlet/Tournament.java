@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * @author Avery J. Regier
@@ -93,30 +94,32 @@ public class Tournament extends RequiresLoginServlet {
 
 				WinnerSource winnerSource = (tournamentType, node) -> new GameInfo() {
                     // defer to in-memory object for information we don't know from the UI
-                    private Game game = tournament.getGame(node);
+                    private Optional<Game> game = tournament.getGame(node);
 
                     @Override
                     public String getGameID() {
-                        return game != null ? game.getGameID() : null;
+                        return game.isPresent() ? game.get().getGameID() : null;
                     }
 
                     @Override
                     public Integer getScore(Opponent opponent) {
-                        return game != null ? game.getScore(opponent) : null;
+                        return game.isPresent() ? game.get().getScore(opponent) : null;
                     }
 
                     @Override
                     public Date getDate() {
-                        return game != null ? game.getDate() : getWinner() != null ? new Date() : null;
+                        return game.isPresent() ?
+                                game.get().getDate() :
+                                getWinner().isPresent() ? new Date() : null;
                     }
 
                     @Override
                     public String getStatus() {
-                        return game != null ? game.getStatus() : null;
+                        return game.isPresent() ? game.get().getStatus() : null;
                     }
 
                     @Override
-                    public Opponent getWinner() {
+                    public Optional<Opponent> getWinner() {
                         return tournamentType.getOpponentByOrder(getInt(req, "game"+node.getOid(), -1));
                     }
                 };

@@ -21,17 +21,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 
 /**
  * @author avery
  */
-public class Game implements GameInfo {
+public class Game implements GameInfo, HasWinner {
 
 	private Tournament tournament;
 	private GameNode gameNode;
@@ -56,8 +53,8 @@ public class Game implements GameInfo {
 	/**
 	 * @return
 	 */
-	public Opponent getWinner() {
-		return winner;
+	public Optional<Opponent> getWinner() {
+		return Optional.ofNullable(winner);
 	}
 	
 	public boolean isComplete() {
@@ -102,7 +99,7 @@ public class Game implements GameInfo {
 	}
 
 	public Set<Seed> getSeedsStillInPlay() {
-		if(getWinner() != null) return null;
+		if(getWinner().isPresent()) return null;
 		return gameNode.getPossibleWinningSeeds(tournament);
 	}
 

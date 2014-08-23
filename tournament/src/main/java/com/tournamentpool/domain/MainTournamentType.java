@@ -18,10 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.domain;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 public class MainTournamentType extends TournamentTypeAdapter implements TournamentType {
 
@@ -77,12 +74,12 @@ public class MainTournamentType extends TournamentTypeAdapter implements Tournam
 	/* (non-Javadoc)
 	 * @see com.tournamentpool.domain.ITournamentType#getOpponentByOrder(int)
 	 */
-	public Opponent getOpponentByOrder(int sequence) {
+	public Optional<Opponent> getOpponentByOrder(int sequence) {
 	//	System.out.println(sequence);
 		for (Opponent opponent: oponents.values()) {
-			if(opponent.getSequence() == sequence) return opponent;
+			if(opponent.getSequence() == sequence) return Optional.of(opponent);
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/* (non-Javadoc)

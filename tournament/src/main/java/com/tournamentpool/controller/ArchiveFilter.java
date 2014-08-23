@@ -22,6 +22,7 @@ import com.tournamentpool.domain.*;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Optional;
 
 public class ArchiveFilter implements Filter {
 
@@ -39,9 +40,9 @@ public class ArchiveFilter implements Filter {
 	public static boolean isArchive(Tournament tournament) {
 		boolean c = tournament != null && tournament.isComplete();
 		if(c) {
-			Game championshipGame = tournament.getChampionshipGame();
-			if(championshipGame != null) {
-				Date endDate = championshipGame.getDate();
+			Optional<Game> championshipGame = tournament.getChampionshipGame();
+			if(championshipGame.isPresent()) {
+				Date endDate = championshipGame.get().getDate();
 				if(endDate != null) {
 					Calendar gameTime = Calendar.getInstance();
 					gameTime.setTime(endDate);

@@ -51,7 +51,7 @@ public interface TournamentType extends Reference {
 	 * @param sequence
 	 * @return
 	 */
-	public abstract Opponent getOpponentByOrder(int sequence);
+	public abstract java.util.Optional<Opponent> getOpponentByOrder(int sequence);
 
 	/**
 	 * @return

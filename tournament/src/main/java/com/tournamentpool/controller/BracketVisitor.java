@@ -25,6 +25,8 @@ import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.domain.*;
 import com.tournamentpool.domain.Bracket.Pick;
 
+import java.util.Optional;
+
 /**
  * @author Avery J. Regier
  */
@@ -103,8 +105,7 @@ public class BracketVisitor extends GameVisitorCommon<BracketVisitor.Node> {
 		list.add(new Node(seed, tournament.getTeam(seed), opponent, roundNo));
 	}
 
-	public Opponent getWinner(GameNode node) {
-		Pick pick = bracket.getPickFromMemory(node);
-		return pick != null ? pick.getWinner() : null;
+	public Optional<Opponent> getWinner(GameNode node) {
+        return bracket.getPickFromMemory(node).map(Pick::getWinner).orElse(Optional.empty());
 	}
 }

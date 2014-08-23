@@ -21,8 +21,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.controller;
 
-import com.tournamentpool.domain.Bracket.Pick;
 import com.tournamentpool.domain.*;
+
+import java.util.Optional;
 
 /**
  * @author Avery J. Regier
@@ -45,17 +46,9 @@ public class TournamentVisitor extends GameVisitorCommon<TournamentVisitor.Node>
 			this.teamScore = teamScore;
 		}
 
-		/**
-		 * @param pick
-		 */
-		public void setPick(Pick pick) {
-			if(pick != null) {
-				this.pick = pick.getWinner();
-			}
-		}
-		public void setPick(Game pick) {
-			if(pick != null) {
-				this.pick = pick.getWinner();
+		public void setPick(Optional<? extends HasWinner> pick) {
+			if(pick.isPresent()) {
+				this.pick = pick.get().getWinner().orElse(null);
 			}
 		}
 		
@@ -80,22 +73,22 @@ public class TournamentVisitor extends GameVisitorCommon<TournamentVisitor.Node>
 	}
 
 	public void visit(Seed winner, Opponent opponent, GameNode node, GameNode nextNode) {
-		Game game = tournament.getGame(node.getIdentityNode());
+		Optional<Game> game = tournament.getGame(node.getIdentityNode());
 		list.add(
 			new Node(winner, 
 					tournament.getTeam(winner), 
 					opponent,
 					node.getLevel().getRoundNo(), 
 					node, 
-					game != null ? game.getStatus() : null,
+					game.isPresent() ? game.get().getStatus() : null,
 					getScore(opponent, nextNode)));
 	}
 
 	private Integer getScore(Opponent opponent, GameNode nextNode) {
 		if(nextNode != null) {
-			Game nextGame = tournament.getGame(nextNode.getIdentityNode());
-			if(nextGame != null) {
-				return nextGame.getScore(opponent);
+			Optional<Game> nextGame = tournament.getGame(nextNode.getIdentityNode());
+			if(nextGame.isPresent()) {
+				return nextGame.get().getScore(opponent);
 			}
 		}
 		return null;
@@ -109,8 +102,7 @@ public class TournamentVisitor extends GameVisitorCommon<TournamentVisitor.Node>
 						getScore(opponent, nextNode)));
 	}
 	
-	public Opponent getWinner(GameNode node) {
-		Game game = tournament.getGame(node);
-		return game != null ? game.getWinner() : null;
+	public Optional<Opponent> getWinner(GameNode node) {
+		return tournament.getGame(node).map(Game::getWinner).orElse(Optional.empty());
 	}
 }

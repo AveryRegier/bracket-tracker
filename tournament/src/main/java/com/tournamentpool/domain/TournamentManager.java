@@ -198,6 +198,6 @@ public class TournamentManager extends SingletonProviderHolder {
 		Tournament tournament = getTournament(tournamentOID);
 		GameNode gameNode = sp.getSingleton().getTournamentTypeManager().getGameNode(gameNodeOID);
 		Opponent opponent = tournament.getTournamentType().getOpponent(opponentOID);
-		tournament.getGame(gameNode).setScore(opponent, score);
+		tournament.getGame(gameNode).get().setScore(opponent, score);
 	}
 }

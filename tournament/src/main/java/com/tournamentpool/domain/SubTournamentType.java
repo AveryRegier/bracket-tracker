@@ -18,11 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.domain;
 
+import utility.domain.Reference;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import utility.domain.Reference;
 
 
 class SubTournamentType extends TournamentTypeAdapter implements TournamentType {
@@ -45,7 +45,7 @@ class SubTournamentType extends TournamentTypeAdapter implements TournamentType 
 		return parent.getOpponent(oponentOID);
 	}
 
-	public Opponent getOpponentByOrder(int sequence) {
+	public java.util.Optional<Opponent> getOpponentByOrder(int sequence) {
 		return parent.getOpponentByOrder(sequence);
 	}
 

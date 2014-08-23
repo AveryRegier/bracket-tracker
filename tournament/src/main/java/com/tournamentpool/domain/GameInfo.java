@@ -21,7 +21,7 @@ package com.tournamentpool.domain;
 import java.util.Date;
 
 public interface GameInfo {
-	Opponent getWinner();
+	java.util.Optional<Opponent> getWinner();
 	Date getDate();
 	String getStatus();
 	String getGameID();

@@ -56,6 +56,10 @@ public class Level implements Reference, Comparable<Level> {
 		return roundNo;
 	}
 
+    public int getPrevious() {
+        return roundNo - 1;
+    }
+
 	public int getOid() {
 		return oid.intValue();
 	}

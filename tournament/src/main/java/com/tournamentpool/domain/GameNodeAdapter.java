@@ -28,13 +28,15 @@ abstract class GameNodeAdapter implements GameNode {
 	 * @see com.tournamentpool.domain.IGameNode#visitForWinner(com.tournamentpool.domain.GameVisitor)
 	 */
 	public Seed visitForWinner(GameVisitor<?> visitor) {
-		Opponent winner = visitor.getWinner(this);
-		Seed seed = null;
-		for (Feeder feeder: getFeeders()) {
-			if(feeder.getOpponent() == winner) {
-				seed = feeder.visitForWinner(visitor);
-			}
-		}
+		Optional<Opponent> winner = visitor.getWinner(this);
+        Seed seed = null;
+        if(winner.isPresent()) {
+            for (Feeder feeder : getFeeders()) {
+                if (feeder.getOpponent() == winner.get()) {
+                    seed = feeder.visitForWinner(visitor);
+                }
+            }
+        }
 		return seed;
 	}
 
@@ -42,13 +44,15 @@ abstract class GameNodeAdapter implements GameNode {
 	 * @see com.tournamentpool.domain.IGameNode#visitForLoser(com.tournamentpool.domain.GameVisitor)
 	 */
 	public Seed visitForLoser(GameVisitor<?> visitor) {
-		Opponent winner = visitor.getWinner(this);
+		Optional<Opponent> winner = visitor.getWinner(this);
 		Seed seed = null;
-		for (Feeder feeder: getFeeders()) {
-			if(feeder.getOpponent() != winner) {
-				seed = feeder.visitForWinner(visitor);
-			}
-		}
+        if(winner.isPresent()) {
+            for (Feeder feeder : getFeeders()) {
+                if (feeder.getOpponent() != winner.get()) {
+                    seed = feeder.visitForWinner(visitor);
+                }
+            }
+        }
 		return seed;
 	}
 
@@ -87,11 +91,11 @@ abstract class GameNodeAdapter implements GameNode {
 
     private Set<Seed> calculatePossibleWinningSeeds(final Tournament tournament) {
         Set<Seed> seedsThatCanWin = new HashSet<>();
-        Game game = tournament.getGame(this);
-        if(game != null && game.isComplete()) {
+        Optional<Game> game = tournament.getGame(this);
+        if(game.isPresent() && game.get().isComplete()) {
             seedsThatCanWin.add(visitForWinner(new GameVisitor<TournamentVisitor.Node>(tournament) {
-                public Opponent getWinner(GameNode node) {
-                    return tournament.getGame(node).getWinner();
+                public Optional<Opponent> getWinner(GameNode node) {
+                    return tournament.getWinner(node);
                 }
                 public void visit(Seed winner, Opponent opponent, GameNode node, GameNode nextNode) {}
                 public void visit(Opponent opponent, Seed seed, int roundNo, GameNode nextNode) {}

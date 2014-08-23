@@ -30,6 +30,7 @@ import com.tournamentpool.domain.GameNode.Feeder;
 import utility.domain.Reference;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Avery J. Regier
@@ -155,15 +156,18 @@ public class ShowTournamentController extends TournamentController {
 			if(gameNode != null) {
 				Seed winner = gameNode.visitForWinner(tournamentVisitor);
 				int score = scoreSystem.getScore(gameNode.getLevel());
-				Game game = tournament.getGame(gameNode);
-				boolean played = game != null && game.getWinner() != null;
+				Optional<Game> game = tournament.getGame(gameNode);
+				boolean played = game.isPresent() && game.get().getWinner().isPresent();
 				if(played) {
 					node.setDecided(winner == node.getSeed(), score);
 					theScore.add(score);
 				} else {
 					Seed preWinner;
 					do {
-						Feeder feeder = gameNode.getFeeder(bracket.getPickFromMemory(gameNode).getWinner());
+						Feeder feeder = gameNode.getFeeder(
+                                bracket.getPickFromMemory(gameNode)
+                                        .orElseThrow(IllegalStateException::new)
+                                        .getWinner().orElseThrow(IllegalStateException::new));
 						preWinner = feeder.visitForWinner(tournamentVisitor);
 						Reference ref = feeder.getFeeder();
 						if(ref instanceof GameNode) {
@@ -173,7 +177,9 @@ public class ShowTournamentController extends TournamentController {
 					if(preWinner != node.getSeed()) node.setDecided(false, 0);
 					else {
 						node.setPossible(score);
-						theScore.predict(score, bracket.getPickFromMemory(gameNode));
+						theScore.predict(score,
+                                bracket.getPickFromMemory(gameNode)
+                                       .orElseThrow(IllegalStateException::new));
 					}
 				}
 			}
@@ -190,8 +196,8 @@ public class ShowTournamentController extends TournamentController {
 		for (GameVisitorCommon.Node node: nodes) {
 			GameNode gameNode = tournamentType.getGameNode(node.getGameNodeOid());
 			if(gameNode != null) {
-				Game game = tournament.getGame(gameNode);
-                boolean played = game != null && game.getWinner() != null;
+				Optional<Game> game = tournament.getGame(gameNode);
+                boolean played = game.isPresent() && game.get().getWinner().isPresent();
                 if(played) {
                     Seed winner = gameNode.visitForWinner(tournamentVisitor);
                     Seed loser = gameNode.visitForLoser(tournamentVisitor);
@@ -210,8 +216,8 @@ public class ShowTournamentController extends TournamentController {
 		for (BracketVisitor.Node node: nodes) {
 			GameNode gameNode = tournamentType.getGameNode(node.getGameNodeOid());
 			if(gameNode != null) {
-				Pick pick = bracket.getPick(sp, gameNode);
-                boolean picked = pick != null && pick.getWinner() != null;
+				Optional<Pick> pick = bracket.getPick(sp, gameNode);
+                boolean picked = pick.isPresent() && pick.get().getWinner().isPresent();
                 if(picked) {
                     Seed winner = gameNode.visitForWinner(bracketVisitor);
                     Seed loser = gameNode.visitForLoser(bracketVisitor);

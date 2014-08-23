@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 final class AutoUpdateWinnerSource implements WinnerSource {
 	private final MainTournament mainTournament;
@@ -40,17 +41,17 @@ final class AutoUpdateWinnerSource implements WinnerSource {
 	@Override
 	public GameInfo getGameInfo(TournamentType tournamentType,
 			GameNode node) {
-		GameInfo oldGame = mainTournament.getGame(node);
-		if(oldGame != null) {
-			Opponent oldWinner = oldGame.getWinner();
-			if(oldWinner != null) return oldGame;
+		Optional<Game> oldGame = mainTournament.getGame(node);
+		if(oldGame.isPresent()) {
+			Optional<Opponent> oldWinner = oldGame.get().getWinner();
+			if(oldWinner.isPresent()) return oldGame.get();
 		}
 		
 	    Map<Opponent, Team> teams = getTeamsIfReadyToPlay(mainTournament, node);
         return getUpdatedGameInfoFor(oldGame, teams);
 	}
 
-    private GameInfo getUpdatedGameInfoFor(GameInfo oldGame, Map<Opponent, Team> teams) {
+    private GameInfo getUpdatedGameInfoFor(Optional<Game> oldGame, Map<Opponent, Team> teams) {
         if(teams != null) {
             for (Entry<Opponent, Team> entry : teams.entrySet()) {
                 Iterable<String> names = entry.getValue().getNames();
@@ -74,10 +75,10 @@ final class AutoUpdateWinnerSource implements WinnerSource {
 
     private Map<Opponent, Team> getTeamsIfReadyToPlay(Tournament tournament, GameNode gameNode) {
 	
-		Game game = tournament.getGame(gameNode);
+		Optional<Opponent> winner = tournament.getWinner(gameNode);
 		
-		if(game == null || game.getWinner() == null) {
-			Map<Opponent, Team> teams = new HashMap<Opponent, Team>();
+		if(!winner.isPresent()) {
+			Map<Opponent, Team> teams = new HashMap<>();
 			Collection<Feeder> feeders = gameNode.getFeeders();
 			for (Feeder feeder : feeders) {
 				Seed seed = feeder.visitForWinner(new TournamentVisitor(tournament));

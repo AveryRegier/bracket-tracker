@@ -212,15 +212,15 @@ public class BracketMaintenance extends RequiresLoginServlet {
         TournamentType tournamentType = bracket.getTournament().getTournamentType();
         tournamentType.streamGameNodes().forEach(node -> {
             int decision = decider.getDecision(node);
-            Opponent winner = tournamentType.getOpponentByOrder(decision);
+            Optional<Opponent> winner = tournamentType.getOpponentByOrder(decision);
             Bracket.Pick pick = bracket.createPick(node);
             if(pick.isNew()) {
-                if(winner != null) {
-                    pick.setWinner(winner);
+                if(winner.isPresent()) {
+                    pick.setWinner(winner.get());
                     insertPicks.add(pick);
                 }
-            } else if(winner != null) {
-                pick.setWinner(winner);
+            } else if(winner.isPresent()) {
+                pick.setWinner(winner.get());
                 updatePicks.add(pick);
             } else {
                 deletePicks.add(pick);

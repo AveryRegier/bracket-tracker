@@ -161,7 +161,7 @@ public class MainTournament implements Tournament {
 			ScoreReporter scoreReporter, GameReporter gameReporter,
 			GameNode node) {
 		GameInfo gameInfo = winnerSource.getGameInfo(getTournamentType(), node);
-		Opponent winner = gameInfo != null ? gameInfo.getWinner() : null;
+		Opponent winner = gameInfo != null ? gameInfo.getWinner().orElse(null) : null;
 		Date gameDate = gameInfo != null ? gameInfo.getDate() : null;
 		Game game = createGame(node, winner, gameDate);
 		gameReporter.updateGame(game);
@@ -206,7 +206,7 @@ public class MainTournament implements Tournament {
 	/**
 	 * @return
 	 */
-	public Game getChampionshipGame() {
+	public Optional<Game> getChampionshipGame() {
 		return getGame(getTournamentType().getChampionshipGameNode());
 	}
 
@@ -214,8 +214,8 @@ public class MainTournament implements Tournament {
 	 * @param node
 	 * @return
 	 */
-	public Game getGame(GameNode node) {
-		return nodeGameMap.get(node);
+	public Optional<Game> getGame(GameNode node) {
+		return Optional.ofNullable(nodeGameMap.get(node));
 	}
 
 	/**
@@ -258,7 +258,7 @@ public class MainTournament implements Tournament {
 		// find earliest game
 		Date earliest = null;
 		for (Game game: nodeGameMap.values()) {
-			if(game.getWinner() != null) return true; // if a winner is already selected, it had better be started
+			if(game.getWinner().isPresent()) return true; // if a winner is already selected, it had better be started
 			if(earliest != null) {
 				if(game.getDate() != null && game.getDate().before(earliest)) {
 					earliest = game.getDate();
@@ -278,8 +278,8 @@ public class MainTournament implements Tournament {
     }
 
     public boolean isComplete() {
-		Game championshipGame = getChampionshipGame();
-		return championshipGame != null && championshipGame.isComplete();
+		Optional<Game> championshipGame = getChampionshipGame();
+		return championshipGame.isPresent() && championshipGame.get().isComplete();
 	}
 
 	public boolean hasAdmin(int playerOID) {
@@ -355,7 +355,7 @@ public class MainTournament implements Tournament {
 		for (Game game : nodeGameMap.values()) {
 			if(game != null) {
 				Date gameDate = game.getDate();
-				if(gameDate != null && game.getWinner() == null) {
+				if(gameDate != null && !game.getWinner().isPresent()) {
 					if(toReturn == null || gameDate.before(toReturn)) {
 						System.out.println("Found earlier: "+gameDate);
 						toReturn = gameDate;
@@ -375,11 +375,16 @@ public class MainTournament implements Tournament {
 		for (Game game : nodeGameMap.values()) {
 			if(game != null) {
 				Date gameDate = game.getDate();
-				if(gameDate != null && game.getWinner() == null) {
+				if(gameDate != null && !game.getWinner().isPresent()) {
 					if(gameDate.before(now)) return true;
 				}
 			}
 		}
 		return false;
 	}
+
+    @Override
+    public Optional<Opponent> getWinner(GameNode node) {
+        return getGame(node).map(Game::getWinner).orElse(Optional.empty());
+    }
 }

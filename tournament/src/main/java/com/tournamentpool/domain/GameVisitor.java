@@ -50,5 +50,5 @@ public abstract class GameVisitor<T extends Node> {
 	
 	public abstract void visit(Opponent oponent, Seed seed, int roundNo, GameNode nextNode);
 
-	public abstract Opponent getWinner(GameNode node);
+	public abstract java.util.Optional<Opponent> getWinner(GameNode node);
 }
