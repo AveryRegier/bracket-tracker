@@ -148,15 +148,6 @@ public class SubPool implements Pool {
         return getParentPool().getBrackets().stream()
                 .filter(this::ownerIsInGroup)
                 .collect(Collectors.toSet());
-
-//		Set<Bracket> groupBrackets = new HashSet<>();
-//		Iterable<Bracket> brackets = getParentPool().getBrackets();
-//		for (Bracket bracket : brackets) {
-//			if(ownerIsInGroup(bracket)) {
-//				groupBrackets.add(bracket);
-//			}
-//		}
-//		return groupBrackets;
 	}
 
     private boolean ownerIsInGroup(Bracket bracket) {
