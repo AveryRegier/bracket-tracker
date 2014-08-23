@@ -217,7 +217,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 	}
 
 	private boolean hasAnyBrackets(Pool pool) {
-		return pool.getBrackets().iterator().hasNext();
+		return !pool.getBrackets().isEmpty();
 	}
 
 	private Pool lookupPool(HttpServletRequest req) {

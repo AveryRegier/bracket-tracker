@@ -245,7 +245,7 @@ public class MainPool implements Pool {
 	public boolean mayDelete(User user) {
 		return user != null 
 		    && (group.getAdministrator() == user || user.isSiteAdmin()) 
-		    && !getBrackets().iterator().hasNext();
+		    && getBrackets().isEmpty();
 	}
 	
 	/* (non-Javadoc)

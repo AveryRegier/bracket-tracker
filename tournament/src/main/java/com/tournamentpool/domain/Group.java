@@ -246,12 +246,9 @@ public class Group implements Comparable<Group> {
 		if( (requestor.isSiteAdmin() || requestor == getAdministrator() || requestor == player)
 		    && (getMyMembers().contains(player))) {
 			// does this player have any brackets in a pool in this group?
-			for (Pool pool: getPools()) {
-				for (Bracket bracket: pool.getBrackets()) {
-					if(bracket.getOwner() == player) return false;
-				}
-			}
-			return true;
+            return !getPools().stream()
+                    .flatMap(p->p.getBrackets().stream())
+                    .anyMatch(b->b.getOwner() == player);
 		}
 		return false;
 	}

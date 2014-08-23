@@ -221,7 +221,7 @@ public class UserManager extends SingletonProviderHolder {
 		   pool.getTieBreakerType() != tieBreakerType ||
 		   !(pool.getTieBreakerQuestion() == tieBreakerQuestion || pool.getTieBreakerQuestion() != null && pool.getTieBreakerQuestion().equals(tieBreakerQuestion)))
 		{
-			if(pool.getBrackets().iterator().hasNext()) {
+			if(!pool.getBrackets().isEmpty()) {
 				throw new IllegalStateException("Pools that have brackets may not be changed.");
 			}
 		}
