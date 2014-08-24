@@ -160,12 +160,14 @@ public class MainTournament implements Tournament {
 	private void updateGameInformation(WinnerSource winnerSource,
 			ScoreReporter scoreReporter, GameReporter gameReporter,
 			GameNode node) {
-		GameInfo gameInfo = winnerSource.getGameInfo(getTournamentType(), node);
-		Opponent winner = gameInfo != null ? gameInfo.getWinner().orElse(null) : null;
-		Date gameDate = gameInfo != null ? gameInfo.getDate() : null;
+		Optional<? extends GameInfo> gameInfo = winnerSource.getGameInfo(getTournamentType(), node);
+		Opponent winner = gameInfo.map(g->g.getWinner().orElse(null)).orElse(null);
+		Date gameDate = gameInfo.map(g->g.getDate()).orElse(null);
 		Game game = createGame(node, winner, gameDate);
 		gameReporter.updateGame(game);
-		updateScores(scoreReporter, gameInfo, game);
+        if(gameInfo.isPresent()) {
+            updateScores(scoreReporter, gameInfo.get(), game);
+        }
 	}
 
 	private List<GameNode> getAllGameNodes() {
@@ -173,27 +175,24 @@ public class MainTournament implements Tournament {
 	}
 
 
-	private void updateScores(ScoreReporter scoreReporter,
-			GameInfo gameInfo, Game game) {
-		if(gameInfo != null) {
-			game.setStatus(gameInfo.getStatus());
-			for (Entry<Integer, Opponent> entry : game.getOpponents()) {
-				Opponent opponent = entry.getValue();
-				Integer score = gameInfo.getScore(opponent);
-				Integer previous = game.setScore(opponent, score);
-				if(previous != null && score != null) {
-					scoreReporter.updateScore(game, opponent, score);
-				} else if(previous == null && score != null){
-					scoreReporter.insertScore(game, opponent, score);
-				} else if(score == null){
-					scoreReporter.deleteScore(game, opponent);
-				}
-			}
-		}
+	private void updateScores(ScoreReporter scoreReporter, GameInfo gameInfo, Game game) {
+        game.setStatus(gameInfo.getStatus());
+        for (Entry<Integer, Opponent> entry : game.getOpponents()) {
+            Opponent opponent = entry.getValue();
+            Integer score = gameInfo.getScore(opponent);
+            Integer previous = game.setScore(opponent, score);
+            if(previous != null && score != null) {
+                scoreReporter.updateScore(game, opponent, score);
+            } else if(previous == null && score != null){
+                scoreReporter.insertScore(game, opponent, score);
+            } else if(score == null){
+                scoreReporter.deleteScore(game, opponent);
+            }
+        }
 	}
 
 	public static interface WinnerSource {
-		GameInfo getGameInfo(TournamentType tournamentType, GameNode node);
+		Optional<? extends GameInfo> getGameInfo(TournamentType tournamentType, GameNode node);
 	}
 	
 	/**

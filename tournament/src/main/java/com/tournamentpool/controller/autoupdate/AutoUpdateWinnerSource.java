@@ -39,19 +39,19 @@ final class AutoUpdateWinnerSource implements WinnerSource {
 	}
 
 	@Override
-	public GameInfo getGameInfo(TournamentType tournamentType,
-			GameNode node) {
-		Optional<Game> oldGame = mainTournament.getGame(node);
+	public Optional<? extends GameInfo> getGameInfo(TournamentType tournamentType,
+                                                    GameNode node) {
+		Optional<? extends GameInfo> oldGame = mainTournament.getGame(node);
 		if(oldGame.isPresent()) {
 			Optional<Opponent> oldWinner = oldGame.get().getWinner();
-			if(oldWinner.isPresent()) return oldGame.get();
+			if(oldWinner.isPresent()) return oldGame;
 		}
 		
 	    Map<Opponent, Team> teams = getTeamsIfReadyToPlay(mainTournament, node);
-        return getUpdatedGameInfoFor(oldGame, teams);
+        return Optional.ofNullable(getUpdatedGameInfoFor(oldGame, teams));
 	}
 
-    private GameInfo getUpdatedGameInfoFor(Optional<Game> oldGame, Map<Opponent, Team> teams) {
+    private GameInfo getUpdatedGameInfoFor(Optional<? extends GameInfo> oldGame, Map<Opponent, Team> teams) {
         if(teams != null) {
             for (Entry<Opponent, Team> entry : teams.entrySet()) {
                 Iterable<String> names = entry.getValue().getNames();

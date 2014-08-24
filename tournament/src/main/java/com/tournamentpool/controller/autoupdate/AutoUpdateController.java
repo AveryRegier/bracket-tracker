@@ -202,7 +202,7 @@ public class AutoUpdateController extends TournamentController {
 	}
 
 	private Map<String, LiveGame> mapTeamsToGames(List<LiveGame> games) {
-		final Map<String, LiveGame> teamGameMap = new TreeMap<String, LiveGame>();
+		final Map<String, LiveGame> teamGameMap = new TreeMap<>();
 		if(games != null) for (LiveGame game : games) {
 			//if(game.isFinal()) {
 				for (String team : game.getPlayerScores().keySet()) {

@@ -92,7 +92,7 @@ public class Tournament extends RequiresLoginServlet {
                         req.getParameter("name"),
                         getDate(req));
 
-				WinnerSource winnerSource = (tournamentType, node) -> new GameInfo() {
+				WinnerSource winnerSource = (tournamentType, node) -> Optional.of(new GameInfo() {
                     // defer to in-memory object for information we don't know from the UI
                     private Optional<Game> game = tournament.getGame(node);
 
@@ -122,7 +122,7 @@ public class Tournament extends RequiresLoginServlet {
                     public Optional<Opponent> getWinner() {
                         return tournamentType.getOpponentByOrder(getInt(req, "game"+node.getOid(), -1));
                     }
-                };
+                });
 				
 				tournament.updateGames(getApp().getSingletonProvider(), winnerSource);
 			

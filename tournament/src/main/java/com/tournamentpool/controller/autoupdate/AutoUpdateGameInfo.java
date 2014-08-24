@@ -1,6 +1,5 @@
 package com.tournamentpool.controller.autoupdate;
 
-import com.tournamentpool.domain.Game;
 import com.tournamentpool.domain.GameInfo;
 import com.tournamentpool.domain.Opponent;
 import com.tournamentpool.domain.Team;
@@ -32,10 +31,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 final class AutoUpdateGameInfo implements GameInfo {
 	private final LiveGame game;
 	private final Map<Opponent, Team> teams;
-	private final Optional<Game> oldGame;
+	private final Optional<? extends GameInfo> oldGame;
 
 	AutoUpdateGameInfo(LiveGame game, Map<Opponent, Team> teams,
-			Optional<Game> oldGame) {
+			Optional<? extends GameInfo> oldGame) {
 		this.game = game;
 		this.teams = teams;
 		this.oldGame = oldGame;
