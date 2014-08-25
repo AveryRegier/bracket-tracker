@@ -21,7 +21,6 @@ package com.tournamentpool.controller;
 import com.tournamentpool.domain.*;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Optional;
 
 public class ArchiveFilter implements Filter {
@@ -42,15 +41,12 @@ public class ArchiveFilter implements Filter {
 		if(c) {
 			Optional<Game> championshipGame = tournament.getChampionshipGame();
 			if(championshipGame.isPresent()) {
-				Date endDate = championshipGame.get().getDate();
-				if(endDate != null) {
-					Calendar gameTime = Calendar.getInstance();
-					gameTime.setTime(endDate);
-					Calendar archiveDate = Calendar.getInstance();
-					archiveDate.add(Calendar.WEEK_OF_YEAR, -1);
-//					System.out.println(tournament.getName()+" ended "+(gameTime.getTime())+" Comparing to "+archiveDate.getTime()+" after "+archiveDate.after(endDate));
-					return archiveDate.after(gameTime);
-				}
+                Calendar gameTime = Calendar.getInstance();
+                gameTime.setTime(championshipGame.get().getDate());
+                Calendar archiveDate = Calendar.getInstance();
+                archiveDate.add(Calendar.WEEK_OF_YEAR, -1);
+//				System.out.println(tournament.getName()+" ended "+(gameTime.getTime())+" Comparing to "+archiveDate.getTime()+" after "+archiveDate.after(endDate));
+                return archiveDate.after(gameTime);
 			}
 		}
 		return c;

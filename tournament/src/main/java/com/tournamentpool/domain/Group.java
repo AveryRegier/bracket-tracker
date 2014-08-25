@@ -135,11 +135,11 @@ public class Group implements Comparable<Group> {
 	 */
 	public Set<Pool> getPools() {
 		if(pools == null) {
-			pools = new LinkedHashSet<Pool>();
+			pools = new LinkedHashSet<>();
 			um.loadPools(this);
 		}
 		if(parent != null) {
-			LinkedHashSet<Pool> these = new LinkedHashSet<Pool>();
+			LinkedHashSet<Pool> these = new LinkedHashSet<>();
 			these.addAll(pools);
 			Set<Pool> parentPools = parent.getPools();
 			for (Pool pool : parentPools) {

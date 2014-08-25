@@ -113,7 +113,7 @@ public class User {
 
 	public Iterable<Group> getGroupsInHierarchy() {
 
-		Set<Group> allGroups = new TreeSet<Group>();
+		Set<Group> allGroups = new TreeSet<>();
 		for(Group group: groups) {
 			do {
 				allGroups.add(group);
@@ -124,7 +124,7 @@ public class User {
 	}
 
     public Iterable<Group> getMembershipGroupsInHierarchy(Group parent) {
-        Set<Group> allGroups = new TreeSet<Group>();
+        Set<Group> allGroups = new TreeSet<>();
         for(Group group: groups) {
             if(group.isInHierarchy(parent)) {
                 allGroups.add(group);

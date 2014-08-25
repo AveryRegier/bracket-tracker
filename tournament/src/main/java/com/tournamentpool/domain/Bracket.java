@@ -155,7 +155,7 @@ public class Bracket implements Reference {
 	 */
 	public synchronized void applyPicks(List<Pick> updatePicks) {
 		if(picks == null) {
-			picks = new HashMap<GameNode, Pick>();
+			picks = new HashMap<>();
 		} else {
 			picks.clear();
 		}

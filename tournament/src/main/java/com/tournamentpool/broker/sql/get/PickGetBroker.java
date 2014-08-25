@@ -21,18 +21,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql.get;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.PreparedStatementBroker;
 import com.tournamentpool.domain.Bracket;
 import com.tournamentpool.domain.Bracket.Pick;
 import com.tournamentpool.domain.BracketManager;
+import com.tournamentpool.domain.GameNode;
 import com.tournamentpool.domain.TournamentType;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Avery J. Regier
@@ -61,11 +63,14 @@ public class PickGetBroker extends PreparedStatementBroker {
 		BracketManager bracketManager = sp.getSingleton().getBracketManager();
 		Bracket bracket = bracketManager.getBracket(bracketOID);
 		TournamentType tournamentType = bracket.getTournament().getTournamentType();
-		List<Pick> picks = new LinkedList<Pick>();
+		List<Pick> picks = new LinkedList<>();
 		while(set.next()) {
-			Bracket.Pick pick = bracket.createPick(tournamentType.getGameNode(set.getInt("GAME_NODE_ID")));
-			pick.setWinner(tournamentType.getOpponent(set.getInt("WINNER")));
-			picks.add(pick);
+            Optional<GameNode> gameNode = tournamentType.getGameNode(set.getInt("GAME_NODE_ID"));
+            if(gameNode.isPresent()) {
+                Bracket.Pick pick = bracket.createPick(gameNode.get());
+                pick.setWinner(tournamentType.getOpponent(set.getInt("WINNER")));
+                picks.add(pick);
+            }
 		}
 		bracket.applyPicks(picks);
 	}

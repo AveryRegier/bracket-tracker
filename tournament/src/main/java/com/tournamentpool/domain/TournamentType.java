@@ -24,10 +24,7 @@ package com.tournamentpool.domain;
 import utility.domain.Reference;
 import utility.menu.Menu;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -71,7 +68,7 @@ public interface TournamentType extends Reference {
 	public abstract Collection<GameNode> getGameNodes();
 	public List<GameNode> getGameNodesInLevelOrder();
 	
-	public abstract GameNode getGameNode(int gameNodeOID);
+	public abstract Optional<GameNode> getGameNode(int gameNodeOID);
 
 	public abstract Object getID();
 

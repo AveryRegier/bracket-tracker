@@ -22,6 +22,7 @@ import utility.domain.Reference;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -52,7 +53,7 @@ class SubTournamentType extends TournamentTypeAdapter implements TournamentType 
 	public GameNode getChampionshipGameNode() {
 		// Must wrap this game nodes and all feeders until we make the 
 		// game nodes at the startLevel look like seeds.
-		return wrap(parent.getChampionshipGameNode());
+		return wrap(Optional.ofNullable(parent.getChampionshipGameNode()));
 	}
 
 	public int getNumOponents() {
@@ -81,13 +82,14 @@ class SubTournamentType extends TournamentTypeAdapter implements TournamentType 
 			getChampionshipGameNode().getLevel().getRoundNo()); 
 	}
 
-	public GameNode getGameNode(int gameNodeOID) {
-		return wrap(parent.getGameNode(gameNodeOID));
+	public java.util.Optional<GameNode> getGameNode(int gameNodeOID) {
+		return Optional.ofNullable(wrap(parent.getGameNode(gameNodeOID)));
 	}
 	
-	private Map<Reference, Reference> instanceCache = new HashMap<Reference, Reference>();
-	synchronized SubGameNode wrap(GameNode parentGameNode) {
-		if(parentGameNode == null) return null;
+	private Map<Reference, Reference> instanceCache = new HashMap<>();
+	synchronized SubGameNode wrap(Optional<GameNode> maybeParentGameNode) {
+		if(maybeParentGameNode.isPresent()) return null;
+        GameNode parentGameNode = maybeParentGameNode.get();
 		if(parentGameNode instanceof SubGameNode) return (SubGameNode)parentGameNode;
 		SubGameNode subGameNode = (SubGameNode) instanceCache.get(parentGameNode);
 		if(subGameNode == null) {

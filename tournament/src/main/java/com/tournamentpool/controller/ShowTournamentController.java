@@ -81,13 +81,17 @@ public class ShowTournamentController extends TournamentController {
 
 		TournamentType tournamentType = tournament.getTournamentType();
 		for (TournamentVisitor.Node node: nodes) {
-			node.setPick(tournament.getGame(tournamentType.getGameNode(node.getGameNodeOid())));
+			node.setPick(tournament.getGame(findNode(tournamentType, node)));
 		}
 
 		return bean;
 	}
 
-	/**
+    private GameNode findNode(TournamentType tournamentType, TournamentVisitor.Node node) {
+        return tournamentType.getGameNode(node.getGameNodeOid()).orElse(null);
+    }
+
+    /**
 	 * @return
 	 * @throws NumberFormatException
 	 */
@@ -115,7 +119,7 @@ public class ShowTournamentController extends TournamentController {
         // set the winners
         TournamentType tournamentType = tournament.getTournamentType();
         for (TournamentVisitor.Node node : nodes) {
-            node.setPick(bracket.getPick(sp, tournamentType.getGameNode(node.getGameNodeOid())));
+            node.setPick(bracket.getPick(sp, findNode(tournamentType, node)));
         }
         BracketBean<TournamentVisitor.Node> bean1 = new BracketBean<TournamentVisitor.Node>();
         bean1.setBracket(nodes);
@@ -152,8 +156,9 @@ public class ShowTournamentController extends TournamentController {
 		TournamentVisitor tournamentVisitor = new TournamentVisitor(tournament);
 		ScoreSystem.Score theScore = scoreSystem.new Score();
 		for (Node node : nodes) {
-			GameNode gameNode = tournamentType.getGameNode(node.getGameNodeOid());
-			if(gameNode != null) {
+			Optional<GameNode> maybeGameNode = tournamentType.getGameNode(node.getGameNodeOid());
+			if(maybeGameNode.isPresent()) {
+                GameNode gameNode = maybeGameNode.get();
 				Seed winner = gameNode.visitForWinner(tournamentVisitor);
 				int score = scoreSystem.getScore(gameNode.getLevel());
 				Optional<Game> game = tournament.getGame(gameNode);
@@ -194,8 +199,9 @@ public class ShowTournamentController extends TournamentController {
 		TournamentVisitor tournamentVisitor = new TournamentVisitor(tournament);
 		TournamentType tournamentType = tournament.getTournamentType();
 		for (GameVisitorCommon.Node node: nodes) {
-			GameNode gameNode = tournamentType.getGameNode(node.getGameNodeOid());
-			if(gameNode != null) {
+			Optional<GameNode> maybeGameNode = tournamentType.getGameNode(node.getGameNodeOid());
+			if(maybeGameNode.isPresent()) {
+                GameNode gameNode = maybeGameNode.get();
 				Optional<Game> game = tournament.getGame(gameNode);
                 boolean played = game.isPresent() && game.get().getWinner().isPresent();
                 if(played) {
@@ -214,8 +220,9 @@ public class ShowTournamentController extends TournamentController {
 		BracketVisitor bracketVisitor = new BracketVisitor(sp, bracket.getTournament(), bracket);
 		TournamentType tournamentType = bracket.getTournament().getTournamentType();
 		for (BracketVisitor.Node node: nodes) {
-			GameNode gameNode = tournamentType.getGameNode(node.getGameNodeOid());
-			if(gameNode != null) {
+            Optional<GameNode> maybeGameNode = tournamentType.getGameNode(node.getGameNodeOid());
+            if(maybeGameNode.isPresent()) {
+                GameNode gameNode = maybeGameNode.get();
 				Optional<Pick> pick = bracket.getPick(sp, gameNode);
                 boolean picked = pick.isPresent() && pick.get().getWinner().isPresent();
                 if(picked) {

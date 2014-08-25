@@ -22,6 +22,7 @@ import com.tournamentpool.controller.TournamentVisitor;
 import utility.domain.Reference;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -129,7 +130,7 @@ class SubGameNode extends GameNodeAdapter implements GameNode {
 	}
 
 	private SubGameNode wrap(GameNode node) {
-		return tournamentType.wrap(node);
+		return tournamentType.wrap(Optional.ofNullable(node));
 	}
 	
 	private Reference wrap(Reference feeder) {

@@ -154,20 +154,18 @@ public class GroupBean implements Comparable<GroupBean>{
 	}
 
 	public void setPools(Set<Pool> poolObjects, Filter filter, User user) {
-		TreeSet<PoolBean> poolBeans = new TreeSet<PoolBean>();
+		TreeSet<PoolBean> poolBeans = new TreeSet<>();
 		if(poolObjects != null) {
-			Iterator<Pool> pools = poolObjects.iterator();
-			while (pools.hasNext()) {
-				Pool pool = pools.next();
-				if(filter.pass(pool)) { // already does a null check
-					PoolBean poolBean = new PoolBean(pool.getOid(), pool.getName());
-					poolBean.setBrackets(pool.getBrackets(), filter, null);
-					poolBean.setShowBracketsEarly(pool.isShowBracketsEarly());
-					poolBean.setBracketLimit(pool.getBracketLimit());
-					poolBean.setMayDelete(pool.mayDelete(user));
-					poolBeans.add(poolBean);
-				}
-			}
+            for (Pool pool : poolObjects) {
+                if (filter.pass(pool)) { // already does a null check
+                    PoolBean poolBean = new PoolBean(pool.getOid(), pool.getName());
+                    poolBean.setBrackets(pool.getBrackets(), filter, null);
+                    poolBean.setShowBracketsEarly(pool.isShowBracketsEarly());
+                    poolBean.setBracketLimit(pool.getBracketLimit());
+                    poolBean.setMayDelete(pool.mayDelete(user));
+                    poolBeans.add(poolBean);
+                }
+            }
 		}
 		this.pools = poolBeans;
 	}

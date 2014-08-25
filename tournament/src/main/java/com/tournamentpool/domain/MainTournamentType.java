@@ -131,7 +131,7 @@ public class MainTournamentType extends TournamentTypeAdapter implements Tournam
 		return seeds.size();
 	}
 
-	public GameNode getGameNode(int gameNodeOID) {
-		return ttm.getGameNode(gameNodeOID);
+	public Optional<GameNode> getGameNode(int gameNodeOID) {
+		return Optional.ofNullable(ttm.getGameNode(gameNodeOID));
 	}
 }
