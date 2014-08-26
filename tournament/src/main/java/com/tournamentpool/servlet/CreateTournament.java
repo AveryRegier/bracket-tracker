@@ -56,9 +56,9 @@ public class CreateTournament extends RequiresLoginServlet {
 			Tournament tournament = getApp().getTournamentManager().createTournament(
 					req.getParameter("name"),
 					getApp().getTournamentTypeManager().getTournamentType(
-							Integer.valueOf(req.getParameter("tournamentType")).intValue()),
+                            Integer.valueOf(req.getParameter("tournamentType"))),
 					getApp().getTeamManager().getLeague(
-							Integer.valueOf(req.getParameter("league")).intValue()),
+                            Integer.valueOf(req.getParameter("league"))),
 					startTime);
 			getApp().getTournamentManager().addAdmins(tournament, new int[] {user.getOID()});
 			res.sendRedirect(getApp().getConfig().getProperty("AssignSeedsURL")+"?tournament="+tournament.getOid());

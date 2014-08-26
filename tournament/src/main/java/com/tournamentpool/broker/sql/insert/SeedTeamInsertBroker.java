@@ -39,8 +39,8 @@ import java.util.Set;
 public class SeedTeamInsertBroker extends TransactionBroker<TransactionBroker.MultipleQuery> {
 	private final Tournament tournament;
 	public class MultipleSeedTeamQuery extends MultipleQuery {
-		private Map<Seed,Team> map;
-		private Iterator<Seed> queries;
+		private final Map<Seed,Team> map;
+		private final Iterator<Seed> queries;
 		public MultipleSeedTeamQuery(String key, Map<Seed, Team> queries) {
 			super(key);
 			this.queries = queries.keySet().iterator();
@@ -53,7 +53,7 @@ public class SeedTeamInsertBroker extends TransactionBroker<TransactionBroker.Mu
 			Seed seed = queries.next();
 			prepare(stmt, seed, map.get(seed));
 		}
-		protected void prepare(PreparedStatement stmt, Seed seed, Team team) throws SQLException {
+		void prepare(PreparedStatement stmt, Seed seed, Team team) throws SQLException {
 			stmt.setInt(1, team.getTeamOID());
 			stmt.setInt(2, tournament.getOid());
 			stmt.setInt(3, seed.getOid());
@@ -73,7 +73,7 @@ public class SeedTeamInsertBroker extends TransactionBroker<TransactionBroker.Mu
 			Seed seed = queries.next();
 			prepare(stmt, seed);
 		}
-		protected void prepare(PreparedStatement stmt, Seed seed) throws SQLException {
+		void prepare(PreparedStatement stmt, Seed seed) throws SQLException {
 			stmt.setInt(1, tournament.getOid());
 			stmt.setInt(2, seed.getOid());
 		}

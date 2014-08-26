@@ -68,8 +68,7 @@ public class AddTeamsToLeague extends RequiresLoginServlet {
 	}
 
 	private League getLeague(String leagueOID) {
-		League league = getApp().getTeamManager().getLeague(Integer.parseInt(leagueOID));
-		return league;
+        return getApp().getTeamManager().getLeague(Integer.parseInt(leagueOID));
 	}
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {

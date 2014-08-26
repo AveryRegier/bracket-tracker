@@ -18,11 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.domain;
 
+import utility.domain.Reference;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
-
-import utility.domain.Reference;
 
 public class MainGameNode extends GameNodeAdapter implements GameNode {
 
@@ -66,9 +66,9 @@ public class MainGameNode extends GameNodeAdapter implements GameNode {
 		}
 	}
 
-	private int oid;
-	private Level level;
-	private Map<Opponent, Feeder> feeders = new TreeMap<Opponent, Feeder>();
+	private final int oid;
+	private final Level level;
+	private final Map<Opponent, Feeder> feeders = new TreeMap<>();
 	private final GameFeederType gameFeederType;	
 
 	/**
@@ -113,7 +113,7 @@ public class MainGameNode extends GameNodeAdapter implements GameNode {
 	}
 
 	public Object getID() {
-		return new Integer(oid);
+		return oid;
 	}
 
 	public String getName() {

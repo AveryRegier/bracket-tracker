@@ -38,6 +38,7 @@ import java.io.IOException;
 /**
  * @author Avery J. Regier
  */
+@SuppressWarnings("TryWithIdenticalCatches")
 public class PoolMaintenance extends RequiresLoginServlet {
 	/**
 	 *

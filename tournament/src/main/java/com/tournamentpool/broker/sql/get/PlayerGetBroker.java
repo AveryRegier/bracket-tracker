@@ -21,11 +21,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql.get;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.PreparedStatementBroker;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * @author Avery J. Regier
@@ -34,7 +34,7 @@ public abstract class PlayerGetBroker extends PreparedStatementBroker {
 	/**
 	 * @param sp
 	 */
-	public PlayerGetBroker(SingletonProvider sp) {
+    PlayerGetBroker(SingletonProvider sp) {
 		super(sp);
 	}
 	private static boolean emailWarningGiven = false;

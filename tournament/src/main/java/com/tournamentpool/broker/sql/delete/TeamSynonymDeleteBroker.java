@@ -31,7 +31,7 @@ import java.sql.SQLException;
 public class TeamSynonymDeleteBroker extends PreparedStatementBroker {
 
 	private final Team team;
-    private String name;
+    private final String name;
 
     public TeamSynonymDeleteBroker(SingletonProvider sp, Team team, String name) {
 		super(sp);

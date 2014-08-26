@@ -26,7 +26,7 @@ public class GameFeederType implements Reference {
 	private final String name;
 
 	public GameFeederType(int oid, String name) {
-		this.oid = new Integer(oid);
+		this.oid = oid;
 		this.name = name;
 	}
 

@@ -73,18 +73,18 @@ public class AssignSeeds extends RequiresLoginServlet {
                     req.getParameter("name"),
                     getDate(req));
 			
-			Map<Seed, Team> seedTeam = new HashMap<Seed, Team>();
+			Map<Seed, Team> seedTeam = new HashMap<>();
 			
 			Map params = req.getParameterMap();
             for (Map.Entry entry : (Iterable<Map.Entry>) params.entrySet()) {
                 String key = (String) entry.getKey();
                 if (key.startsWith("team")) {
                     Integer seedID = Integer.valueOf(key.substring(4).trim());
-                    Seed seed = tournament.getTournamentType().getSeed(seedID.intValue());
+                    Seed seed = tournament.getTournamentType().getSeed(seedID);
                     String teamIDString = ((String[]) entry.getValue())[0];
                     Team team = null;
                     if (StringUtil.killWhitespace(teamIDString) != null) {
-                        team = getApp().getTeamManager().getTeam(Integer.valueOf(teamIDString).intValue());
+                        team = getApp().getTeamManager().getTeam(Integer.valueOf(teamIDString));
                     }
                     seedTeam.put(seed, team);
                 }

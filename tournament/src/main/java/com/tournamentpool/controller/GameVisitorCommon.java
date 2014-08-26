@@ -52,13 +52,13 @@ public abstract class GameVisitorCommon<T extends GameVisitorCommon.Node> extend
 			}
 		}
 		
-		private Team team;
-		private Seed seed;
-		private Opponent opponent;
-		private int level;
+		private final Team team;
+		private final Seed seed;
+		private final Opponent opponent;
+		private final int level;
 		private int gameNodeOID;
 		private Collection<Feeder> feeders;
-		private boolean isSeed;
+		private final boolean isSeed;
 		private boolean upset;
 		
 		Node(Seed seed, Team team, Opponent opponent, int level) {
@@ -126,7 +126,7 @@ public abstract class GameVisitorCommon<T extends GameVisitorCommon.Node> extend
 		}
 	}
 
-	public GameVisitorCommon(Tournament tournament) {
+	GameVisitorCommon(Tournament tournament) {
 		super(tournament);
 	}
 }

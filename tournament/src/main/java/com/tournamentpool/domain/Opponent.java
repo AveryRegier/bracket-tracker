@@ -27,9 +27,9 @@ import utility.domain.Reference;
  * @author Avery J. Regier
  */
 public class Opponent implements Reference, Comparable<Opponent> {
-	private int oid;
-	private String name;
-	private int sequence;
+	private final int oid;
+	private final String name;
+	private final int sequence;
 
 	/**
 	 * @param oponentOID
@@ -67,6 +67,6 @@ public class Opponent implements Reference, Comparable<Opponent> {
 	}
 
 	public Object getID() {
-		return new Integer(oid);
+		return oid;
 	}
 }

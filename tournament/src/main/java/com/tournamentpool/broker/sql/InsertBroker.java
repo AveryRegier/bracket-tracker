@@ -21,12 +21,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql;
 
+import com.tournamentpool.application.SingletonProvider;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import com.tournamentpool.application.SingletonProvider;
 
 /**
  * @author Avery J. Regier
@@ -36,7 +36,7 @@ public abstract class InsertBroker extends PreparedStatementBroker {
 	/**
 	 * @param sp
 	 */
-	public InsertBroker(SingletonProvider sp) {
+    protected InsertBroker(SingletonProvider sp) {
 		super(sp);
 	}
 

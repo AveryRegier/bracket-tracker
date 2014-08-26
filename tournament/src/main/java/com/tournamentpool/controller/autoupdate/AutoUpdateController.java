@@ -28,7 +28,6 @@ import utility.StringUtil;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.net.*;
 import java.util.*;
@@ -38,7 +37,7 @@ import static utility.StringUtil.killWhitespace;
 
 public class AutoUpdateController extends TournamentController {
 
-	private List<Timer> timers= new ArrayList<Timer>();
+	private final List<Timer> timers= new ArrayList<>();
 
 	public AutoUpdateController(SingletonProvider sp) {
 		super(sp);
@@ -116,8 +115,7 @@ public class AutoUpdateController extends TournamentController {
 	private boolean doUpdate(final League sourceLeague)
 			throws URISyntaxException, IOException,
 			ClassNotFoundException, InstantiationException,
-			IllegalAccessException, MalformedURLException,
-			UnsupportedEncodingException
+			IllegalAccessException
 	{
 		// TODO: make it possible to have multiple sources
 		
@@ -164,7 +162,7 @@ public class AutoUpdateController extends TournamentController {
 				System.out.println("Applying updates to "+tournament.getOid()+" "+tournament.getName());
 				final MainTournament mainTournament = (MainTournament)tournament;
 				mainTournament.updateGames(sp, new AutoUpdateWinnerSource(mainTournament, teamGameMap));
-				tournamentsPaused = !tournamentsPaused ? false : !mainTournament.hasGamesInProgress();
+				tournamentsPaused = tournamentsPaused && !mainTournament.hasGamesInProgress();
 			}
 		}
 		return tournamentsPaused;
@@ -235,11 +233,11 @@ public class AutoUpdateController extends TournamentController {
     private Properties getSubSet(String prefix) {
         Properties config = getConfig();
         Properties subConfig = new Properties();
-        for(String prop: config.stringPropertyNames()) {
-            if(prop.startsWith(prefix)){
-                subConfig.put(prop.substring(prefix.length()), config.getProperty(prop));
-            }
-        }
+        config.stringPropertyNames().stream()
+                .filter(prop -> prop.startsWith(prefix))
+                .forEach(prop -> {
+                    subConfig.put(prop.substring(prefix.length()), config.getProperty(prop));
+                });
         return subConfig;
     }
 

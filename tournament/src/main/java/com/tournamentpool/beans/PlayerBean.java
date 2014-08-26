@@ -76,7 +76,7 @@ public class PlayerBean extends BracketHolderBean implements Comparable<PlayerBe
 		return oid;
 	}
 
-	private Set<GroupBean> groupBeans = new LinkedHashSet<GroupBean>();
+	private final Set<GroupBean> groupBeans = new LinkedHashSet<>();
 	private boolean mayRemoveUser;
 	public Iterator<GroupBean> getGroups() {
 		return groupBeans.iterator();
@@ -86,7 +86,7 @@ public class PlayerBean extends BracketHolderBean implements Comparable<PlayerBe
 		for(Group group: groups) {
 			if(group != null) {
 				GroupBean groupBean = new GroupBean(group);
-				groupBean.setPools(group.getPools(), (User)null);
+				groupBean.setPools(group.getPools(), null);
 				groupBean.setAdmin(null, group.getAdministrator() != null && group.getAdministrator().getOID() == getOid());
 				groupBeans.add(groupBean);
 			}

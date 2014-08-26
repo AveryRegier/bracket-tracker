@@ -80,7 +80,7 @@ public class BracketMaintenance extends RequiresLoginServlet {
 
 	private void setupPools(HttpServletRequest req, User user, Bracket bracket) {
 		if(user ==  bracket.getOwner() && bracket.isComplete(getApp().getSingletonProvider()) && !bracket.getTournament().isStarted()) {
-			Set<PoolBean> poolsAvailable = new HashSet<PoolBean>();
+			Set<PoolBean> poolsAvailable = new HashSet<>();
 			for(Group group: user.getGroupsInHierarchy()) {
 				GroupBean gBean = new GroupBean(group);
                 group.getMyPools().stream()
@@ -111,12 +111,10 @@ public class BracketMaintenance extends RequiresLoginServlet {
 					req.getParameter("id"),
 					req.getParameter("pool"), view)
 			);
-		} catch (NumberFormatException e) {
-			throw new ServletException(e);
-		} catch (DatabaseFailure e) {
+		} catch (NumberFormatException | DatabaseFailure e) {
 			throw new ServletException(e);
 		}
-	}
+    }
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException
@@ -142,12 +140,10 @@ public class BracketMaintenance extends RequiresLoginServlet {
 			} else { // continue
 				res.sendRedirect(getApp().getConfig().getProperty("MyTournamentURL"));
 			}
-		} catch (DatabaseFailure e) {
-			throw new ServletException(e);
-		} catch (IllegalAccessException e) {
+		} catch (DatabaseFailure | IllegalAccessException e) {
 			throw new ServletException(e);
 		}
-	}
+    }
 
 	private Bracket createOrUpdateBracket(HttpServletRequest req, User user)
 			throws IllegalAccessException {
@@ -156,7 +152,7 @@ public class BracketMaintenance extends RequiresLoginServlet {
 		Bracket bracket = user.getBracket(getInt(req, "id", -1));
 		if(bracket == null) {
 			int tournamentOid = Integer.parseInt(req.getParameter("tournament"));
-			Tournament tournament = getApp().getTournamentManager().getTournament(tournamentOid);
+            Tournament tournament = getApp().getTournamentManager().getTournament(tournamentOid);
 			if(tournament == null) {
 				throw new IllegalArgumentException("A tournament is required");
 			}
@@ -168,7 +164,7 @@ public class BracketMaintenance extends RequiresLoginServlet {
 			if(user != bracket.getOwner()) {
 				throw new IllegalAccessException("You may not edit another user's bracket");
 			}
-			Tournament tournament = bracket.getTournament();
+            Tournament tournament = bracket.getTournament();
 			if(tournament.isStarted() && bracket.isInPool()) {
 				throw new IllegalAccessException(
 						"Brackets already assigned to a pool with a tournament in progress may not be modified");
@@ -183,9 +179,9 @@ public class BracketMaintenance extends RequiresLoginServlet {
 	private void applyPicks(DecisionMaker decider, Bracket bracket)
 			throws IllegalAccessException
 	{
-		List<Pick> insertPicks = new LinkedList<Pick>();
-		List<Pick> updatePicks = new LinkedList<Pick>();
-		List<Pick> deletePicks = new LinkedList<Pick>();
+		List<Pick> insertPicks = new LinkedList<>();
+		List<Pick> updatePicks = new LinkedList<>();
+		List<Pick> deletePicks = new LinkedList<>();
 		sortPicks(decider, bracket, insertPicks, updatePicks, deletePicks);
 		
 		boolean mayDelete = true;
@@ -233,7 +229,7 @@ public class BracketMaintenance extends RequiresLoginServlet {
     }
 
     public class UserDecider implements DecisionMaker {
-        private HttpServletRequest req;
+        private final HttpServletRequest req;
 
         public UserDecider(HttpServletRequest req) {
             this.req = req;

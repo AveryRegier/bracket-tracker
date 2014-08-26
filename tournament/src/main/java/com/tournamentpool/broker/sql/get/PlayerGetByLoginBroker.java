@@ -21,16 +21,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql.get;
 
+import com.tournamentpool.application.SingletonProvider;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
-import com.tournamentpool.application.SingletonProvider;
 
 /**
  * @author Avery J. Regier
  */
 public class PlayerGetByLoginBroker extends PlayerGetBroker {
-	private String userid;
+	private final String userid;
 
 	/**
 	 * @param sp

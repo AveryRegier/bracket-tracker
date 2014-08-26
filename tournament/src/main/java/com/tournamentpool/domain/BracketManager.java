@@ -34,7 +34,7 @@ import java.util.Map;
  * @author Avery J. Regier
  */
 public class BracketManager extends SingletonProviderHolder {
-	private Map<Integer, Bracket> brackets = new HashMap<Integer, Bracket>();
+	private final Map<Integer, Bracket> brackets = new HashMap<>();
 
 	/**
 	 * @param sp
@@ -51,13 +51,13 @@ public class BracketManager extends SingletonProviderHolder {
 			Tournament tournament = sp.getSingleton().getTournamentManager().getTournament(tournamentOID);
 			User user = sp.getSingleton().getUserManager().getUserObject(playerOID);
 			bracket = new Bracket(bracketOID, user, tournament, name);
-			brackets.put(new Integer(bracketOID), bracket);
+			brackets.put(bracketOID, bracket);
 		}
 		return bracket;
 	}
 	
-	public Bracket getCachedBracket(int bracketOID) {
-		return brackets.get(new Integer(bracketOID));
+	Bracket getCachedBracket(int bracketOID) {
+		return brackets.get(bracketOID);
 	}
 
 	/**

@@ -24,7 +24,7 @@ import utility.domain.Reference;
 
 public abstract class TieBreakerType implements Reference {
 	@SuppressWarnings("rawtypes")
-	private static Comparable<?> EQUALIZER = new Comparable() {
+	private static final Comparable<?> EQUALIZER = new Comparable() {
 		public int compareTo(Object arg0) {
 			return 0; // always equal
 		}
@@ -66,7 +66,7 @@ public abstract class TieBreakerType implements Reference {
 	
 	private static Integer calculateDelta(String tieBreakerAnswer,
 			String bracketTieBreakerAnswer) {
-		return new Integer(Math.abs(Integer.parseInt(bracketTieBreakerAnswer) - Integer.parseInt(tieBreakerAnswer)));
+		return Math.abs(Integer.parseInt(bracketTieBreakerAnswer) - Integer.parseInt(tieBreakerAnswer));
 	}
 
 	public static class TieBreakerTypeUpsetPrediction extends TieBreakerType {
@@ -93,7 +93,7 @@ public abstract class TieBreakerType implements Reference {
 					public int compareTo(Delta b) {
 						// higher deltas win
 						return b.delta.compareTo(this.delta);
-					};
+					}
 					
 					public String toString() {
 						return delta.toString();
@@ -112,7 +112,7 @@ public abstract class TieBreakerType implements Reference {
 	}
 	
 	private static Integer calculateUpsetDelta(Pool pool, Bracket bracket) {
-		return new Integer(new ShowTournamentController(null).getUpsetPredictionDelta(bracket, pool.getScoreSystem()));
+		return new ShowTournamentController(null).getUpsetPredictionDelta(bracket, pool.getScoreSystem());
 	}
 	
 	/** 
@@ -151,7 +151,7 @@ public abstract class TieBreakerType implements Reference {
 						if(comparison != 0) return comparison;
 						// lower deltas win closest number comparisons
 						else return this.closestNumberDelta.compareTo(b.closestNumberDelta);
-					};
+					}
 					
 					public String toString() {
 						return upsetDelta.toString() +" | "+closestNumberDelta.toString();
@@ -177,8 +177,8 @@ public abstract class TieBreakerType implements Reference {
 	private final Integer tieBreakerID;
 	private final String name;
 
-	public TieBreakerType(int tieBreakerID, String name) {
-		this.tieBreakerID = new Integer(tieBreakerID);
+	TieBreakerType(int tieBreakerID, String name) {
+		this.tieBreakerID = tieBreakerID;
 		this.name = name;
 	}
 
@@ -195,7 +195,7 @@ public abstract class TieBreakerType implements Reference {
 	}
 
 	public int getOid() {
-		return tieBreakerID.intValue();
+		return tieBreakerID;
 	}
 
 	public abstract Comparable<?> getTieBreakerDelta(

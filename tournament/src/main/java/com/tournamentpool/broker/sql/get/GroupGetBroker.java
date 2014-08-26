@@ -32,7 +32,7 @@ import java.sql.SQLException;
  * @author Avery J. Regier
  */
 public class GroupGetBroker extends PreparedStatementBroker {
-	protected int groupOID;
+	int groupOID;
 	
 	/**
 	 * @param sp
@@ -66,7 +66,7 @@ public class GroupGetBroker extends PreparedStatementBroker {
 		}
 	}
 
-	protected int getGroupOID(ResultSet set) throws SQLException {
+	int getGroupOID(ResultSet set) throws SQLException {
 		return groupOID;
 	}
 	

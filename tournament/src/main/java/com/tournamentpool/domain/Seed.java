@@ -28,8 +28,8 @@ import utility.domain.Reference;
  */
 public class Seed implements Reference {
 	public static final Seed UNKNOWN = new Seed(-1, 0);
-	private int oid;
-	private int seedno;
+	private final int oid;
+	private final int seedno;
 	
 	/**
 	 * 
@@ -54,7 +54,7 @@ public class Seed implements Reference {
 	}
 
 	public Object getID() {
-		return new Integer(getOid());
+		return getOid();
 	}
 
 	public String getName() {

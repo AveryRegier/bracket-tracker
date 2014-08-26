@@ -94,7 +94,7 @@ public class Tournament extends RequiresLoginServlet {
 
 				WinnerSource winnerSource = (tournamentType, node) -> Optional.of(new GameInfo() {
                     // defer to in-memory object for information we don't know from the UI
-                    private Optional<Game> game = tournament.getGame(node);
+                    private final Optional<Game> game = tournament.getGame(node);
 
                     @Override
                     public String getGameID() {

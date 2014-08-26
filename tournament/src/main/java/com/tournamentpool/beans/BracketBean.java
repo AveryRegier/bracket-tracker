@@ -60,9 +60,6 @@ public class BracketBean<T extends GameVisitorCommon.Node> {
 		super();
 	}
 
-	/**
-	 * @param string
-	 */
 	public void setName(String name) {
 		if(StringUtil.killWhitespace(name) != null) {
 			this.name = name;
@@ -241,7 +238,7 @@ public class BracketBean<T extends GameVisitorCommon.Node> {
 			}
 			return;
 		}
-		StringBuffer sb = new StringBuffer("Rooting for ");
+		StringBuilder sb = new StringBuilder("Rooting for ");
         List<String> rootingForList = Arrays.asList(rootingFor)
                 .stream()
                 .map(r -> pool.getTournament().getTeam(r).getName())

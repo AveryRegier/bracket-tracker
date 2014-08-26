@@ -22,11 +22,11 @@ import java.util.*;
 
 public class MainTournamentType extends TournamentTypeAdapter implements TournamentType {
 
-	private int tournamentTypeOID;
-	private String name;
-	private GameNode lastGame;
-	private Map<Integer, Opponent> oponents = new TreeMap<Integer, Opponent>();
-	private Map<Integer, Seed> seeds = new HashMap<Integer, Seed>();
+	private final int tournamentTypeOID;
+	private final String name;
+	private final GameNode lastGame;
+	private final Map<Integer, Opponent> oponents = new TreeMap<>();
+	private final Map<Integer, Seed> seeds = new HashMap<>();
 	private final TournamentTypeManager ttm;
 
 	/**
@@ -45,7 +45,7 @@ public class MainTournamentType extends TournamentTypeAdapter implements Tournam
 	 * @param sequence
 	 */
 	public void loadOponent(int oponentOID, String name, int sequence) {
-		oponents.put(new Integer(oponentOID), new Opponent(oponentOID, name, sequence));
+		oponents.put(oponentOID, new Opponent(oponentOID, name, sequence));
 	}
 
 	/**
@@ -53,14 +53,14 @@ public class MainTournamentType extends TournamentTypeAdapter implements Tournam
 	 * @param seedNo
 	 */
 	public void loadSeed(int seedOID, int seedNo) {
-		seeds.put(new Integer(seedOID), new Seed(seedOID, seedNo));
+		seeds.put(seedOID, new Seed(seedOID, seedNo));
 	}
 
 	/* (non-Javadoc)
 	 * @see com.tournamentpool.domain.ITournamentType#getSeed(int)
 	 */
 	public Seed getSeed(int seedOID) {
-		return seeds.get(new Integer(seedOID));
+		return seeds.get(seedOID);
 	}
 
 	/* (non-Javadoc)
@@ -68,7 +68,7 @@ public class MainTournamentType extends TournamentTypeAdapter implements Tournam
 	 */
 	public Opponent getOpponent(int oponentOID) {
 	//	System.out.println(oponentOID);
-		return oponents.get(new Integer(oponentOID));
+		return oponents.get(oponentOID);
 	}
 
 	/* (non-Javadoc)
@@ -107,7 +107,7 @@ public class MainTournamentType extends TournamentTypeAdapter implements Tournam
 	 * @see com.tournamentpool.domain.ITournamentType#getID()
 	 */
 	public Object getID() {
-		return new Integer(tournamentTypeOID);
+		return tournamentTypeOID;
 	}
 
 	/* (non-Javadoc)

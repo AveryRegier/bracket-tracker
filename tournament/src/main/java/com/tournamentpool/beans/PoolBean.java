@@ -30,8 +30,8 @@ import java.util.*;
  * @author Avery J. Regier
  */
 public class PoolBean extends BracketHolderBean implements Comparable<PoolBean> {
-	private int oid;
-	private String name;
+	private final int oid;
+	private final String name;
 	private PlayerBean owner;
 	private ScoreSystemBean scoreSystem;
 	private GroupBean group;
@@ -46,10 +46,10 @@ public class PoolBean extends BracketHolderBean implements Comparable<PoolBean> 
 	private boolean tieBreakerNeeded;
 	private boolean mayDelete;
 	private boolean mayRemoveBracket;
-	private Set<String> email = new LinkedHashSet<String>();
+	private final Set<String> email = new LinkedHashSet<>();
 	private boolean showGroups = false;
 
-    private TreeMap<GroupBean, List<Integer>> groupScores = new TreeMap<GroupBean, List<Integer>>();
+    private final TreeMap<GroupBean, List<Integer>> groupScores = new TreeMap<>();
 
 	/**
 	 * @param name
@@ -211,7 +211,7 @@ public class PoolBean extends BracketHolderBean implements Comparable<PoolBean> 
             GroupBean groupBean = new GroupBean(group);
             List<Integer> scores = groupScores.get(groupBean);
             if(scores == null) {
-                scores = new ArrayList<Integer>();
+                scores = new ArrayList<>();
                 groupScores.put(groupBean, scores);
             }
             scores.add(bracketBean.getScore().getCurrent());
@@ -219,22 +219,21 @@ public class PoolBean extends BracketHolderBean implements Comparable<PoolBean> 
     }
 
     public Iterator getTeamScores() {
-        Set<TeamScore> averageMap = new TreeSet<TeamScore>(new Comparator<TeamScore>() {
-            public int compare(TeamScore abean, TeamScore bbean) {
-                if(abean == bbean) return 0;
-                Float aScore = abean.getValue();
-                Float bScore = bbean.getValue();
-                if(aScore != null && bScore != null) {
-                    float score = aScore - bScore;
-                    if(score != 0) return (int)(-score * 100); // highest score first
-                }
+        Set<TeamScore> averageMap = new TreeSet<>((abean, bbean) -> {
+            if(abean == bbean) return 0;
+            Float aScore = abean.getValue();
+            Float bScore = bbean.getValue();
+            if(aScore != null && bScore != null) {
+                float score = aScore - bScore;
+                if(score != 0) return (int)(-score * 100); // highest score first
+            }
 
-                if(abean.getKey().getName() != null) {
-                    int result = abean.getKey().getName().compareTo(bbean.getKey().getName());
-                    if(result != 0) return result;
-                }
-                return abean.getKey().getOid() - bbean.getKey().getOid();
-            }});
+            if(abean.getKey().getName() != null) {
+                int result = abean.getKey().getName().compareTo(bbean.getKey().getName());
+                if(result != 0) return result;
+            }
+            return abean.getKey().getOid() - bbean.getKey().getOid();
+        });
 
         for(Map.Entry<GroupBean, List<Integer>> entry : groupScores.entrySet()) {
             GroupBean group = entry.getKey();
@@ -263,7 +262,7 @@ public class PoolBean extends BracketHolderBean implements Comparable<PoolBean> 
 	}
 	
 	public String getMailTo() {
-		StringBuffer sb = new StringBuffer("mailto:");
+		StringBuilder sb = new StringBuilder("mailto:");
 		boolean hasPrevious = false;
 		for (String address : email) {
 			if(address != null) {

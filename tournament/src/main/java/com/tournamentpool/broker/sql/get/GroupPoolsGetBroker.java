@@ -21,18 +21,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql.get;
 
+import com.tournamentpool.application.SingletonProvider;
+import com.tournamentpool.broker.sql.PreparedStatementBroker;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.tournamentpool.application.SingletonProvider;
-import com.tournamentpool.broker.sql.PreparedStatementBroker;
 
 /**
  * @author Avery J. Regier
  */
 public class GroupPoolsGetBroker extends PreparedStatementBroker {
-	private int groupOID;
+	private final int groupOID;
 
 	/**
 	 * @param sp

@@ -28,7 +28,7 @@ public class SingletonProviderHolder {
 
 	protected final SingletonProvider sp;
 
-	public SingletonProviderHolder(SingletonProvider sp) {
+	protected SingletonProviderHolder(SingletonProvider sp) {
 		this.sp = sp;
 	}
 

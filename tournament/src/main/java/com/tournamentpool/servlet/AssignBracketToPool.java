@@ -24,7 +24,6 @@ package com.tournamentpool.servlet;
 import com.tournamentpool.beans.BracketBean;
 import com.tournamentpool.beans.PoolBean;
 import com.tournamentpool.broker.sql.DatabaseFailure;
-import com.tournamentpool.controller.GameVisitorCommon;
 import com.tournamentpool.domain.Bracket;
 import com.tournamentpool.domain.Pool;
 import com.tournamentpool.domain.User;
@@ -100,7 +99,7 @@ public class AssignBracketToPool extends RequiresLoginServlet {
 					bean.setTieBreaker(pool.getTieBreakerType(), pool.getTieBreakerQuestion(), pool.getTieBreakerAnswer());
 					req.setAttribute("Pool", bean);
 
-					BracketBean<?> bBean = new BracketBean<GameVisitorCommon.Node>();
+					BracketBean<?> bBean = new BracketBean<>();
 					bBean.setOid(bracket.getOID());
 					bBean.setName(bracket.getName());
 					req.setAttribute("Bracket", bBean);
@@ -112,12 +111,8 @@ public class AssignBracketToPool extends RequiresLoginServlet {
 			um.assignBracket(pool, bracket, tieBreakerAnswer);
 
 			res.sendRedirect(getApp().getConfig().getProperty("MyTournamentURL")+"?type=pool&id="+pool.getOid());
-		} catch (DatabaseFailure e) {
-			throw new ServletException(e);
-		} catch (IllegalArgumentException e) {
-			throw new ServletException(e);
-		} catch (IllegalAccessException e) {
+		} catch (DatabaseFailure | IllegalArgumentException | IllegalAccessException e) {
 			throw new ServletException(e);
 		}
-	}
+    }
 }

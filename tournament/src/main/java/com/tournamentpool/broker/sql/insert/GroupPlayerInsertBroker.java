@@ -21,17 +21,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql.insert;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.TransactionBroker;
 import com.tournamentpool.domain.Group;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 /**
  * @author Avery J. Regier
  */
-public class GroupPlayerInsertBroker extends TransactionBroker {
+public class GroupPlayerInsertBroker extends TransactionBroker<TransactionBroker.Query> {
 	private final Group group;
 	private final int[] playerIDs;
 	private int count = 0;
@@ -50,22 +50,12 @@ public class GroupPlayerInsertBroker extends TransactionBroker {
 		
 	}
 
-	/**
-	 * @param sp
-	 * @param scoreSystem
-	 * @param tournament
-	 * @param group
-	 * @param name
-	 */
 	public GroupPlayerInsertBroker(SingletonProvider sp, Group group, int[] playerIDs) {
 		super(sp);
 		this.group = group;
 		this.playerIDs = playerIDs;
 		addQuery(new GroupPlayerInsertQuery());
 	}
-
-//	protected void prepare(PreparedStatement stmt) throws SQLException {
-//	}
 
 	protected String getSQLKey() {
 		return "GroupPlayerInsertSQL";

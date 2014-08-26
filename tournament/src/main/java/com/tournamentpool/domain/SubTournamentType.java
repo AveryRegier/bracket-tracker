@@ -86,7 +86,7 @@ class SubTournamentType extends TournamentTypeAdapter implements TournamentType 
 		return Optional.ofNullable(wrap(parent.getGameNode(gameNodeOID)));
 	}
 	
-	private Map<Reference, Reference> instanceCache = new HashMap<>();
+	private final Map<Reference, Reference> instanceCache = new HashMap<>();
 	synchronized SubGameNode wrap(Optional<GameNode> maybeParentGameNode) {
 		if(maybeParentGameNode.isPresent()) return null;
         GameNode parentGameNode = maybeParentGameNode.get();

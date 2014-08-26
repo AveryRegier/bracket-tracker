@@ -34,7 +34,7 @@ import java.sql.SQLException;
 public class TeamSynonymInsertBroker extends InsertBroker {
 
 	private final Team team;
-    private String alias;
+    private final String alias;
 
     public TeamSynonymInsertBroker(SingletonProvider sp, Team team, String alias) {
 		super(sp);

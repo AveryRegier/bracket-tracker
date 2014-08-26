@@ -18,28 +18,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.broker.mail;
 
+import com.tournamentpool.application.SingletonProvider;
+import com.tournamentpool.domain.User;
+
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Properties;
 import java.util.Set;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
-import com.tournamentpool.application.SingletonProvider;
-import com.tournamentpool.domain.User;
 
 /**
  * @author Avery Regier
  */
 public class JavaMailEmailBroker {
 
-	private static ThreadLocal<String[]> tl = new ThreadLocal<String[]>();
+	private static final ThreadLocal<String[]> tl = new ThreadLocal<>();
 
 	public static void setBaseURL(String scheme, String host, int port) {
 		tl.set(new String[] { scheme, host, Integer.toString(port) });
@@ -52,7 +47,7 @@ public class JavaMailEmailBroker {
 	}
 
 	public void sendPasswordChange(User user) throws UnsupportedEncodingException, MessagingException {
-		String[] server = (String[]) tl.get();
+		String[] server = tl.get();
 		String scheme = server[0];
 		String host = server[1];
 		String port = server[2];

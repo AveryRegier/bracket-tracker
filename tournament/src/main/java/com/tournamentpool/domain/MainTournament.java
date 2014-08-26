@@ -40,14 +40,14 @@ import java.util.stream.Collectors;
  * @author avery
  */
 public class MainTournament implements Tournament {
-	private Integer oid;
+	private final Integer oid;
 	private String name;
-	private TournamentType tournamentType;
+	private final TournamentType tournamentType;
 	private Timestamp startTime;
-	private Map<Seed, Team> seeds = new HashMap<Seed, Team>();
+	private final Map<Seed, Team> seeds = new HashMap<>();
 //	private Map games = new HashMap();
-	private Map<GameNode, Game> nodeGameMap = new HashMap<GameNode, Game>();
-	private Set<Integer> admins = new HashSet<Integer>();
+	private Map<GameNode, Game> nodeGameMap = new HashMap<>();
+	private final Set<Integer> admins = new HashSet<>();
 	private final League league;
 	private Date lastUpdated;
 
@@ -60,7 +60,7 @@ public class MainTournament implements Tournament {
 	 */
 	public MainTournament(int tournamentOID, String name, TournamentType type, League league, Timestamp startTime) {
 		this.league = league;
-		this.oid = new Integer(tournamentOID);
+		this.oid = tournamentOID;
 		this.name = name;
 		this.tournamentType = type;
 		this.startTime = startTime;
@@ -95,7 +95,7 @@ public class MainTournament implements Tournament {
 	}
 
 	public void loadAdmin(int adminOID) {
-		this.admins.add(new Integer(adminOID));
+		this.admins.add(adminOID);
 	}
 
 	public void removeAdmin(int adminOID) {
@@ -121,7 +121,7 @@ public class MainTournament implements Tournament {
 
 	private void applyGames(List<Game> updateGames) {
 		if(nodeGameMap == null) {
-			nodeGameMap = new HashMap<GameNode, Game>();
+			nodeGameMap = new HashMap<>();
 		} else {
 			nodeGameMap.clear();
 		}
@@ -162,7 +162,7 @@ public class MainTournament implements Tournament {
 			GameNode node) {
 		Optional<? extends GameInfo> gameInfo = winnerSource.getGameInfo(getTournamentType(), node);
 		Opponent winner = gameInfo.map(g->g.getWinner().orElse(null)).orElse(null);
-		Date gameDate = gameInfo.map(g->g.getDate()).orElse(null);
+		Date gameDate = gameInfo.map(GameInfo::getDate).orElse(null);
 		Game game = createGame(node, winner, gameDate);
 		gameReporter.updateGame(game);
         if(gameInfo.isPresent()) {
@@ -185,7 +185,7 @@ public class MainTournament implements Tournament {
                 scoreReporter.updateScore(game, opponent, score);
             } else if(previous == null && score != null){
                 scoreReporter.insertScore(game, opponent, score);
-            } else if(score == null){
+            } else {
                 scoreReporter.deleteScore(game, opponent);
             }
         }
@@ -228,7 +228,7 @@ public class MainTournament implements Tournament {
 	 * @return Returns the oid.
 	 */
 	public int getOid() {
-		return oid.intValue();
+		return oid;
 	}
 
 	public Object getID() {
@@ -333,7 +333,7 @@ public class MainTournament implements Tournament {
 
 			// remove tournament administrators
 			for (Integer adminOID: admins) {
-				new TournamentAdminDeleteBroker(sp, this, adminOID.intValue()).execute();				
+				new TournamentAdminDeleteBroker(sp, this, adminOID).execute();
 			}
 			
 			// remove tournament object

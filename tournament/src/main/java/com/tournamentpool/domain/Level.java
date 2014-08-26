@@ -27,9 +27,9 @@ import utility.domain.Reference;
  * @author Avery J. Regier
  */
 public class Level implements Reference, Comparable<Level> {
-	private Integer oid; 
-	private String name;
-	private int roundNo;
+	private final Integer oid;
+	private final String name;
+	private final int roundNo;
 
 	/**
 	 * @param levelOID
@@ -37,7 +37,7 @@ public class Level implements Reference, Comparable<Level> {
 	 * @param roundNo
 	 */
 	public Level(int levelOID, String name, int roundNo) {
-		this.oid = new Integer(levelOID);
+		this.oid = levelOID;
 		this.name = name;
 		this.roundNo = roundNo;
 	}
@@ -61,7 +61,7 @@ public class Level implements Reference, Comparable<Level> {
     }
 
 	public int getOid() {
-		return oid.intValue();
+		return oid;
 	}
 
 	public Integer getID() {

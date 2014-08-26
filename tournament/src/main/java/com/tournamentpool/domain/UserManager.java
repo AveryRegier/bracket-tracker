@@ -43,11 +43,11 @@ import java.util.stream.Collectors;
  * @author avery
  */
 public class UserManager extends SingletonProviderHolder {
-	private Map<String, User> users = new HashMap<>();
-	private Map<Integer, User> players = new HashMap<>();
-	private Map<Integer, Group> groups = new HashMap<>();
-	private Map<Integer, Pool> pools = new HashMap<>();
-	private Map<Integer, TieBreakerType> tieBreakerTypes = new TreeMap<>();
+	private final Map<String, User> users = new HashMap<>();
+	private final Map<Integer, User> players = new HashMap<>();
+	private final Map<Integer, Group> groups = new HashMap<>();
+	private final Map<Integer, Pool> pools = new HashMap<>();
+	private final Map<Integer, TieBreakerType> tieBreakerTypes = new TreeMap<>();
 
 	/**
 	 *
@@ -113,7 +113,7 @@ public class UserManager extends SingletonProviderHolder {
 	}
 
 	public User getUserObject(int playerOID) {
-		Integer oid = new Integer(playerOID);
+		Integer oid = playerOID;
 		User user = players.get(oid);
 		if(user == null)  {
 			new PlayerGetByOIDBroker(sp, playerOID).execute();
@@ -137,7 +137,7 @@ public class UserManager extends SingletonProviderHolder {
 	 * @param password
 	 * @return String
 	 */
-	public String authenticate(String userID, String password) throws ClassNotFoundException {
+	public String authenticate(String userID, String password) {
 		try {
 			return getUserObject(userID).checkPassword(password);
 		} catch (IllegalArgumentException e) {
@@ -168,11 +168,11 @@ public class UserManager extends SingletonProviderHolder {
 	}
 
 	public User getUser(int playerOID) {
-		return players.get(new Integer(playerOID));
+		return players.get(playerOID);
 	}
 
 	public Group getGroup(int groupOID) {
-		return groups.get(new Integer(groupOID));
+		return groups.get(groupOID);
 	}
 
 	public Group getGroupObject(int groupOID) {
@@ -252,7 +252,7 @@ public class UserManager extends SingletonProviderHolder {
 	 * @return
 	 */
 	public Pool getPool(int poolOID) {
-		return pools.get(new Integer(poolOID));
+		return pools.get(poolOID);
 	}
 
 	/**
@@ -303,7 +303,7 @@ public class UserManager extends SingletonProviderHolder {
 		for (Integer oid: playerOIDs) {
 			User user = players.get(oid);
 			if(user == null)  {
-				new PlayerGetByOIDBroker(sp, oid.intValue()).execute();
+				new PlayerGetByOIDBroker(sp, oid).execute();
 				user = players.get(oid);
 				if(user != null) fillUser(user);
 			}
@@ -426,7 +426,7 @@ public class UserManager extends SingletonProviderHolder {
         }
     }
 
-    protected void addPlayersTo(Group group, int[] playerIDs) {
+    void addPlayersTo(Group group, int[] playerIDs) {
 		new GroupPlayerInsertBroker(sp, group, playerIDs).execute();
 	}
 
@@ -486,15 +486,15 @@ public class UserManager extends SingletonProviderHolder {
 	}
 
 	public int getNumGroupsLoaded() {
-		return groups != null ? groups.size() : 0;
+		return groups.size();
 	}
 
 	public int getNumPlayersLoaded()  {
-		return players != null ? players.size() : 0;
+		return players.size();
 	}
 
 	public int getNumPoolsLoaded() {
-		return pools != null ? pools.size() : 0;
+		return pools.size();
 	}
 
 	public void resetPassword(String userID) throws UnsupportedEncodingException, MessagingException {
@@ -529,7 +529,7 @@ public class UserManager extends SingletonProviderHolder {
 	}
 
 	public TieBreakerType getTieBreakerType(int id) {
-		return tieBreakerTypes.get(new Integer(id));
+		return tieBreakerTypes.get(id);
 	}
 
 	public Menu getTieBreakerTypeMenu() {
@@ -559,11 +559,11 @@ public class UserManager extends SingletonProviderHolder {
 	}
 
 	public void removePool(Pool pool) {
-		pools.remove(new Integer(pool.getOid()));
+		pools.remove(pool.getOid());
 	}
 
 	public void removeGroup(Group group) {
-		groups.remove(new Integer(group.getId()));
+		groups.remove(group.getId());
 	}
 	
 	public boolean removeUser(User requestor, User toRemove) {

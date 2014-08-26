@@ -86,9 +86,7 @@ public class CreateSubTournament extends RequiresLoginServlet {
 					level, startTime);
 //			getApp().getTournamentManager().addAdmins(tournament, new int[] {user.getOID()});
 			res.sendRedirect(getApp().getConfig().getProperty("MyTournamentURL")+"?tournament="+tournament.getOid());
-		} catch (NullPointerException e) {
-			throw new ServletException("Level is required.", e);
-		} catch (NumberFormatException e) {
+		} catch (NullPointerException | NumberFormatException e) {
 			throw new ServletException("Level is required.", e);
 		} catch (DatabaseFailure e) {
 			throw new ServletException(e);

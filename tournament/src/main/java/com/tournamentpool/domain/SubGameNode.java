@@ -105,7 +105,7 @@ class SubGameNode extends GameNodeAdapter implements GameNode {
 
 	public Collection<Feeder> getFeeders() {
         return parent.getFeeders().stream()
-                .map(f -> new SubFeeder(f))
+                .map(SubFeeder::new)
                 .collect(Collectors.toList());
 	}
 

@@ -30,7 +30,7 @@ import java.util.Set;
  * @author Avery J. Regier
  */
 public abstract class LoadBroker extends SQLBroker {
-	private Set<LoadBroker> dependencies = new HashSet<LoadBroker>();
+	private final Set<LoadBroker> dependencies = new HashSet<>();
 	private volatile boolean hasRun = false;
 	private volatile boolean successful = false;
 	private LoadManager lm;
@@ -38,7 +38,7 @@ public abstract class LoadBroker extends SQLBroker {
 	/**
 	 * @param sp
 	 */
-	public LoadBroker(SingletonProvider sp) {
+    protected LoadBroker(SingletonProvider sp) {
 		super(sp);
 	}
 	
@@ -68,7 +68,7 @@ public abstract class LoadBroker extends SQLBroker {
 
 	public boolean executeIfPossible() {
         for (LoadBroker dependency : dependencies) {
-            if (!(dependency.hasRun() && dependency.isSuccessful())) return false;
+            if (!dependency.hasRun() || dependency.isFailure()) return false;
         }
 		new Thread(() -> {
             try {
@@ -83,15 +83,15 @@ public abstract class LoadBroker extends SQLBroker {
 	/**
 	 * @return
 	 */
-	public boolean hasRun() {
+    boolean hasRun() {
 		return hasRun;
 	}
 
 	/**
 	 * @return
 	 */
-	public boolean isSuccessful() {
-		return successful;
+	public boolean isFailure() {
+		return !successful;
 	}
 
 }

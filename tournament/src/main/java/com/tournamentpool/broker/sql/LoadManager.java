@@ -29,8 +29,8 @@ import java.util.Set;
  * @author Avery J. Regier
  */
 public class LoadManager {
-	private Set<LoadBroker> loaders = new HashSet<LoadBroker>();
-	private Set<LoadBroker> started = new HashSet<LoadBroker>();
+	private final Set<LoadBroker> loaders = new HashSet<>();
+	private final Set<LoadBroker> started = new HashSet<>();
 
 	/**
 	 * 
@@ -72,7 +72,7 @@ public class LoadManager {
 	 */
 	public synchronized void complete(LoadBroker broker) {
 		started.remove(broker);
-		error = error ? error : !broker.isSuccessful();
+		error = error || broker.isFailure();
 		notifyAll();
 	}
 }

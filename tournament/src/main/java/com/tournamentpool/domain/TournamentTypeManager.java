@@ -21,22 +21,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.tournamentpool.application.SingletonProvider;
+import com.tournamentpool.application.SingletonProviderHolder;
 import utility.menu.Menu;
 import utility.menu.reference.ReferenceMenu;
 
-import com.tournamentpool.application.SingletonProvider;
-import com.tournamentpool.application.SingletonProviderHolder;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Avery J. Regier
  */
 public class TournamentTypeManager extends SingletonProviderHolder {
-	private Map<Integer, MainGameNode> gameNodes = new HashMap<Integer, MainGameNode>();
-	private Map<Integer, TournamentType> tournamentTypes = new HashMap<Integer, TournamentType>();
-	private Map<Integer, GameFeederType> gameFeederTypes = new HashMap<Integer, GameFeederType>();
+	private final Map<Integer, MainGameNode> gameNodes = new HashMap<>();
+	private final Map<Integer, TournamentType> tournamentTypes = new HashMap<>();
+	private final Map<Integer, GameFeederType> gameFeederTypes = new HashMap<>();
 	
 	/**
 	 * @param sp
@@ -51,14 +50,14 @@ public class TournamentTypeManager extends SingletonProviderHolder {
 	 * @param gameFeederTypeOID 
 	 */
 	public void loadGameNode(int gameNodeOID, int levelOID, int gameFeederTypeOID) {
-		gameNodes.put(new Integer(gameNodeOID), 
+		gameNodes.put(gameNodeOID,
 			new MainGameNode(gameNodeOID, 
 				sp.getSingleton().getScoreSystemManager().getLevel(levelOID),
 				getGameFeederType(gameFeederTypeOID)));
 	}
 
 	private GameFeederType getGameFeederType(int gameFeederTypeOID) {
-		return gameFeederTypes.get(new Integer(gameFeederTypeOID));
+		return gameFeederTypes.get(gameFeederTypeOID);
 	}
 	
 	public void loadGameFeederType(int oid, String name) {
@@ -76,7 +75,7 @@ public class TournamentTypeManager extends SingletonProviderHolder {
 	 * @param gameNodeOID
 	 */
 	public void loadTournamentType(int tournamentTypeOID, String name, int gameNodeOID) {
-		tournamentTypes.put(new Integer(tournamentTypeOID),
+		tournamentTypes.put(tournamentTypeOID,
 			new MainTournamentType(this, tournamentTypeOID, name, getGameNode(gameNodeOID)) 
 		);
 	}
@@ -89,11 +88,11 @@ public class TournamentTypeManager extends SingletonProviderHolder {
 	 * @param gameNodeOID
 	 */
 	GameNode getGameNode(int gameNodeOID) {
-		return gameNodes.get(new Integer(gameNodeOID));
+		return gameNodes.get(gameNodeOID);
 	}
 	
 	private MainGameNode getMainGameNode(int gameNodeOID) {
-		return gameNodes.get(new Integer(gameNodeOID));
+		return gameNodes.get(gameNodeOID);
 	}
 
 	/**
@@ -111,7 +110,7 @@ public class TournamentTypeManager extends SingletonProviderHolder {
 	 * @param tournamentTypeOID
 	 */
 	public MainTournamentType getTournamentType(int tournamentTypeOID) {
-		return (MainTournamentType)tournamentTypes.get(new Integer(tournamentTypeOID));
+		return (MainTournamentType)tournamentTypes.get(tournamentTypeOID);
 	}
 
 	public Menu getTournamentTypeMenu() {

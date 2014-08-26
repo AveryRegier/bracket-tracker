@@ -43,8 +43,8 @@ package utility.menu;
  */
 public class SimpleMenuItem implements MenuItem, Comparable {
 
-	private String value;
-	private String name;
+	private final String value;
+	private final String name;
 
 	/**
 	 * @param name

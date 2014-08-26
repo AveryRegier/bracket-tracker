@@ -33,7 +33,7 @@ public class TournamentUpdateBroker extends PreparedStatementBroker {
 
 	private final Tournament tournament;
 	private final String name;
-    private Timestamp startTime;
+    private final Timestamp startTime;
 
     public TournamentUpdateBroker(SingletonProvider sp,
                                   Tournament tournament,

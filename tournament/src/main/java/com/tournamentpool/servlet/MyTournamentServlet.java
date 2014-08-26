@@ -27,8 +27,10 @@ import com.tournamentpool.beans.PoolBean;
 import com.tournamentpool.beans.TournamentBean;
 import com.tournamentpool.broker.sql.DatabaseFailure;
 import com.tournamentpool.controller.*;
-import com.tournamentpool.domain.*;
-import com.tournamentpool.domain.Tournament;
+import com.tournamentpool.domain.Bracket;
+import com.tournamentpool.domain.Group;
+import com.tournamentpool.domain.Pool;
+import com.tournamentpool.domain.User;
 import utility.StringUtil;
 
 import javax.servlet.ServletException;
@@ -170,7 +172,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 		return group;
 	}
 
-	private void deleteGroup(HttpServletRequest req, HttpServletResponse resp, User user) throws ServletException, IOException {
+	private void deleteGroup(HttpServletRequest req, HttpServletResponse resp, User user) throws IOException {
 		Group group = lookupGroup(req);
 		group.delete(user, getApp().getSingletonProvider());
 		resp.sendRedirect(req.getHeader("Referer"));
@@ -196,7 +198,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 		poolBean.setScoreSystem(pool.getScoreSystem());
 		poolBean.setTieBreaker(pool.getTieBreakerType(), pool.getTieBreakerQuestion(), pool.getTieBreakerAnswer());
 		poolBean.setTieBreakerNeeded(pool.isTiebreakerNeeded(user));
-		Tournament poolTournament = pool.getTournament();
+		com.tournamentpool.domain.Tournament poolTournament = pool.getTournament();
 		if(poolTournament != null) {
 			poolBean.setTournament(new TournamentBean(poolTournament, poolTournament.mayEdit(user),
 					poolTournament.hasAllSeedsAssigned(),
@@ -253,8 +255,8 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 	}
 
 	private void addTournamentBeans(HttpServletRequest req, User user) {
-		List<TournamentBean> tournamentBeans = new ArrayList<TournamentBean>(getApp().getTournamentManager().getNumTournaments());
-		for(Tournament tournament: getApp().getTournamentManager().getTournaments()) {
+		List<TournamentBean> tournamentBeans = new ArrayList<>(getApp().getTournamentManager().getNumTournaments());
+		for(com.tournamentpool.domain.Tournament tournament: getApp().getTournamentManager().getTournaments()) {
 			tournamentBeans.add(new TournamentBean(tournament, tournament.mayEdit(user),
 					tournament.hasAllSeedsAssigned(),
 					tournament.getStartTime(), tournament.getLastUpdated(), tournament.mayDelete(user, getApp().getSingletonProvider())));
@@ -266,7 +268,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 	private Filter getFilter(HttpServletRequest req, User user) {
 		Filter filter = null;
 		if(StringUtil.killWhitespace(req.getParameter("tournament")) != null) {
-			Tournament tournament = lookupTournament(req);
+            com.tournamentpool.domain.Tournament tournament = lookupTournament(req);
 			filter = new TournamentFilter(tournament.getOid());
 			if(!tournament.isStarted()) {
 				// the admin filter is only relevant to create a new pool if the

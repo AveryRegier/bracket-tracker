@@ -31,15 +31,15 @@ public class League implements Reference, Comparable<League> {
 
 	private final Integer id;
 	private final String name;
-	private Map<Object, Team> teams = new TreeMap<Object, Team>();
+	private final Map<Object, Team> teams = new TreeMap<>();
 
 	public League(int id, String name) {
-		this.id = new Integer(id);
+		this.id = id;
 		this.name = name;
 	}
 
 	public int getLeagueID() {
-		return id.intValue();
+		return id;
 	}
 
 	public String getName() {
@@ -55,20 +55,18 @@ public class League implements Reference, Comparable<League> {
 	}
 	
 	public Menu getTeamMenu() {
-		final LinkedHashMap<Object, Team> sortedTeams = new LinkedHashMap<Object, Team>();
-		LinkedList<Team> sortedList = new LinkedList<Team>(teams.values());
-		Collections.sort(sortedList, new Comparator<Team>() {
-			public int compare(Team a, Team b) {
-				if(a == b) return 0;
-				if(a == null) return -1;
-				if(b == null) return 1;
-				String aName = a.getName();
-				String bName = b.getName();
-				if(aName != null) {
-					return aName.compareTo(bName);
-				} else return aName == bName ? 0 : -1;
-			}
-		});
+		final LinkedHashMap<Object, Team> sortedTeams = new LinkedHashMap<>();
+		LinkedList<Team> sortedList = new LinkedList<>(teams.values());
+		Collections.sort(sortedList, (a, b) -> {
+            if(a == b) return 0;
+            if(a == null) return -1;
+            if(b == null) return 1;
+            String aName = a.getName();
+            String bName = b.getName();
+            if(aName != null) {
+                return aName.compareTo(bName);
+            } else return null == bName ? 0 : -1;
+        });
 		for (Team team: sortedList) {
 			sortedTeams.put(team.getID(), team);
 		}

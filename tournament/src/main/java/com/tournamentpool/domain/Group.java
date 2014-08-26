@@ -36,10 +36,10 @@ public class Group implements Comparable<Group> {
 	private String name;
 	private Set<Integer> members;
 	private Set<Pool> pools;
-	private int adminOID;
+	private final int adminOID;
 	private int invitationCode;
-	private Group parent;
-	private TreeSet<Group> children = new TreeSet<Group>();
+	private final Group parent;
+	private final TreeSet<Group> children = new TreeSet<>();
 	
 	/**
 	 * @param groupOID
@@ -88,7 +88,7 @@ public class Group implements Comparable<Group> {
 	}
 	
 	void addMember(int playerOID) {
-		members.add(new Integer(playerOID));
+		members.add(playerOID);
 	}
 	
 	/**
@@ -96,10 +96,10 @@ public class Group implements Comparable<Group> {
 	 */
 	public synchronized Set<User> getMembers() {
 		if(members == null) {
-			members = new HashSet<Integer>();
+			members = new HashSet<>();
 			um.loadGroupMembers(this);
 		}
-		Set<User> these = new LinkedHashSet<User>();
+		Set<User> these = new LinkedHashSet<>();
 		these.addAll(um.getPlayers(members));
 		for (Group child : children) {
 			these.addAll(child.getMembers());
@@ -109,7 +109,7 @@ public class Group implements Comparable<Group> {
 	
 	public synchronized Set<User> getMyMembers() {
 		if(members == null) {
-			members = new HashSet<Integer>();
+			members = new HashSet<>();
 			um.loadGroupMembers(this);
 		}
 		return Collections.unmodifiableSet(um.getPlayers(members));
@@ -154,7 +154,7 @@ public class Group implements Comparable<Group> {
 
 	public Set<Pool> getMyPools() {
 		if(pools == null) {
-			pools = new LinkedHashSet<Pool>();
+			pools = new LinkedHashSet<>();
 			um.loadPools(this);
 		}
 		return Collections.unmodifiableSet(pools);

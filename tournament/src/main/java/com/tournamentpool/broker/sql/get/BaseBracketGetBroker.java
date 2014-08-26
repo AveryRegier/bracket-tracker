@@ -21,12 +21,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql.get;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.PreparedStatementBroker;
 import com.tournamentpool.domain.Bracket;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * @author Avery J. Regier
@@ -35,7 +35,7 @@ public abstract class BaseBracketGetBroker extends PreparedStatementBroker {
 	/**
 	 * @param sp
 	 */
-	public BaseBracketGetBroker(SingletonProvider sp) {
+	protected BaseBracketGetBroker(SingletonProvider sp) {
 		super(sp);
 	}
 

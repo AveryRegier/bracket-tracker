@@ -50,7 +50,7 @@ import java.util.Map;
  * @author Avery J. Regier
  */
 public abstract class ReferenceMenu<T extends Reference> implements Menu {
-	private String name;
+	private final String name;
 
 	/**
 	 * @param name
@@ -76,7 +76,7 @@ public abstract class ReferenceMenu<T extends Reference> implements Menu {
 			}
 
 			public MenuItem next() {
-				return createMenuItem((Reference)refs.next());
+				return createMenuItem(refs.next());
 			}
 		};
 	}

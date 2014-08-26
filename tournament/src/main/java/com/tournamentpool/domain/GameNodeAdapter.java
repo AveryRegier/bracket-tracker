@@ -69,7 +69,7 @@ abstract class GameNodeAdapter implements GameNode {
         }
 	}
 
-    private static ThreadLocal<Map<GameNodeAdapter, Set<Seed>>> possibleWinningSeedsCache = new ThreadLocal<>();
+    private static final ThreadLocal<Map<GameNodeAdapter, Set<Seed>>> possibleWinningSeedsCache = new ThreadLocal<>();
     public Set<Seed> getPossibleWinningSeeds(final Tournament tournament) {
 		Map<GameNodeAdapter, Set<Seed>> cache = possibleWinningSeedsCache.get();
 		if(cache != null) {

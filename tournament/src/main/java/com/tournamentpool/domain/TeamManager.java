@@ -39,8 +39,8 @@ import java.util.Map;
  * @author Avery Regier
  */
 public class TeamManager extends SingletonProviderHolder {
-	private Map<Integer, Team> teams = new HashMap<Integer, Team>();
-	private Map<Integer, League> leagues = new HashMap<Integer, League>();
+	private final Map<Integer, Team> teams = new HashMap<>();
+	private final Map<Integer, League> leagues = new HashMap<>();
 	
 	/**
 	 * @param sp
@@ -54,7 +54,7 @@ public class TeamManager extends SingletonProviderHolder {
 	 * @param name
 	 */
 	public void loadTeam(int teamOID, String name) {
-		teams.put(new Integer(teamOID), new Team(teamOID, name));
+		teams.put(teamOID, new Team(teamOID, name));
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class TeamManager extends SingletonProviderHolder {
 	 * @return
 	 */
 	public Team getTeam(int teamOID) {
-		return (Team)teams.get(new Integer(teamOID));
+		return teams.get(teamOID);
 	}
 
 	public int getNumTeams() {
@@ -86,7 +86,7 @@ public class TeamManager extends SingletonProviderHolder {
 	 * @param name
 	 */
 	public void loadLeague(int leagueOID, String name) {
-		leagues.put(new Integer(leagueOID), new League(leagueOID, name));
+		leagues.put(leagueOID, new League(leagueOID, name));
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class TeamManager extends SingletonProviderHolder {
 	 * @return
 	 */
 	public League getLeague(int leagueOID) {
-		return leagues.get(new Integer(leagueOID));
+		return leagues.get(leagueOID);
 	}
 
 	public void loadLeagueTeamAssociation(int leagueOID, int teamOID) {

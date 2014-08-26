@@ -47,8 +47,8 @@ import java.util.TreeMap;
  * @author Avery J. Regier
  */
 public class SimpleMenu implements Menu {
-	private String name;
-	private Map menuItems;
+	private final String name;
+	private final Map menuItems;
 	private Comparator comparator;
 	
 	/**
@@ -62,11 +62,6 @@ public class SimpleMenu implements Menu {
 		this.menuItems.putAll(menuItems);
 	}
 
-	/**
-	 * @param name
-	 * @param menuItems
-	 * @param comparator
-	 */
 	public SimpleMenu(String name, Iterator iter, Comparator comparator) {
 		this.name = name;
 		this.menuItems = new TreeMap(comparator);

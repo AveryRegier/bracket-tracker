@@ -35,12 +35,12 @@ import java.util.Optional;
  */
 public class TransactionBroker<Q extends TransactionBroker.Query> extends PreparedStatementBroker {
 	public abstract static class Query {
-		private String key;
+		private final String key;
 		public Query(String key) {
 			this.key = key;
 		}
 		protected void prepare(PreparedStatement stmt) throws SQLException {}
-		protected String getSQLKey() {
+		String getSQLKey() {
 			return key;
 		}
 	}
@@ -52,13 +52,13 @@ public class TransactionBroker<Q extends TransactionBroker.Query> extends Prepar
 		public abstract boolean hasMore();
 	}
 
-	private List<Q> queries = new LinkedList<>();
+	private final List<Q> queries = new LinkedList<>();
 	protected Optional<Q> current = Optional.empty();
 
 	/**
 	 * @param sp
 	 */
-	public TransactionBroker(SingletonProvider sp) {
+    protected TransactionBroker(SingletonProvider sp) {
 		super(sp);
 	}
 
@@ -66,7 +66,7 @@ public class TransactionBroker<Q extends TransactionBroker.Query> extends Prepar
 		queries.add(query);
 	}
 
-	protected boolean hasMoreQueries() {
+	boolean hasMoreQueries() {
 		if(queries.isEmpty()) {
 			current = Optional.empty();
 		} else {
@@ -96,6 +96,6 @@ public class TransactionBroker<Q extends TransactionBroker.Query> extends Prepar
 	}
 
 	protected String getSQLKey() {
-		return current.map(c->c.getSQLKey()).orElse("");
+		return current.map(Query::getSQLKey).orElse("");
 	}
 }

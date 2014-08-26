@@ -37,8 +37,8 @@ public class ScoreSystem implements Reference {
 	public class Score {
 		private int current;
 		private int remaining;
-		private Map<GameNode, Pick> remainingNodes = new HashMap<>();
-		private Map<GameNode, Set<Seed>> otherPicks = new HashMap<>();
+		private final Map<GameNode, Pick> remainingNodes = new HashMap<>();
+		private final Map<GameNode, Set<Seed>> otherPicks = new HashMap<>();
 		private Map<GameNode, Set<Seed>> unforseenPicksMap;
 
 		public int getCurrent() {
@@ -108,7 +108,7 @@ public class ScoreSystem implements Reference {
         private Set<GameNode> gamesWithUniquePicks(Score other) {
             return remainingNodes.entrySet().stream()
                             .filter(e -> getSeed(other.remainingNodes.get(e.getKey())) != getSeed(e.getValue()))
-                            .map(e->e.getKey())
+                            .map(Entry::getKey)
                             .collect(Collectors.toSet());
         }
 
@@ -132,7 +132,7 @@ public class ScoreSystem implements Reference {
 
         private int uniquePointsRemaining(Set<GameNode> gameNodes) {
             return gameNodes.stream()
-                    .map(n -> n.getLevel())
+                    .map(GameNode::getLevel)
                     .mapToInt(l -> getScore(l))
                     .sum();
         }
@@ -229,9 +229,9 @@ public class ScoreSystem implements Reference {
 		}
 	}
 
-	private int oid;
-	private String name;
-	private Map<Integer, int[]> levels = new HashMap<>();
+	private final int oid;
+	private final String name;
+	private final Map<Integer, int[]> levels = new HashMap<>();
 
 	/**
 	 * @param scoreSystemOID
@@ -248,16 +248,16 @@ public class ScoreSystem implements Reference {
 	 * @param multiplier
 	 */
 	public void loadDetail(Level level, int points, int multiplier) {
-		levels.put(new Integer(level.getOid()), new int[] {points, multiplier});
+		levels.put(level.getOid(), new int[] {points, multiplier});
 	}
 
 	public int getScore(Level level) {
-		int[] detail = levels.get(new Integer(level.getOid()));
+		int[] detail = levels.get(level.getOid());
 		return detail[0] + level.getRoundNo()*detail[1]; // points + level * multiplier
 	}
 
 	public Object getID() {
-		return new Integer(oid);
+		return oid;
 	}
 
 	public String getName() {

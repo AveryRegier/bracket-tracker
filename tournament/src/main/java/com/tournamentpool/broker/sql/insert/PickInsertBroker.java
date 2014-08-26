@@ -37,7 +37,7 @@ import java.util.List;
  */
 public class PickInsertBroker extends TransactionBroker<TransactionBroker.MultipleQuery> {
 	public static class MultiplePickQuery extends MultipleQuery {
-		private Iterator<Bracket.Pick> queries;
+		private final Iterator<Bracket.Pick> queries;
 		public MultiplePickQuery(String key, Iterator<Pick> queries) {
 			super(key);
 			this.queries = queries;
@@ -48,7 +48,7 @@ public class PickInsertBroker extends TransactionBroker<TransactionBroker.Multip
 		protected void prepare(PreparedStatement stmt) throws SQLException {
 			prepare(stmt, queries.next());
 		}
-		protected void prepare(PreparedStatement stmt, Bracket.Pick pick) throws SQLException {
+		void prepare(PreparedStatement stmt, Bracket.Pick pick) throws SQLException {
 			if(pick.getWinner().isPresent()) {
 				stmt.setInt(1, pick.getWinner().get().getOid());
 			} else {

@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 * Created by avery on 6/7/14.
 */
 class GameNodeSpliterator implements Spliterator<GameNode> {
-    private static int characteristics = Spliterator.DISTINCT & Spliterator.NONNULL & Spliterator.ORDERED;
+    private static final int characteristics = Spliterator.DISTINCT & Spliterator.NONNULL & Spliterator.ORDERED;
 
     private final int size;
     private final List<GameNode> nodes = new LinkedList<>();
@@ -34,7 +34,7 @@ class GameNodeSpliterator implements Spliterator<GameNode> {
     private void addGameFeeders(List<GameNode> nodes, GameNode node) {
         node.getFeeders()
                 .stream()
-                .map((f) -> f.getFeeder())
+                .map(GameNode.Feeder::getFeeder)
                 .filter((r) -> r instanceof GameNode)
                 .forEach((r) -> nodes.add((GameNode) r));
     }

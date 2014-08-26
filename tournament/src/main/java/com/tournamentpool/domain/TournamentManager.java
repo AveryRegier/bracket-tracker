@@ -39,7 +39,7 @@ import java.util.Map.Entry;
  * @author Avery J. Regier
  */
 public class TournamentManager extends SingletonProviderHolder {
-	private Map<Integer, Tournament> tournaments = new HashMap<Integer, Tournament>();
+	private final Map<Integer, Tournament> tournaments = new HashMap<>();
 
 	/**
 	 * @param sp
@@ -71,18 +71,18 @@ public class TournamentManager extends SingletonProviderHolder {
 			);
 		} else {
 			tournament = new SubTournament(
-				new Integer(tournamentOID),
+                    tournamentOID,
 				name,
 				parentTournament,
 				sp.getSingleton().getScoreSystemManager().getLevel(startLevelOID),
 				startTime
 			);
 		}
-		tournaments.put(new Integer(tournamentOID), tournament);
+		tournaments.put(tournamentOID, tournament);
 	}
 
 	public Tournament getTournament(int tournamentOID) {
-		return tournaments.get(new Integer(tournamentOID));
+		return tournaments.get(tournamentOID);
 	}
 
 	public int getNumTournaments() {
@@ -112,7 +112,7 @@ public class TournamentManager extends SingletonProviderHolder {
 						 Integer winner, Timestamp startTime) {
 		Tournament tournament = getTournament(tournamentOID);
 		GameNode gameNode = sp.getSingleton().getTournamentTypeManager().getGameNode(gameNodeOID);
-		Opponent oponent = winner != null ? tournament.getTournamentType().getOpponent(winner.intValue()) : null;
+		Opponent oponent = winner != null ? tournament.getTournamentType().getOpponent(winner) : null;
 		((MainTournament) tournament).loadGame(gameNode, oponent, startTime);
 	}
 
@@ -137,16 +137,15 @@ public class TournamentManager extends SingletonProviderHolder {
 
 
 	public void addAdmins(Tournament tournament, int[] playerIDs) {
-		for (int i = 0; i < playerIDs.length; i++) {
-			int j = playerIDs[i];
-			new TournamentAdminInsertBroker(sp, (MainTournament) tournament, j).execute();
-		}
+        for (int j : playerIDs) {
+            new TournamentAdminInsertBroker(sp, (MainTournament) tournament, j).execute();
+        }
 	}
 
 	public void updateTounamentSeeds(Tournament tournament, Map<Seed, Team> seedTeam) {
-		Map<Seed, Team> updates = new HashMap<Seed, Team>();
-		Map<Seed, Team> inserts = new HashMap<Seed, Team>();
-		Set<Seed> deletes = new HashSet<Seed>();
+		Map<Seed, Team> updates = new HashMap<>();
+		Map<Seed, Team> inserts = new HashMap<>();
+		Set<Seed> deletes = new HashSet<>();
 
 		for (Entry<Seed, Team> entry : seedTeam.entrySet()) {
 			Seed seed = entry.getKey();
@@ -188,7 +187,7 @@ public class TournamentManager extends SingletonProviderHolder {
 	public boolean deleteTournament(User requestor, int id) {
 		Tournament tournament = getTournament(id);
 		if(tournament != null && tournament.delete(requestor, sp)) {
-			tournaments.remove(new Integer(id));
+			tournaments.remove(id);
 			return true;
 		}
 		return false;

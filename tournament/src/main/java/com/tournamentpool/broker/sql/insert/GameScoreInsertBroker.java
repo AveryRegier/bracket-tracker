@@ -21,24 +21,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql.insert;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Types;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.TransactionBroker;
 import com.tournamentpool.domain.Game;
 import com.tournamentpool.domain.Opponent;
 import com.tournamentpool.domain.ScoreReporter;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Types;
+
 /**
  * @author Avery J. Regier
  */
-public class GameScoreInsertBroker extends TransactionBroker implements ScoreReporter {
+public class GameScoreInsertBroker extends TransactionBroker<TransactionBroker.Query> implements ScoreReporter {
 	public class GameScoreQuery extends Query {
-		private Game game;
-		private Opponent opponent;
-		private Integer score;
+		private final Game game;
+		private final Opponent opponent;
+		private final Integer score;
 		public GameScoreQuery(String key, Game game, Opponent opponent, Integer score) {
 			super(key);
 			this.game = game;

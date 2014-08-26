@@ -29,7 +29,7 @@ public class PoolBracket implements Comparable<PoolBracket> {
 	@SuppressWarnings("rawtypes")
 	private final Comparable tieBreakerDelta;
 	private PoolBracket beatBy = null;
-	private Group group;
+	private final Group group;
 
 	@SuppressWarnings("rawtypes")
 	public PoolBracket(Bracket bracket, Score score, String tieBreakerAnswer, Comparable tieBreakerDelta, Group group) {

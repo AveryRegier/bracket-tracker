@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class TournamentAvailableAdminsGetBroker extends PreparedStatementBroker {
 
-	private List<String[]> players = new LinkedList<String[]>();
+	private final List<String[]> players = new LinkedList<>();
 	private final MainTournament tournament;
 
 	/**

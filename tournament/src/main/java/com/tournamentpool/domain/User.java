@@ -24,6 +24,7 @@ package com.tournamentpool.domain;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author avery
@@ -31,12 +32,12 @@ import java.util.*;
 public class User {
 	private String pw;
 	private String name;
-	private int oid;
+	private final int oid;
 	private String id;
 	private String auth;
 	private boolean siteAdmin;
-	private Set<Group> groups = new TreeSet<Group>();
-	private Map<Object, Bracket> brackets = new HashMap<Object, Bracket>();
+	private final Set<Group> groups = new TreeSet<>();
+	private final Map<Object, Bracket> brackets = new HashMap<>();
 	private String email;
 
 	/**
@@ -124,13 +125,9 @@ public class User {
 	}
 
     public Iterable<Group> getMembershipGroupsInHierarchy(Group parent) {
-        Set<Group> allGroups = new TreeSet<>();
-        for(Group group: groups) {
-            if(group.isInHierarchy(parent)) {
-                allGroups.add(group);
-            }
-        }
-        return allGroups;
+        return groups.stream()
+                .filter(group -> group.isInHierarchy(parent))
+                .collect(Collectors.toCollection(() -> new TreeSet<>()));
     }
 
     /**
@@ -145,7 +142,7 @@ public class User {
 	 * @return
 	 */
 	public Bracket getBracket(int bracketOid) {
-		return brackets.get(new Integer(bracketOid));
+		return brackets.get(bracketOid);
 	}
 
 	public Collection<Bracket> getBrackets() {

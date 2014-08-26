@@ -30,12 +30,12 @@ import java.util.Map.Entry;
  */
 public class Game implements GameInfo, HasWinner {
 
-	private Tournament tournament;
-	private GameNode gameNode;
-	private Opponent winner;
-	private Date game_date; 
+	private final Tournament tournament;
+	private final GameNode gameNode;
+	private final Opponent winner;
+	private final Date game_date;
 	private boolean isnew = true;
-	protected Map<Opponent, Integer> scores = new HashMap<Opponent, Integer>();
+	final Map<Opponent, Integer> scores = new HashMap<>();
 	private String status;
 	
 	/**

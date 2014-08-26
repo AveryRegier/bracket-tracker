@@ -102,8 +102,8 @@ public class Bracket implements Reference {
 	}
 
 	private String name;
-	private Tournament tournament;
-	private int oid;
+	private final Tournament tournament;
+	private final int oid;
 	private final User owner;
 	private Map<GameNode, Pick> picks;
 	private boolean changed = true;
@@ -135,7 +135,7 @@ public class Bracket implements Reference {
 	}
 
 	public Integer getID() {
-		return new Integer(oid);
+		return oid;
 	}
 
 	/**
@@ -204,7 +204,7 @@ public class Bracket implements Reference {
 	public boolean isComplete(SingletonProvider sp) {
 		retrievePicks(sp);
         return tournament.getTournamentType().streamGameNodes()
-                .map(n->picks.get(n))
+                .map(picks::get)
                 .allMatch(p->p!=null && p.getWinner().isPresent());
 	}
 

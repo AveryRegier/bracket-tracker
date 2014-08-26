@@ -91,7 +91,7 @@ class SubTournament implements Tournament {
 		}
 	}
 
-	public boolean isReadyForBrackets() {
+	boolean isReadyForBrackets() {
 		return checkReadyForBrackets(parent.getTournamentType().getChampionshipGameNode());
 	}
 
@@ -130,7 +130,7 @@ class SubTournament implements Tournament {
 	}
 
 	public int getOid() {
-		return id.intValue();
+		return id;
 	}
 
 	public boolean isComplete() {

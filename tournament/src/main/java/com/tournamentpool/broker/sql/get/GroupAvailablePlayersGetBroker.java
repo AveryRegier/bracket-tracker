@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class GroupAvailablePlayersGetBroker extends PreparedStatementBroker {
 
-	private List<String[]> players = new LinkedList<String[]>();
+	private final List<String[]> players = new LinkedList<>();
 	private final Group group;
 
 	/**

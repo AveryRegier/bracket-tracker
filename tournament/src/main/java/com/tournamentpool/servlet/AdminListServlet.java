@@ -55,35 +55,43 @@ public class AdminListServlet extends RequiresLoginServlet {
 		String type = req.getParameter("type");
 
 		try {
-			if("group".equals(type)) {
-				listGroups(req, res);
-			} else if("player".equals(type)) {
-				if("delete".equalsIgnoreCase(req.getParameter("request"))) {
-					deletePlayer(req, res);
-				} else {
-					listPlayers(req, res);
-				}
-			} else if("pool".equals(type)) {
-				listPools(req, res);
-			} else if("bracket".equals(type)) {
-				listBrackets(req, res);
-			} else if("team".equals(type)) {
-				if("delete".equalsIgnoreCase(req.getParameter("request"))) {
-					deleteTeam(req, res);
-				} else if("remove".equalsIgnoreCase(req.getParameter("request"))) {
-					removeTeam(req, res);
-				} else{
-					listTeams(req, res);
-				}
-			} else if("league".equals(type)) {
-				if("delete".equalsIgnoreCase(req.getParameter("request"))) {
-					deleteLeague(req, res);
-				} else {
-					listLeagues(req, res);
-				}
-			} else { // if we haven't configured the page, just redirect to the administration main screen
-				produceJSPPage(req, res, "AdminJSP");
-			}
+            switch (type) {
+                case "group":
+                    listGroups(req, res);
+                    break;
+                case "player":
+                    if ("delete".equalsIgnoreCase(req.getParameter("request"))) {
+                        deletePlayer(req, res);
+                    } else {
+                        listPlayers(req, res);
+                    }
+                    break;
+                case "pool":
+                    listPools(req, res);
+                    break;
+                case "bracket":
+                    listBrackets(req, res);
+                    break;
+                case "team":
+                    if ("delete".equalsIgnoreCase(req.getParameter("request"))) {
+                        deleteTeam(req, res);
+                    } else if ("remove".equalsIgnoreCase(req.getParameter("request"))) {
+                        removeTeam(req, res);
+                    } else {
+                        listTeams(req, res);
+                    }
+                    break;
+                case "league":
+                    if ("delete".equalsIgnoreCase(req.getParameter("request"))) {
+                        deleteLeague(req, res);
+                    } else {
+                        listLeagues(req, res);
+                    }
+                    break;
+                default:  // if we haven't configured the page, just redirect to the administration main screen
+                    produceJSPPage(req, res, "AdminJSP");
+                    break;
+            }
 		} catch (DatabaseFailure e) {
 			throw new ServletException(e);
 		}
@@ -114,7 +122,7 @@ public class AdminListServlet extends RequiresLoginServlet {
 		}
 		
 		// for efficiency, just run these counts once
-		Map<League, int[]> tournamentCounter = new HashMap<League, int[]>();
+		Map<League, int[]> tournamentCounter = new HashMap<>();
 		for(Tournament tournament: getApp().getTournamentManager().getTournaments()) {
 			League league = tournament.getLeague();
 			Object counter = tournamentCounter.get(league);
@@ -125,7 +133,7 @@ public class AdminListServlet extends RequiresLoginServlet {
 			}
 		}
 
-		List<LeagueBean> leagueBeans = new ArrayList<LeagueBean>();
+		List<LeagueBean> leagueBeans = new ArrayList<>();
 		for (Iterator<League> iterator = getApp().getTeamManager().getLeagues(); iterator.hasNext();) {
 			League league = iterator.next();
 			if(team == null || league.hasTeam(team)) {
@@ -154,7 +162,7 @@ public class AdminListServlet extends RequiresLoginServlet {
 		}
 	
 		// for efficiency, just run these counts once
-		Map<Team, int[]> teamCounter = new HashMap<Team, int[]>();
+		Map<Team, int[]> teamCounter = new HashMap<>();
 		Iterator<League> leagues = getApp().getTeamManager().getLeagues();
 		while (leagues.hasNext()) {
 			League league = leagues.next();
@@ -170,7 +178,7 @@ public class AdminListServlet extends RequiresLoginServlet {
 			}
 		}
 
-		List<TeamBean> teamBeans = new ArrayList<TeamBean>();
+		List<TeamBean> teamBeans = new ArrayList<>();
 		Iterator<Team> iterator = requestedLeague != null ? requestedLeague.getTeams() : getApp().getTeamManager().getTeams();
 		while(iterator.hasNext()) {
 			Team team = iterator.next();
@@ -216,7 +224,7 @@ public class AdminListServlet extends RequiresLoginServlet {
 	}
 
 	private void listPools(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		TreeSet<PoolBean> poolBeans = new TreeSet<PoolBean>();
+		TreeSet<PoolBean> poolBeans = new TreeSet<>();
 		Iterator<Pool> pools = getApp().getUserManager().getPools();
 		User user = getUser(req, res);
 		while (pools.hasNext()) {
@@ -243,7 +251,7 @@ public class AdminListServlet extends RequiresLoginServlet {
 	}
 
 	private void listPlayers(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		TreeSet<PlayerBean> playerBeans = new TreeSet<PlayerBean>();
+		TreeSet<PlayerBean> playerBeans = new TreeSet<>();
 		User user = getUser(req, res);
 		UserManager userManager = getApp().getUserManager();
 		Iterator<User> members = userManager.getPlayers();
@@ -270,7 +278,7 @@ public class AdminListServlet extends RequiresLoginServlet {
 	private void listGroups(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
 		User user = getUser(req, res);
-		List<GroupBean> groupBeans = new ArrayList<GroupBean>();
+		List<GroupBean> groupBeans = new ArrayList<>();
 		Iterator<Group> groups = getApp().getUserManager().getGroups();
 		while (groups.hasNext()) {
 			Group group = groups.next();
@@ -284,5 +292,5 @@ public class AdminListServlet extends RequiresLoginServlet {
 		}
 		req.setAttribute("Groups", groupBeans);
 		produceJSPPage(req, res, "ListGroupsJSP");
-	};
+	}
 }

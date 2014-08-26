@@ -47,7 +47,7 @@ public class ShowTournamentController extends TournamentController {
 	/**
 	 */
 	public BracketBean<TournamentVisitor.Node> getTournamentBracket(int tournamentKey) {
-		BracketBean<TournamentVisitor.Node> bean = new BracketBean<TournamentVisitor.Node>();
+		BracketBean<TournamentVisitor.Node> bean = new BracketBean<>();
 		Tournament tournament = getTournament(tournamentKey);
 		bean.setName(tournament.getName());
 		bean.setOid(tournament.getOid());
@@ -69,9 +69,7 @@ public class ShowTournamentController extends TournamentController {
 	 * @return
 	 */
 	private Tournament getTournament(int tournamentKey) {
-		Tournament tournament =
-			sp.getSingleton().getTournamentManager().getTournament(tournamentKey);
-		return tournament;
+        return sp.getSingleton().getTournamentManager().getTournament(tournamentKey);
 	}
 
 	public BracketBean<TournamentVisitor.Node> getTournamentBracketToEdit(int tournamentKey) {
@@ -121,7 +119,7 @@ public class ShowTournamentController extends TournamentController {
         for (TournamentVisitor.Node node : nodes) {
             node.setPick(bracket.getPick(sp, findNode(tournamentType, node)));
         }
-        BracketBean<TournamentVisitor.Node> bean1 = new BracketBean<TournamentVisitor.Node>();
+        BracketBean<TournamentVisitor.Node> bean1 = new BracketBean<>();
         bean1.setBracket(nodes);
         return bean1;
     }
@@ -140,7 +138,7 @@ public class ShowTournamentController extends TournamentController {
             visitForScore(bracket, nodes, scoreSystem);
         }
         visitForUpset(bracket.getTournament(), nodes);
-        BracketBean<Node> bean1 = new BracketBean<Node>();
+        BracketBean<Node> bean1 = new BracketBean<>();
         bean1.setBracket(nodes);
         return bean1;
     }

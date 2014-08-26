@@ -21,21 +21,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.tournamentpool.application.SingletonProvider;
+import com.tournamentpool.application.SingletonProviderHolder;
 import utility.menu.Menu;
 import utility.menu.reference.ReferenceMenu;
 
-import com.tournamentpool.application.SingletonProvider;
-import com.tournamentpool.application.SingletonProviderHolder;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Avery J. Regier
  */
 public class ScoreSystemManager extends SingletonProviderHolder {
-	private Map<Integer, Level> levels = new HashMap<Integer, Level>();
-	private Map<Integer, ScoreSystem> scoreSystems = new HashMap<Integer, ScoreSystem>();
+	private final Map<Integer, Level> levels = new HashMap<>();
+	private final Map<Integer, ScoreSystem> scoreSystems = new HashMap<>();
 
 	/**
 	 * @param sp
@@ -49,7 +48,7 @@ public class ScoreSystemManager extends SingletonProviderHolder {
 	 * @param name
 	 */
 	public void loadLevel(int levelOID, String name, int roundNo) {
-		levels.put(new Integer(levelOID), new Level(levelOID, name, roundNo));
+		levels.put(levelOID, new Level(levelOID, name, roundNo));
 	}
 
 	/**
@@ -57,7 +56,7 @@ public class ScoreSystemManager extends SingletonProviderHolder {
 	 * @return
 	 */
 	public Level getLevel(int levelOID) {
-		return levels.get(new Integer(levelOID));
+		return levels.get(levelOID);
 	}
 
 	public int getNumLevels() {
@@ -69,7 +68,7 @@ public class ScoreSystemManager extends SingletonProviderHolder {
 	 * @param name
 	 */
 	public void loadScoreSystem(int scoreSystemOID, String name) {
-		scoreSystems.put(new Integer(scoreSystemOID), new ScoreSystem(scoreSystemOID, name));
+		scoreSystems.put(scoreSystemOID, new ScoreSystem(scoreSystemOID, name));
 		
 	}
 	
@@ -91,7 +90,7 @@ public class ScoreSystemManager extends SingletonProviderHolder {
 	}
 
 	public ScoreSystem getScoreSystem(int scoreSystemOID) {
-		return (ScoreSystem)scoreSystems.get(new Integer(scoreSystemOID));
+		return scoreSystems.get(scoreSystemOID);
 	}
 
 	/**

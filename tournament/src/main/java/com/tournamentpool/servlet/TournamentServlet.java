@@ -45,11 +45,11 @@ public class TournamentServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 5792267846977299712L;
 
-	protected TournamentApp getApp() {
+	TournamentApp getApp() {
 		return ((SingletonProvider)getServletContext().getAttribute("app")).getSingleton();
 	}
 
-	public User getUser(HttpServletRequest req, HttpServletResponse res) throws ServletException {
+	User getUser(HttpServletRequest req, HttpServletResponse res) throws ServletException {
 		try {
 			String userID = null;
 			String auth = null;
@@ -75,8 +75,8 @@ public class TournamentServlet extends HttpServlet {
 		}
 	}
 
-	protected com.tournamentpool.domain.Tournament lookupTournament(
-			HttpServletRequest req) {
+	com.tournamentpool.domain.Tournament lookupTournament(
+            HttpServletRequest req) {
 		String tournamentOIDString = req.getParameter("tournament");
 		int tournamentOid = Integer.parseInt(tournamentOIDString);
 		com.tournamentpool.domain.Tournament tournament = 
@@ -87,7 +87,7 @@ public class TournamentServlet extends HttpServlet {
 		return tournament;
 	}
 
-	protected void produceJSPPage(HttpServletRequest req, HttpServletResponse res, String key) throws ServletException, IOException {
+	void produceJSPPage(HttpServletRequest req, HttpServletResponse res, String key) throws ServletException, IOException {
         if(req.getAttribute("Player") == null) {
             User user = getUser(req, res);
             if(user != null) {
@@ -98,7 +98,7 @@ public class TournamentServlet extends HttpServlet {
         produceNonUserJSPPage(req, res, key);
 	}
 
-    protected void produceNonUserJSPPage(HttpServletRequest req, HttpServletResponse res, String key) throws ServletException, IOException {
+    void produceNonUserJSPPage(HttpServletRequest req, HttpServletResponse res, String key) throws ServletException, IOException {
         Properties config2 = getApp().getConfig();
         req.setAttribute("config", config2);
         req.getRequestDispatcher(
@@ -106,7 +106,7 @@ public class TournamentServlet extends HttpServlet {
         ).forward(req, res);
     }
 
-    protected int getInt(HttpServletRequest req, String key, int defaultValue) {
+    int getInt(HttpServletRequest req, String key, int defaultValue) {
 		String value = killWhitespace(req.getParameter(key));
 		if(value != null) {
 			return Integer.parseInt(value);
@@ -114,7 +114,7 @@ public class TournamentServlet extends HttpServlet {
 		return defaultValue;
 	}
 
-	protected String killWhitespace(String value) {
+	public static String killWhitespace(String value) {
 	//	System.out.println(value);
 		if(value != null) {
 			value = value.trim();
@@ -125,7 +125,7 @@ public class TournamentServlet extends HttpServlet {
 		return value;
 	}
 
-	protected Timestamp getDate(HttpServletRequest req) {
+	Timestamp getDate(HttpServletRequest req) {
 		int month = Integer.parseInt(req.getParameter("month"))-1;// java.util.Calendar uses 0 based months
 		int day = Integer.parseInt(req.getParameter("day"));
 		int year = Integer.parseInt(req.getParameter("year"));
@@ -140,7 +140,7 @@ public class TournamentServlet extends HttpServlet {
 		return new Timestamp(cal.getTime().getTime());
 	}
 
-    protected void setDate(Date date, HttpServletRequest req) {
+    void setDate(Date date, HttpServletRequest req) {
         req.setAttribute("timezones", TimeZone.getAvailableIDs());
 
         Calendar cal = GregorianCalendar.getInstance();
@@ -162,7 +162,7 @@ public class TournamentServlet extends HttpServlet {
         req.setAttribute("timezone", timeZone.getID());
     }
 
-	protected int[] convertToIntegers(String[] parameterValues) {
+	int[] convertToIntegers(String[] parameterValues) {
 		int[] ints = new int[parameterValues.length];
 		for (int i = 0; i < parameterValues.length; i++) {
 			ints[i] = Integer.parseInt(parameterValues[i]);

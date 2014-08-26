@@ -37,7 +37,7 @@ public abstract class SQLBroker extends SingletonProviderHolder {
 	/**
 	 * 
 	 */
-	public SQLBroker(SingletonProvider sp) {
+    SQLBroker(SingletonProvider sp) {
 		super(sp);
 	}
 
@@ -66,14 +66,14 @@ public abstract class SQLBroker extends SingletonProviderHolder {
 	/**
 	 * @param conn
 	 */
-	protected void execute(Connection conn) throws SQLException {
+    void execute(Connection conn) throws SQLException {
 		executeSimpleQuery(conn);
 	}
 
 	/**
 	 * @param conn
 	 */
-	protected void executeSimpleQuery(Connection conn) throws SQLException {
+    void executeSimpleQuery(Connection conn) throws SQLException {
 		Statement statement = createStatement(conn);
 		while(hasMore()) {
 			boolean results = execute(statement);
@@ -97,11 +97,11 @@ public abstract class SQLBroker extends SingletonProviderHolder {
 		return temp;
 	}
 	
-	protected void reset() {
+	void reset() {
 		this.once = true;
 	}
 
-	protected void executeInsertQuery(Connection conn) throws SQLException {
+	void executeInsertQuery(Connection conn) throws SQLException {
 		Statement statement = createStatement(conn);
 		boolean results = execute(statement);
 		ResultSet generated = statement.getGeneratedKeys();
@@ -117,11 +117,11 @@ public abstract class SQLBroker extends SingletonProviderHolder {
 		}
 	}
 
-	protected boolean execute(Statement statement) throws SQLException {
+	boolean execute(Statement statement) throws SQLException {
 		return statement.execute(getSQL());
 	}
 
-	protected Statement createStatement(Connection conn) throws SQLException {
+	Statement createStatement(Connection conn) throws SQLException {
 		return conn.createStatement();
 	}
 
@@ -143,7 +143,7 @@ public abstract class SQLBroker extends SingletonProviderHolder {
 	/**
 	 * @return
 	 */
-	protected String getSQL() {
+    String getSQL() {
 		return sp.getSingleton().getConfig().getProperty(getSQLKey());
 	}
 

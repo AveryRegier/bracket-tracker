@@ -38,9 +38,9 @@ import java.util.List;
  */
 public class Team implements Reference, Comparable<Team> {
 	public static final Team UNKNOWN = new Team(-1, "Unknown");
-	private int teamOID; 
-	private String name;
-	private List<String> synonymns = new ArrayList<String>();
+	private final int teamOID;
+	private final String name;
+	private final List<String> synonymns = new ArrayList<>();
 	
 //	private String conference;
 //	private URI graphic;
@@ -74,7 +74,7 @@ public class Team implements Reference, Comparable<Team> {
 	}
 
 	public Object getID() {
-		return new Integer(teamOID);
+		return teamOID;
 	}
 
 	public int compareTo(Team o) {
@@ -98,7 +98,7 @@ public class Team implements Reference, Comparable<Team> {
 					new LeagueTeamDeleteBroker(sp, league, this).execute();
 				}
 			}
-            for(String name: new ArrayList<String>(synonymns)) {
+            for(String name: new ArrayList<>(synonymns)) {
                 new TeamSynonymDeleteBroker(sp, this, name).execute();
             }
 			new TeamDeleteBroker(sp, this).execute();
@@ -110,7 +110,7 @@ public class Team implements Reference, Comparable<Team> {
 	}
 	
 	public Iterable<String> getNames() {
-        ArrayList<String> names = new ArrayList<String>(synonymns);
+        ArrayList<String> names = new ArrayList<>(synonymns);
         names.add(0, name);
         return names;
 	}

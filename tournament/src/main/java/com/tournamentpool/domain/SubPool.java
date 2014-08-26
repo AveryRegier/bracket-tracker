@@ -39,7 +39,7 @@ public class SubPool implements Pool {
 		return group;
 	}
 	
-	public Pool getParentPool() {
+	Pool getParentPool() {
 		return parentPool;
 	}
 	

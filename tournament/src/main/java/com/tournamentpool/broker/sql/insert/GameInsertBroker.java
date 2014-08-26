@@ -39,12 +39,12 @@ import java.util.List;
  * @author Avery J. Regier
  */
 public class GameInsertBroker extends TransactionBroker<TransactionBroker.MultipleQuery> implements GameReporter {
-	private List<Game> insertedGames = new LinkedList<>();
-	private List<Game> updatedGames = new LinkedList<>();
-	private List<Game> deletedGames = new LinkedList<>();
+	private final List<Game> insertedGames = new LinkedList<>();
+	private final List<Game> updatedGames = new LinkedList<>();
+	private final List<Game> deletedGames = new LinkedList<>();
 
 	public class MultipleGameQuery extends MultipleQuery {
-		private Iterator<Game> queries;
+		private final Iterator<Game> queries;
 		public MultipleGameQuery(String key, Iterator<Game> queries) {
 			super(key);
 			this.queries = queries;
@@ -55,7 +55,7 @@ public class GameInsertBroker extends TransactionBroker<TransactionBroker.Multip
 		protected void prepare(PreparedStatement stmt) throws SQLException {
 			prepare(stmt, queries.next());
 		}
-		protected void prepare(PreparedStatement stmt, Game pick) throws SQLException {
+		void prepare(PreparedStatement stmt, Game pick) throws SQLException {
 			if(pick.getWinner().isPresent()) {
 				stmt.setInt(1, pick.getWinner().get().getOid());
 			} else {
@@ -105,7 +105,7 @@ public class GameInsertBroker extends TransactionBroker<TransactionBroker.Multip
 	 */
 	@Override
 	public List<Game> getGameReport() {
-		List<Game> reportedGames = new ArrayList<Game>();
+		List<Game> reportedGames = new ArrayList<>();
 		reportedGames.addAll(updatedGames);
 		reportedGames.addAll(insertedGames);
 		return reportedGames;

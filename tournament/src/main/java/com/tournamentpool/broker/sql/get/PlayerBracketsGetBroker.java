@@ -21,18 +21,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql.get;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.domain.Bracket;
 import com.tournamentpool.domain.User;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  * @author Avery J. Regier
  */
 public class PlayerBracketsGetBroker extends BaseBracketGetBroker {
-	private int playerOID;
+	private final int playerOID;
 
 	/**
 	 * @param sp

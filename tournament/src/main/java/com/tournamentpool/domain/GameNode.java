@@ -31,7 +31,7 @@ import java.util.Set;
  */
 public interface GameNode extends Reference {
 	public abstract class Feeder implements Comparable<Feeder> {
-		protected final Opponent oponent;
+		final Opponent oponent;
 
 		Feeder(Opponent oponent) {
 			this.oponent = oponent;

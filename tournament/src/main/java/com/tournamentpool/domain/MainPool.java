@@ -42,9 +42,9 @@ import java.util.stream.Collectors;
 public class MainPool implements Pool {
 
 	final SingletonProvider sp;
-	private int oid;
+	private final int oid;
 	private String name;
-	private Group group;
+	private final Group group;
 	private ScoreSystem scoreSystem;
 	private Map<Bracket, String> brackets = null;
 	private Tournament tournament;
@@ -140,7 +140,7 @@ public class MainPool implements Pool {
 
     private void loadBrackets() {
         if(brackets == null) {
-            brackets = new HashMap<Bracket, String>();
+            brackets = new HashMap<>();
             new BracketPoolGetBroker(sp, oid).execute();
         }
     }
@@ -206,7 +206,7 @@ public class MainPool implements Pool {
     private TreeSet<PoolBracket> collectScores(Collection<Bracket> toEvaluate, Group group) {
         return toEvaluate.parallelStream()
                 .map(b -> score(group, b))
-                .collect(Collectors.toCollection(() ->  new TreeSet<>()));// this will put them in absolute order;
+                .collect(Collectors.toCollection(TreeSet::new));// this will put them in absolute order;
     }
 
     private PoolBracket score(Group group, Bracket bracket) {

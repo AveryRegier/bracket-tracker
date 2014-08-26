@@ -21,12 +21,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql;
 
+import com.tournamentpool.application.SingletonProvider;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import com.tournamentpool.application.SingletonProvider;
 
 /**
  * @author Avery J. Regier
@@ -36,7 +36,7 @@ public abstract class PreparedStatementBroker extends SQLBroker {
 	/**
 	 * 
 	 */
-	public PreparedStatementBroker(SingletonProvider sp) {
+    protected PreparedStatementBroker(SingletonProvider sp) {
 		super(sp);
 	}
 
@@ -52,9 +52,7 @@ public abstract class PreparedStatementBroker extends SQLBroker {
 	}
 
 	protected Statement createStatement(Connection conn) throws SQLException {
-		PreparedStatement stmt = prepareStatement(conn);
-	//	prepare(stmt);
-		return stmt;
+        return prepareStatement(conn);
 	}
 	
 	/**
@@ -62,7 +60,7 @@ public abstract class PreparedStatementBroker extends SQLBroker {
 	 * @return
 	 * @throws SQLException
 	 */
-	protected PreparedStatement prepareStatement(Connection conn) throws SQLException {
+    PreparedStatement prepareStatement(Connection conn) throws SQLException {
 		return conn.prepareStatement(getSQL());
 	}
 

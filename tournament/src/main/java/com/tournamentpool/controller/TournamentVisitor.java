@@ -33,7 +33,7 @@ public class TournamentVisitor extends GameVisitorCommon<TournamentVisitor.Node>
 	public static class Node extends GameVisitorCommon.Node {
 		private Opponent pick = null;
 		private String status;
-		private Integer teamScore;
+		private final Integer teamScore;
 
 		Node(Seed seed, Team team, Opponent opponent, int level, Integer teamScore) {
 			super(seed, team, opponent, level);

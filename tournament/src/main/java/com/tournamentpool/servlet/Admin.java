@@ -21,13 +21,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.servlet;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Avery J. Regier
@@ -39,7 +38,7 @@ public class Admin extends RequiresLoginServlet {
 	 */
 	private static final long serialVersionUID = 5679841714008227452L;
 	
-	private static final Map<String, String> createProperties = new HashMap<String, String>();
+	private static final Map<String, String> createProperties = new HashMap<>();
 	static {
 		createProperties.put("tournament", "CreateTournamentURL");
 		createProperties.put("team", "CreateTeamURL");
@@ -48,7 +47,7 @@ public class Admin extends RequiresLoginServlet {
 		createProperties.put("subtournament", "CreateSubTournamentURL");
 	}
 
-	private static final Map<String, String> listProperties = new HashMap<String, String>();
+	private static final Map<String, String> listProperties = new HashMap<>();
 	static {
 		listProperties.put("tournament", "ListTournamentsURL");
 		listProperties.put("team", "ListTeamsURL");
@@ -75,9 +74,9 @@ public class Admin extends RequiresLoginServlet {
 		String type = req.getParameter("type");
 		String property = null;
 		if("create".equals(request)) {
-			property = (String) createProperties.get(type);
+			property = createProperties.get(type);
 		} else if("list".equals(request)){
-			property = (String) listProperties.get(type);
+			property = listProperties.get(type);
 		}
 		
 		String url = property != null ? getApp().getConfig().getProperty(property) : null;
