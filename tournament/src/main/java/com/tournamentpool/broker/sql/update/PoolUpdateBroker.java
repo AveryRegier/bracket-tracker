@@ -49,7 +49,6 @@ public class PoolUpdateBroker extends InsertBroker {
 	 * @param sp
 	 * @param scoreSystem
 	 * @param tournament
-	 * @param group
 	 * @param name
 	 * @param showBracketsEarly
 	 * @param bracketLimit

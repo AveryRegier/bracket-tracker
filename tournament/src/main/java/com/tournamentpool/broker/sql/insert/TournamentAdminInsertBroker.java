@@ -38,11 +38,8 @@ public class TournamentAdminInsertBroker extends InsertBroker {
 
 	/**
 	 * @param sp
-	 * @param scoreSystem
 	 * @param tournament
-	 * @param group
-	 * @param name
-	 */
+     */
 	public TournamentAdminInsertBroker(SingletonProvider sp, MainTournament tournament, int adminOID) {
 		super(sp);
 		this.tournament = tournament;

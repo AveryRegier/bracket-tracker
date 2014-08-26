@@ -38,15 +38,7 @@ public class TieBreakerAnswerBroker extends InsertBroker {
 
 	/**
 	 * @param sp
-	 * @param scoreSystem
-	 * @param tournament
-	 * @param group
-	 * @param name
-	 * @param showBracketsEarly
-	 * @param bracketLimit
-	 * @param tieBreakerQuestion
-	 * @param tieBreakerType
-	 */
+     */
 	public TieBreakerAnswerBroker(SingletonProvider sp, Pool pool, String tieBreakerAnswer)
 	{
 		super(sp);

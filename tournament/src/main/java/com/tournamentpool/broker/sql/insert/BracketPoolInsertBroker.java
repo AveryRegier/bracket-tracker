@@ -41,11 +41,7 @@ public class BracketPoolInsertBroker extends InsertBroker {
 	/**
 	 * @param sp
 	 * @param tieBreakerAnswer
-	 * @param scoreSystem
-	 * @param tournament
-	 * @param group
-	 * @param name
-	 */
+     */
 	public BracketPoolInsertBroker(SingletonProvider sp, Pool pool, Bracket bracket, String tieBreakerAnswer) {
 		super(sp);
 		this.pool = pool;

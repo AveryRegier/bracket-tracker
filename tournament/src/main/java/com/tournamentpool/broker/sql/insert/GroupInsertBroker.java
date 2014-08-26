@@ -42,9 +42,6 @@ public class GroupInsertBroker extends InsertBroker {
 
 	/**
 	 * @param sp
-	 * @param scoreSystem
-	 * @param tournament
-	 * @param group
 	 * @param name
 	 * @param parentID 
 	 */

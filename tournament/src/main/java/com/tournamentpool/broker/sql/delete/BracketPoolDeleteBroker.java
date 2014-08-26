@@ -38,12 +38,7 @@ public class BracketPoolDeleteBroker extends InsertBroker {
 
 	/**
 	 * @param sp
-	 * @param tieBreakerAnswer
-	 * @param scoreSystem
-	 * @param tournament
-	 * @param group
-	 * @param name
-	 */
+     */
 	public BracketPoolDeleteBroker(SingletonProvider sp, Pool pool, Bracket bracket) {
 		super(sp);
 		this.pool = pool;

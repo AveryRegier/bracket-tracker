@@ -43,9 +43,7 @@ public class BracketInsertBroker extends InsertBroker {
 
 	/**
 	 * @param sp
-	 * @param scoreSystem
 	 * @param tournament
-	 * @param group
 	 * @param name
 	 */
 	public BracketInsertBroker(SingletonProvider sp, String name, User user, Tournament tournament) {
