@@ -43,11 +43,11 @@ import java.util.stream.Collectors;
  * @author avery
  */
 public class UserManager extends SingletonProviderHolder {
-	private Map<String, User> users = new HashMap<String, User>();
-	private Map<Integer, User> players = new HashMap<Integer, User>();
-	private Map<Integer, Group> groups = new HashMap<Integer, Group>();
-	private Map<Integer, Pool> pools = new HashMap<Integer, Pool>();
-	private Map<Integer, TieBreakerType> tieBreakerTypes = new TreeMap<Integer, TieBreakerType>();
+	private Map<String, User> users = new HashMap<>();
+	private Map<Integer, User> players = new HashMap<>();
+	private Map<Integer, Group> groups = new HashMap<>();
+	private Map<Integer, Pool> pools = new HashMap<>();
+	private Map<Integer, TieBreakerType> tieBreakerTypes = new TreeMap<>();
 
 	/**
 	 *
@@ -152,7 +152,7 @@ public class UserManager extends SingletonProviderHolder {
 	public void loadPlayer(String userid, int id, String name, String pw, boolean siteAdmin, String email) {
 		User user = new User(userid, id, name, pw, siteAdmin, email);
 		users.put(userid, user);
-		players.put(new Integer(id), user);
+		players.put(id, user);
 	}
 
 	/**
@@ -196,7 +196,7 @@ public class UserManager extends SingletonProviderHolder {
 			parent = getGroupObject(parentGroupID);
 		}
 		Group group = new Group(this, groupOID, name, adminID, invitationCode, parent);
-		groups.put(new Integer(groupOID), group);
+		groups.put(groupOID, group);
 	}
 
 	public void updateGroup(Group group, boolean enableInvitation) {
@@ -276,7 +276,7 @@ public class UserManager extends SingletonProviderHolder {
 		TieBreakerType tieBreakerType = getTieBreakerType(tieBreakerTypeID);
 		Pool pool = new MainPool(sp, poolOID, name, group, scoreSystem, tournament,
 				bracketLimit, showBracketsEarly, tieBreakerType, tieBreakerQuestion, tieBreakerAnswer);
-		pools.put(new Integer(poolOID), pool);
+		pools.put(poolOID, pool);
 	}
 
 	/**
@@ -299,7 +299,7 @@ public class UserManager extends SingletonProviderHolder {
 	 * @return
 	 */
 	public Set<User> getPlayers(Set<Integer> playerOIDs) {
-		Set<User> these = new LinkedHashSet<User>();
+		Set<User> these = new LinkedHashSet<>();
 		for (Integer oid: playerOIDs) {
 			User user = players.get(oid);
 			if(user == null)  {
@@ -324,12 +324,9 @@ public class UserManager extends SingletonProviderHolder {
 	 * @return
 	 */
 	public Set<Pool> getPools(Set<Integer> poolOids) {
-		Set<Pool> these = new HashSet<Pool>();
-		for (Integer oid: poolOids) {
-			Pool user = getPoolObject(oid.intValue());
-			these.add(user);
-		}
-		return these;
+        return poolOids.stream()
+                .map(this::getPoolObject)
+                .collect(Collectors.toSet());
 	}
 
 	/**
@@ -348,9 +345,6 @@ public class UserManager extends SingletonProviderHolder {
 		TieBreakerType tieBreakerType = getTieBreakerType(tieBreakerTypeID);
 		new PoolInsertBroker(sp, name, group, tournament, scoreSystem,
 				bracketLimit, showBracketsEarly, tieBreakerType, tieBreakerQuestion).execute();
-		// TODO create in the database and get the oid back
-//		Pool pool = new Pool(poolOID, name, group, scoreSystem, tournament);
-//		pools.put(new Integer(poolOID), pool);
 	}
 
 	/**
@@ -453,24 +447,21 @@ public class UserManager extends SingletonProviderHolder {
 	}
 
 	public Group getGroup(String invitationCode) {
-		Group toReturn = null;
-		// first iterate through loaded groups looking for one that matches.
-		for (Group group: groups.values()) {
-			if(group.validateInvitationShortCode(invitationCode)) {
-				toReturn = group;
-				break;
-			}
-		}
+        // first iterate through loaded groups looking for one that matches.
+        Optional<Group> toReturn = groups.values().stream()
+                .filter(g -> g.validateInvitationShortCode(invitationCode))
+                .findFirst();
 
 		// if not found, load group by invite code from db.
-		if(toReturn == null) {
-			GroupGetByInvitationCodeBroker broker = new GroupGetByInvitationCodeBroker(sp, Group.convertInvitationCode(invitationCode));
-			broker.execute();
-			// get the group
-			toReturn = getGroup(broker.getGroupOID());
-		}
-		return toReturn;
-	}
+        if (toReturn.isPresent()) {
+            return toReturn.get();
+        }
+
+        GroupGetByInvitationCodeBroker broker = new GroupGetByInvitationCodeBroker(sp, Group.convertInvitationCode(invitationCode));
+        broker.execute();
+        // get the group
+        return getGroup(broker.getGroupOID());
+    }
 
 	public void addSiteAdmins(int[] playerIDs) {
 		for (int playerID : playerIDs) {
@@ -556,15 +547,15 @@ public class UserManager extends SingletonProviderHolder {
 	}
 
 	public Iterator<Group> getGroups() {
-		return new ArrayList<Group>(groups.values()).iterator();
+		return new ArrayList<>(groups.values()).iterator();
 	}
 
 	public Iterator<User> getPlayers() {
-		return new ArrayList<User>(players.values()).iterator();
+		return new ArrayList<>(players.values()).iterator();
 	}
 
 	public Iterator<Pool> getPools() {
-		return new ArrayList<Pool>(pools.values()).iterator();
+		return new ArrayList<>(pools.values()).iterator();
 	}
 
 	public void removePool(Pool pool) {
@@ -600,27 +591,21 @@ public class UserManager extends SingletonProviderHolder {
 		return false;
 	}
 
-	public boolean mayRemoveUser(User requestor, User toRemove) {
-		if(requestor != null && 
-			(requestor.isSiteAdmin())) 
-		{
+	public boolean mayRemoveUser(User requester, User toRemove) {
+		if(requester != null && requester.isSiteAdmin()) {
 			// a player with saved brackets shouldn't be deleted.  An administrator 
 			// should go through the process of removing brackets from pools and 
 			// deleting or moving the brackets before deleting the player.
 			if(!toRemove.hasBrackets()) {
-				for(Group group: toRemove.getGroups()) {
-					if(group.getAdministrator() == toRemove) {
-						if(!group.mayDelete(requestor)) return false;
-					}
-				}
-				return true;
+                return toRemove.getGroups().stream()
+                        .noneMatch(g -> g.getAdministrator() == toRemove && !g.mayDelete(requester));
 			}
 		}
 		return false;
 	}
 
 	public void applyDelete(User player) {
-		players.remove(new Integer(player.getOID()));
+		players.remove(player.getOID());
 		users.remove(player.getID());
 	}
 
