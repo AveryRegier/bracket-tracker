@@ -21,17 +21,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql.delete;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.TransactionBroker;
 import com.tournamentpool.domain.Group;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 /**
  * @author Avery J. Regier
  */
-public class GroupPlayerDeleteBroker extends TransactionBroker {
+public class GroupPlayerDeleteBroker extends TransactionBroker<TransactionBroker.Query> {
 	private final Group group;
 	private final int[] playerIDs;
 	private int count = 0;
@@ -50,13 +50,6 @@ public class GroupPlayerDeleteBroker extends TransactionBroker {
 		
 	}
 
-	/**
-	 * @param sp
-	 * @param scoreSystem
-	 * @param tournament
-	 * @param group
-	 * @param name
-	 */
 	public GroupPlayerDeleteBroker(SingletonProvider sp, Group group, int[] playerIDs) {
 		super(sp);
 		this.group = group;
