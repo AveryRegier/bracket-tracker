@@ -432,8 +432,8 @@ public class UserManager extends SingletonProviderHolder {
 
 	public int createGroup(User user, String name, boolean createInvitationCode, int parentID) throws IllegalAccessException {
         Group parentGroup = getGroup(parentID);
-        if(parentGroup != null){
-        if(!parentGroup.getMyMembers().contains(user) || parentGroup.getAdministrator() != user) {
+        if(parentGroup != null) {
+            if(!parentGroup.getMyMembers().contains(user) && parentGroup.getAdministrator() != user) {
                 throw new IllegalAccessException("Only group members may create sub groups");
             }
         }
