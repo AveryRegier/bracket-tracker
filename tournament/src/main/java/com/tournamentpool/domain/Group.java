@@ -117,7 +117,7 @@ public class Group implements Comparable<Group> {
 
     public boolean isChildGroupMember(User user) {
         return children.stream()
-                .filter(c->c.hasMember(user.getOID()))
+                .filter(c -> c.hasMember(user.getOID()))
                 .findFirst().isPresent();
     }
 	
@@ -296,5 +296,10 @@ public class Group implements Comparable<Group> {
         } while(group != null);
 
         return false;
+    }
+
+    public boolean mayAddSubGroup(User user) {
+        getMyMembers();
+        return getAdministrator() == user || members.contains(user.getOID());
     }
 }

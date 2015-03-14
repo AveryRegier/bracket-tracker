@@ -143,13 +143,13 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 
 		Group group = lookupGroup(req);
 		GroupBean bean = mapGroupBean(user, filter, group);
-        bean.setMayAddSubGroup(group.getAdministrator() == user || group.getMyMembers().contains(user));
+        bean.setMayAddSubGroup(group.mayAddSubGroup(user));
 		req.setAttribute("Group", bean);
 
 		produceJSPPage(req, resp, "ShowGroupJSP");
 	}
 
-	private GroupBean mapGroupBean(User user, Filter filter, Group group) {
+    private GroupBean mapGroupBean(User user, Filter filter, Group group) {
 		GroupBean bean = new GroupBean(group);
 		bean.setMembers(group.getMyMembers(), user, group);
 		bean.setSubGroups(group.getChildren());
