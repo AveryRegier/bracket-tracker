@@ -161,7 +161,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 						<P class="smallBreak"><a href="?request=show&type=group&id=<c:out value="${subGroup.oid}"/>"><c:out value="${subGroup.name}"/></a></P>
 						</c:forEach>
 						
-						<c:if test="${Group.currentUserAdmin}">
+						<c:if test="${Group.mayAddSubGroup}">
 							<P><a href="?request=create&type=group&parentID=<c:out value="${Group.oid}"/>">Create A New Sub Group</a></P>
 						</c:if>		
 					</div>

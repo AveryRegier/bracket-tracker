@@ -115,6 +115,11 @@ public class Group implements Comparable<Group> {
 		return Collections.unmodifiableSet(um.getPlayers(members));
 	}
 
+    public boolean isChildGroupMember(User user) {
+        return children.stream()
+                .filter(c->c.hasMember(user.getOID()))
+                .findFirst().isPresent();
+    }
 	
 	/**
 	 * @param pool
@@ -245,7 +250,9 @@ public class Group implements Comparable<Group> {
 	public boolean mayRemoveMember(User requestor, User player) {
 		if( (requestor.isSiteAdmin() || requestor == getAdministrator() || requestor == player)
 		    && (getMyMembers().contains(player))) {
-			// does this player have any brackets in a pool in this group?
+            // if this person is in a subgroup, then it is safe to remove from the parent.
+            if(isChildGroupMember(player)) return true;
+            // does this player have any brackets in a pool in this group?
             return !getPools().stream()
                     .flatMap(p->p.getBrackets().stream())
                     .anyMatch(b->b.getOwner() == player);

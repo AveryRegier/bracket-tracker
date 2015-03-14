@@ -44,8 +44,9 @@ public class GroupBean implements Comparable<GroupBean>{
 	private boolean currentUserIsAdmin = false;
 	private boolean mayDelete;
 	private TreeSet<GroupBean> subGroups;
+    private boolean mayAddSubGroup;
 
-	/**
+    /**
 	 * @param group
 	 */
 	public GroupBean(Group group) {
@@ -206,5 +207,13 @@ public class GroupBean implements Comparable<GroupBean>{
     @Override
     public int hashCode() {
         return getOid();
+    }
+
+    public void setMayAddSubGroup(boolean mayAddSubGroup) {
+        this.mayAddSubGroup = mayAddSubGroup;
+    }
+
+    public boolean isMayAddSubGroup() {
+        return mayAddSubGroup;
     }
 }

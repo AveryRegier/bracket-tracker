@@ -430,7 +430,13 @@ public class UserManager extends SingletonProviderHolder {
 		new GroupPlayerInsertBroker(sp, group, playerIDs).execute();
 	}
 
-	public int createGroup(User user, String name, boolean createInvitationCode, int parentID) {
+	public int createGroup(User user, String name, boolean createInvitationCode, int parentID) throws IllegalAccessException {
+        Group parentGroup = getGroup(parentID);
+        if(parentGroup != null){
+        if(!parentGroup.getMyMembers().contains(user) || parentGroup.getAdministrator() != user) {
+                throw new IllegalAccessException("Only group members may create sub groups");
+            }
+        }
 		int invitationCode = 0;
 		if(createInvitationCode) {
 			invitationCode = Math.abs((int)System.currentTimeMillis());
@@ -442,7 +448,18 @@ public class UserManager extends SingletonProviderHolder {
 		// add the person who creates the group to the group
 		new GroupPlayerInsertBroker(sp, getGroupObject(groupOID), new int[] {user.getOID()}).execute(); // update database
 		associateGroupToUser(user.getOID(), groupOID); // update the user object's memory
-		getGroup(groupOID).getMembers(); // update the group object's memory from the database
+        Group group = getGroup(groupOID);
+        group.getMembers(); // update the group object's memory from the database
+
+
+        Group parent = group.getParent();
+        while(parent != null) {
+            if(parent.getAdministrator() != user) {
+                parent.removeMember(user, user, sp);
+            }
+            parent = parent.getParent();
+        }
+
 		return groupOID;
 	}
 

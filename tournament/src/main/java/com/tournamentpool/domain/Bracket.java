@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  * @author avery
  */
 public class Bracket implements Reference {
-	public class Pick implements HasWinner {
+    public class Pick implements HasWinner {
 		private final GameNode game;
 		private Opponent winner;
 		private boolean isnew = true;

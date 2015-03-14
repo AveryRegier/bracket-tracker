@@ -143,6 +143,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 
 		Group group = lookupGroup(req);
 		GroupBean bean = mapGroupBean(user, filter, group);
+        bean.setMayAddSubGroup(group.getAdministrator() == user || group.getMyMembers().contains(user));
 		req.setAttribute("Group", bean);
 
 		produceJSPPage(req, resp, "ShowGroupJSP");
@@ -320,7 +321,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 						req.getParameter("name"),
 						"true".equalsIgnoreCase(req.getParameter("createInvitationCode")),
 						parentID);
-			} catch (DatabaseFailure e) {
+			} catch (DatabaseFailure|IllegalAccessException e) {
 				throw new ServletException(e);
 			}
 		} else if(req.getParameter("enableInvitation") != null) {
