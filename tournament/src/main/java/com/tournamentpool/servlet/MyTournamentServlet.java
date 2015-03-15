@@ -143,7 +143,6 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 
 		Group group = lookupGroup(req);
 		GroupBean bean = mapGroupBean(user, filter, group);
-        bean.setMayAddSubGroup(group.mayAddSubGroup(user));
 		req.setAttribute("Group", bean);
 
 		produceJSPPage(req, resp, "ShowGroupJSP");
@@ -160,6 +159,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 		if(administrator != null) {
 			bean.setAdmin(new PlayerBean(administrator.getOID(), administrator.getName()), user == administrator);
 		}
+        bean.setMayAddSubGroup(group.mayAddSubGroup(user));
 		bean.setPools(group.getPools(), filter, user);
 		return bean;
 	}

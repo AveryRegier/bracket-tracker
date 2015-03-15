@@ -69,6 +69,7 @@ public class PlayerMaintenance extends RequiresLoginServlet {
 			//	bean.setMembers(group.getMembers());
 				User administrator = group.getAdministrator();
 				bean.setAdmin(new PlayerBean(administrator.getOID(), administrator.getName()), user == administrator);
+                bean.setMayAddSubGroup(group.mayAddSubGroup(user));
 			//	bean.setPools(group.getPools());
 				req.setAttribute("Group", bean);
 				req.setAttribute("Players", new GroupAvailablePlayersGetBroker(getApp().getSingletonProvider(), group).getPlayers());

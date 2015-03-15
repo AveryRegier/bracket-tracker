@@ -38,8 +38,13 @@ public class SubPool implements Pool {
 	public Group getGroup() {
 		return group;
 	}
-	
-	Pool getParentPool() {
+
+    @Override
+    public Group getDefiningGroup() {
+        return parentPool.getDefiningGroup();
+    }
+
+    Pool getParentPool() {
 		return parentPool;
 	}
 	
@@ -176,7 +181,7 @@ public class SubPool implements Pool {
 
 	@Override
 	public boolean mayDelete(User user) {
-		if(user == group.getAdministrator() && getBrackets().isEmpty()) return true;
+		if(getDefiningGroup() == getGroup() && user == group.getAdministrator() && getBrackets().isEmpty()) return true;
 		return getParentPool().mayDelete(user);
 	}
 

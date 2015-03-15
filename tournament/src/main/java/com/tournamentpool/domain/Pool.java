@@ -75,6 +75,7 @@ public interface Pool extends Comparable<Pool> {
 	 * @return
 	 */
 	public abstract Group getGroup();
+    public abstract Group getDefiningGroup();
 
 	public abstract boolean hasBracket(Bracket bracket);
 

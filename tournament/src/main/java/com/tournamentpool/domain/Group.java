@@ -225,7 +225,8 @@ public class Group implements Comparable<Group> {
 		    && (requestor == getAdministrator() || requestor.isSiteAdmin())
 		    && ((  getMyMembers().contains(getAdministrator()) && getMembers().size() == 1) // administrator is only member
 		       || getMyMembers().isEmpty()) // or there are no members
-		    && getMyPools().isEmpty(); // and there are no pools
+		    && getMyPools().isEmpty() // and there are no pools
+            && !hasChildren();
 	}
 	
 	public void applyDelete() {
