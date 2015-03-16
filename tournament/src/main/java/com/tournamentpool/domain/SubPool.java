@@ -181,8 +181,7 @@ public class SubPool implements Pool {
 
 	@Override
 	public boolean mayDelete(User user) {
-		if(getDefiningGroup() == getGroup() && user == group.getAdministrator() && getBrackets().isEmpty()) return true;
-		return getParentPool().mayDelete(user);
+        return false;
 	}
 
 	@Override
