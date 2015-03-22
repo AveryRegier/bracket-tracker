@@ -54,7 +54,7 @@ final class AutoUpdateGameInfo implements GameInfo {
 			}
 			System.out.println("No winner found for "+game);
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
