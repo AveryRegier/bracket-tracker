@@ -50,13 +50,20 @@ public class GroupBean implements Comparable<GroupBean>{
 	 * @param group
 	 */
 	public GroupBean(Group group) {
-		this.oid = group.getId();
-		if(StringUtil.killWhitespace(group.getName()) != null) {
-			this.name = group.getName();
-		} else {
-			this.name = "No Name";
-		}
-		this.invitationCode = group.getInvitationShortCode();
+        if(group != null) {
+            this.oid = group.getId();
+            if (StringUtil.killWhitespace(group.getName()) != null) {
+                this.name = group.getName();
+            } else {
+                this.name = "No Name";
+            }
+            this.invitationCode = group.getInvitationShortCode();
+        } else {
+            this.name = "No Name";
+            this.invitationCode = null;
+            this.oid = 0;
+        }
+
 	}
 
 	/**
