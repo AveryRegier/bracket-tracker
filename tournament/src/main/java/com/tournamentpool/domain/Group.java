@@ -61,7 +61,11 @@ public class Group implements Comparable<Group> {
 	private void addChild(Group group) {
 		children.add(group);
 	}
-	
+
+	private void removeChild(Group group) {
+		children.remove(group);
+	}
+
 	public boolean hasChildren() {
 		return !children.isEmpty();
 	}
@@ -234,8 +238,9 @@ public class Group implements Comparable<Group> {
 			user.removeGroup(this);
 		}
 		um.removeGroup(this);
+		if(parent != null) parent.removeChild(this);
 	}
-	
+
 	public boolean delete(User requestor, SingletonProvider sp) {
 		if(mayDelete(requestor)) {
 			if(!getMembers().isEmpty()) {
