@@ -289,7 +289,7 @@ public class PoolBean extends BracketHolderBean implements Comparable<PoolBean> 
 		return showGroups;
 	}
 
-    private static class TeamScore implements Map.Entry<GroupBean, Float> {
+    public static class TeamScore implements Map.Entry<GroupBean, Float> {
         private final GroupBean group;
         private final float score;
 		private int numPlayers;
