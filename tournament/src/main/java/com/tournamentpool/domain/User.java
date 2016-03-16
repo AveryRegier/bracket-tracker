@@ -108,7 +108,9 @@ public class User {
 				.collect(Collectors.toList());
 
 		return matches.stream()
-				.filter(p-> !matches.stream().anyMatch(g->g.isInHierarchy(p)))
+				.filter(p-> !matches.stream()
+						.filter(g->g != p)
+						.anyMatch(g->g.isInHierarchy(p)))
 				.findFirst().orElse(null);
 	}
 
