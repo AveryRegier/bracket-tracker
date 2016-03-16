@@ -208,18 +208,14 @@ public class PoolBean extends BracketHolderBean implements Comparable<PoolBean> 
 
     protected void setupTeamScores(BracketBean<?> bracketBean, Iterable<Group> membershipGroupsInHierarchy) {
         for(Group group: membershipGroupsInHierarchy) {
-            GroupBean groupBean = new GroupBean(group);
-            List<Integer> scores = groupScores.get(groupBean);
-            if(scores == null) {
-                scores = new ArrayList<>();
-                groupScores.put(groupBean, scores);
-            }
-            scores.add(bracketBean.getScore().getCurrent());
+			groupScores
+					.computeIfAbsent(new GroupBean(group), b->new ArrayList<>())
+					.add(bracketBean.getScore().getCurrent());
         }
     }
 
     public Iterator getTeamScores() {
-        Set<TeamScore> averageMap = new TreeSet<>((abean, bbean) -> {
+        Set<TeamScore> averageMap = new TreeSet<TeamScore>((abean, bbean) -> {
             if(abean == bbean) return 0;
             Float aScore = abean.getValue();
             Float bScore = bbean.getValue();
@@ -243,7 +239,7 @@ public class PoolBean extends BracketHolderBean implements Comparable<PoolBean> 
             for(; count<3 && count<scores.size(); count++)  {
                 total += scores.get(count);
             }
-            averageMap.add(new TeamScore(group, total/count));
+            averageMap.add(new TeamScore(group, total/count, scores.size()));
         }
 
         return averageMap.iterator();
@@ -296,11 +292,13 @@ public class PoolBean extends BracketHolderBean implements Comparable<PoolBean> 
     private static class TeamScore implements Map.Entry<GroupBean, Float> {
         private final GroupBean group;
         private final float score;
+		private int numPlayers;
 
-        public TeamScore(GroupBean group, float score) {
+		public TeamScore(GroupBean group, float score, int numPlayers) {
             this.group = group;
             this.score = score;
-        }
+			this.numPlayers = numPlayers;
+		}
 
         @Override
         public GroupBean getKey() {
@@ -316,5 +314,9 @@ public class PoolBean extends BracketHolderBean implements Comparable<PoolBean> 
         public Float setValue(Float value) {
             return null;
         }
+
+		public int getNumPlayers() {
+			return numPlayers;
+		}
     }
 }
