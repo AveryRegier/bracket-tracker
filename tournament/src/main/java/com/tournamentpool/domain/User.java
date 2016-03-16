@@ -103,13 +103,13 @@ public class User {
 	}
 	
 	public Group getGroupInHierarchy(Group parent) {
-		for (Group groupTesting : groups) {
-            if(groupTesting.isInHierarchy(parent)) {
-                return groupTesting;
-            }
+		List<Group> matches = groups.stream()
+				.filter(g -> g.isInHierarchy(parent))
+				.collect(Collectors.toList());
 
-		}
-		return null;
+		return matches.stream()
+				.filter(p-> !matches.stream().anyMatch(g->g.isInHierarchy(p)))
+				.findFirst().orElse(null);
 	}
 
 	public Iterable<Group> getGroupsInHierarchy() {
