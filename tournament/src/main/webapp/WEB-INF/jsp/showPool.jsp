@@ -60,7 +60,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					<td class="content"><c:out value="${Pool.tieBreakerAnswer}"/></td>
 				</tr>
 				</c:if>
-				<c:if test="${Pool.child && !empty pool.group && !empty pool.group.parent}">
+				<c:if test="${Pool.child && !empty Pool.group && !empty Pool.group.parent}">
 				<tr>
 					<td class="head">Parent Pool:</td>
 					<td class="content"><a href="?request=show&type=group&id=<c:out value="${pool.group.parent.oid}"/>"><c:out value="${pool.group.parent.name}"/></a></td>
