@@ -63,7 +63,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 				<c:if test="${Pool.child && !empty Pool.group && !empty Pool.group.parent}">
 				<tr>
 					<td class="head">Parent Pool:</td>
-					<td class="content"><a href="?request=show&type=group&id=<c:out value="${pool.group.parent.oid}"/>"><c:out value="${pool.group.parent.name}"/></a></td>
+					<td class="content"><a href="?request=show&type=pool&id=<c:out value="${Pool.oid}"/>&groupID=<c:out value="${Pool.group.parent.oid}"/>"><c:out value="${Pool.group.parent.name}"/></a></td>
 				</tr>
 				</c:if>
 				<tr>
