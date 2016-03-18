@@ -50,6 +50,7 @@ public class PoolBean extends BracketHolderBean implements Comparable<PoolBean> 
 	private boolean showGroups = false;
 
     private final TreeMap<GroupBean, List<Integer>> groupScores = new TreeMap<>();
+	private boolean hasParent;
 
 	/**
 	 * @param name
@@ -289,7 +290,15 @@ public class PoolBean extends BracketHolderBean implements Comparable<PoolBean> 
 		return showGroups;
 	}
 
-    public static class TeamScore implements Map.Entry<GroupBean, Float> {
+	public void setIsChild(boolean hasParent) {
+		this.hasParent = hasParent;
+	}
+
+	public boolean isChild() {
+		return hasParent;
+	}
+
+	public static class TeamScore implements Map.Entry<GroupBean, Float> {
         private final GroupBean group;
         private final float score;
 		private int numPlayers;

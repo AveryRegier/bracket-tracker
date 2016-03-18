@@ -60,6 +60,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					<td class="content"><c:out value="${Pool.tieBreakerAnswer}"/></td>
 				</tr>
 				</c:if>
+				<c:if test="${Pool.child && !empty pool.group && !empty pool.group.parent}">
+				<tr>
+					<td class="head">Parent Pool:</td>
+					<td class="content"><a href="?request=show&type=group&id=<c:out value="${pool.group.parent.oid}"/>"><c:out value="${pool.group.parent.name}"/></a></td>
+				</tr>
+				</c:if>
 				<tr>
 					<td class="head">Group:&nbsp;</td>
 					<td class="content"><a href="<c:out value="${config.ShowGroupURL}"/><c:out value="${Pool.group.oid}"/>"><c:out value="${Pool.group.name}"/></a></td>

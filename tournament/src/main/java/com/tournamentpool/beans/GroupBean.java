@@ -45,6 +45,7 @@ public class GroupBean implements Comparable<GroupBean>{
 	private boolean mayDelete;
 	private TreeSet<GroupBean> subGroups;
     private boolean mayAddSubGroup;
+	private GroupBean parent;
 
     /**
 	 * @param group
@@ -58,6 +59,9 @@ public class GroupBean implements Comparable<GroupBean>{
                 this.name = "No Name";
             }
             this.invitationCode = group.getInvitationShortCode();
+			if(group.getParent() != null) {
+				parent = new GroupBean(group.getParent());
+			}
         } else {
             this.name = "No Name";
             this.invitationCode = null;
@@ -223,4 +227,8 @@ public class GroupBean implements Comparable<GroupBean>{
     public boolean isMayAddSubGroup() {
         return mayAddSubGroup;
     }
+
+	public GroupBean getParent() {
+		return parent;
+	}
 }

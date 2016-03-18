@@ -208,6 +208,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 		}
 		if(pool.getGroup() != null) {
 			poolBean.setGroup(new GroupBean(pool.getGroup()));
+			poolBean.setIsChild(pool.getGroup() != pool.getDefiningGroup());
 		}
 		poolBean.setEditable(pool.getOwner() == user && !hasAnyBrackets(pool));
 		poolBean.setBracketLimit(pool.getBracketLimit());

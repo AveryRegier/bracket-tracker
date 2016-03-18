@@ -90,6 +90,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					</c:otherwise>
 					</c:choose>
 					</c:if>
+                    <c:if test="${! empty Group.parent}">
+                    <tr>
+                        <td class="head">Parent Group:</td>
+                        <td class="content"><a href="?request=show&type=group&id=<c:out value="${Group.parent.oid}"/>"><c:out value="${Group.parent.name}"/></a></td>
+                    </tr>
+                    </c:if>
 				</table>
 				<!--Content Table-->
 
