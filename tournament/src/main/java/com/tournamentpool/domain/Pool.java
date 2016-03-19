@@ -26,103 +26,105 @@ public interface Pool extends Comparable<Pool> {
 	/**
 	 * @return String
 	 */
-	public abstract String getName();
+	String getName();
 
 	/**
 	 * @return int
 	 */
-	public abstract int getOid();
+	int getOid();
 
 	/**
 	 * @return User
 	 */
-	public abstract User getOwner();
+	User getOwner();
 
 	/**
 	 * @return ScoringStrategy
 	 */
-	public abstract ScoreSystem getScoreSystem();
+	ScoreSystem getScoreSystem();
 
 	/**
 	 * Sets the name.
 	 * @param name The name to set
 	 */
-	public abstract void setName(String name);
+	void setName(String name);
 
 	/**
 	 * @param bracket
 	 * @param tieBreakerAnswer2
 	 */
-	public abstract void loadBracket(Bracket bracket, String tieBreakerAnswer2);
+	void loadBracket(Bracket bracket, String tieBreakerAnswer2);
 
 	/**
 	 * @return Returns the tournament.
 	 */
-	public abstract Tournament getTournament();
+	Tournament getTournament();
 
 	/**
 	 * @return
 	 */
-	public abstract Collection<Bracket> getBrackets();
+	Collection<Bracket> getBrackets();
 
 	/**
 	 * Return values in iterator are of type PoolBracket.
 	 * @return
 	 */
-	public abstract Collection<PoolBracket> getRankedBrackets();
+	default Collection<PoolBracket> getRankedBrackets() {
+		return getRankedBrackets(getBrackets(), getGroup());
+	}
 
 	/**
 	 * @return
 	 */
-	public abstract Group getGroup();
-    public abstract Group getDefiningGroup();
+	Group getGroup();
+    Group getDefiningGroup();
 
-	public abstract boolean hasBracket(Bracket bracket);
+	boolean hasBracket(Bracket bracket);
 
-	public abstract boolean mayDelete(User user);
+	boolean mayDelete(User user);
 
-	public abstract boolean delete(User requestor, SingletonProvider sp);
+	boolean delete(User requestor, SingletonProvider sp);
 
-	public abstract void commitUpdate(String name2, ScoreSystem scoreSystem2,
+	void commitUpdate(String name2, ScoreSystem scoreSystem2,
 			Tournament tournament2, int bracketLimit2,
 			boolean showBracketsEarly2, TieBreakerType tieBreakerType2,
 			String tieBreakerQuestion2);
 
-	public abstract int getBracketLimit();
+	int getBracketLimit();
 
-	public abstract boolean isShowBracketsEarly();
+	boolean isShowBracketsEarly();
 
-	public abstract boolean hasReachedLimit(User owner);
+	boolean hasReachedLimit(User owner);
 
-	public abstract String getTieBreakerQuestion();
+	String getTieBreakerQuestion();
 
-	public abstract String getTieBreakerAnswer();
+	String getTieBreakerAnswer();
 
-	public abstract TieBreakerType getTieBreakerType();
+	TieBreakerType getTieBreakerType();
 
 	/**
 	 * Does the tiebreaker question need answered now by this user?
 	 * @return
 	 */
-	public abstract boolean isTiebreakerNeeded(User user);
+	boolean isTiebreakerNeeded(User user);
 
 	/**
 	 * Is a tie breaker needed to be answered
 	 * @return
 	 */
-	public abstract boolean isTiebreakerNeeded();
+	boolean isTiebreakerNeeded();
 
-	public abstract void commitTieBreakerAnswer(String tieBreakerAnswer2);
+	void commitTieBreakerAnswer(String tieBreakerAnswer2);
 
-	public abstract void applyDelete();
+	void applyDelete();
 
-	public abstract void applyRemoveBracket(Bracket bracket);
+	void applyRemoveBracket(Bracket bracket);
 
-	public abstract boolean removeBracket(User requestor, Bracket bracket);
+	boolean removeBracket(User requestor, Bracket bracket);
 
-	public abstract boolean mayRemoveBracket(User requestor, Bracket bracket);
+	boolean mayRemoveBracket(User requestor, Bracket bracket);
 
-	public abstract Bracket getBracket(int bracketID);
+	Bracket getBracket(int bracketID);
 
-	public abstract Collection<PoolBracket> getRankedBrackets(Collection<Bracket> brackets, Group group);
+	Collection<PoolBracket> getRankedBrackets(Collection<Bracket> brackets, Group group);
 }

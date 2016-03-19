@@ -145,13 +145,7 @@ public class MainPool implements Pool {
         }
     }
 
-    /* (non-Javadoc)
-         * @see com.tournamentpool.domain.IPool#getRankedBrackets()
-         */
-	public Collection<PoolBracket> getRankedBrackets() {
-		return getRankedBrackets(getBrackets(), getGroup());
-	}
-	
+
 	public Collection<PoolBracket> getRankedBrackets(Collection<Bracket> toEvaluate, Group group) {
         TreeSet<PoolBracket> scoredBrackets = collectScores(toEvaluate, group);
 

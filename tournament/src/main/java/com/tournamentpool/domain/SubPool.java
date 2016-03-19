@@ -159,11 +159,6 @@ public class SubPool implements Pool {
         return group.hasMember(bracket.getOwner().getOID());
     }
 
-    @Override
-	public Collection<PoolBracket> getRankedBrackets() {
-		return getRankedBrackets(getBrackets(), getGroup());
-	}
-	
 	@Override
 	public Collection<PoolBracket> getRankedBrackets(Collection<Bracket> brackets, Group group) {
 		return getParentPool().getRankedBrackets(brackets, group);
