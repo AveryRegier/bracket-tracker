@@ -7,5 +7,9 @@ bin/
 target/
 Maven__*.xml
 .DS_Store
+derby.log
+sampleDB1s/
+tournament/TOURNAMENT/
+tournament/sampleDB/
 
 
