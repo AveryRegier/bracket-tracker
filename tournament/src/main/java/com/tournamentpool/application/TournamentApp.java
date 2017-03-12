@@ -185,6 +185,16 @@ public class TournamentApp {
 					config = new Properties();
 					try {
 						config.load(getClass().getClassLoader().getResourceAsStream("/config/tournament.properties"));
+
+						config.setProperty("userid", System.getProperty("RDS_USERNAME"));
+						config.setProperty("password", System.getProperty("RDS_PASSWORD"));
+						config.setProperty("jdbcURL", "jdbc:mysql://"+
+								System.getProperty("RDS_HOSTNAME")+":"+
+								System.getProperty("RDS_PORT")+
+								"/tournament"
+//								"/"+System.getProperty("RDS_DB_NAME")
+						);
+
 						InputStream propFile = getClass().getClassLoader().getResourceAsStream("/config/jdbc.properties");
 						if(propFile != null) {
 							config.load(propFile);

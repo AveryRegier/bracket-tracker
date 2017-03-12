@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE web-app
-PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-"http://java.sun.com/dtd/web-app_2_3.dtd">
-<web-app>
+<web-app
+		xmlns="http://java.sun.com/xml/ns/javaee"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+  http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
 	<listener>
 		<listener-class>com.tournamentpool.application.TournamentSingletonProvider</listener-class>
 	</listener>
@@ -114,147 +115,106 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
 
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.Admin</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.Admin</url-pattern>
+		<url-pattern>/Admin</url-pattern>
 	</servlet-mapping>
 
     <servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.AddSiteAdminsServlet</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.AddSiteAdminsServlet</url-pattern>
+		<url-pattern>/AddSiteAdmins</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.MyTournamentServlet</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.MyTournamentServlet</url-pattern>
+		<url-pattern>/MyTournament</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.AdminListServlet</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.AdminListServlet</url-pattern>
+		<url-pattern>/AdminList</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.RegistrationServlet</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.RegistrationServlet</url-pattern>
+		<url-pattern>/Registration</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.ResetPasswordServlet</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.ResetPasswordServlet</url-pattern>
+		<url-pattern>/ResetPassword</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.AssignBracketToPool</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.AssignBracketToPool</url-pattern>
+		<url-pattern>/AssignBracketToPool</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.AssignSeeds</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.AssignSeeds</url-pattern>
+		<url-pattern>/AssignSeeds</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.PlayerMaintenance</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.PlayerMaintenance</url-pattern>
+		<url-pattern>/PlayerMaintenance</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.AddAdminsServlet</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.AddAdminsServlet</url-pattern>
+		<url-pattern>/AddAdmins</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.BracketMaintenance</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.BracketMaintenance</url-pattern>
+		<url-pattern>/BracketMaintenance</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.PoolMaintenance</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.PoolMaintenance</url-pattern>
+		<url-pattern>/PoolMaintenance</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.Tournament</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.Tournament</url-pattern>
+		<url-pattern>/Tournament</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.LoginServlet</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.LoginServlet</url-pattern>
+		<url-pattern>/Login</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.CreateTournament</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.CreateTournament</url-pattern>
+		<url-pattern>/CreateTournament</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.CreateSubTournament</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.CreateSubTournament</url-pattern>
+		<url-pattern>/CreateSubTournament</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.CreateTeam</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.CreateTeam</url-pattern>
+		<url-pattern>/CreateTeam</url-pattern>
 	</servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>com.tournamentpool.servlet.TeamSynonymServlet</servlet-name>
-        <url-pattern>/servlet/com.tournamentpool.servlet.ManageSynonyms</url-pattern>
+        <url-pattern>/ManageSynonyms</url-pattern>
     </servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.CreateLeague</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.CreateLeague</url-pattern>
+		<url-pattern>/CreateLeague</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.AddTeamsToLeague</servlet-name>
-		<url-pattern>/servlet/com.tournamentpool.servlet.AddTeamsToLeague</url-pattern>
+		<url-pattern>/AddTeamsToLeague</url-pattern>
 	</servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>com.tournamentpool.servlet.ProfileServlet</servlet-name>
-        <url-pattern>/servlet/com.tournamentpool.servlet.ProfileServlet</url-pattern>
+        <url-pattern>/Profile</url-pattern>
     </servlet-mapping>
-
-    <taglib>
-		<taglib-uri>http://java.sun.com/jstl/fmt</taglib-uri>
-		<taglib-location>/WEB-INF/fmt.tld</taglib-location>
-	</taglib>
-
-	<taglib>
-		<taglib-uri>http://java.sun.com/jstl/fmt-rt</taglib-uri>
-		<taglib-location>/WEB-INF/fmt-rt.tld</taglib-location>
-	</taglib>
-
-	<taglib>
-		<taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
-		<taglib-location>/WEB-INF/c.tld</taglib-location>
-	</taglib>
-
-	<taglib>
-		<taglib-uri>http://java.sun.com/jstl/core-rt</taglib-uri>
-		<taglib-location>/WEB-INF/c-rt.tld</taglib-location>
-	</taglib>
-
-	<taglib>
-		<taglib-uri>http://java.sun.com/jstl/sql</taglib-uri>
-		<taglib-location>/WEB-INF/sql.tld</taglib-location>
-	</taglib>
-
-	<taglib>
-		<taglib-uri>http://java.sun.com/jstl/sql-rt</taglib-uri>
-		<taglib-location>/WEB-INF/sql-rt.tld</taglib-location>
-	</taglib>
-
-	<taglib>
-		<taglib-uri>http://java.sun.com/jstl/x</taglib-uri>
-		<taglib-location>/WEB-INF/x.tld</taglib-location>
-	</taglib>
-
-	<taglib>
-		<taglib-uri>http://java.sun.com/jstl/x-rt</taglib-uri>
-		<taglib-location>/WEB-INF/x-rt.tld</taglib-location>
-	</taglib>
-
 </web-app>

@@ -17,7 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  --%>
 
-<%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			margin: 0 0 0em; padding: 0
 		}
 	</style>
-	<link rel="stylesheet" type="text/css" href="/tournament/basic.css">
+	<link rel="stylesheet" type="text/css" href="/basic.css">
 	<style type="text/css">
 		<%--Initial definitions for base column. 
 		   Define the (minimum) width here, and optionally a padding --%>
@@ -39,7 +39,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			margin: 0;	 		<%-- Don't use a margin! --%>
 		}
 	</style>
-	<script type="text/javascript" src="/tournament/multicolumn.js"></script>
+	<script type="text/javascript" src="/multicolumn.js"></script>
 	<script type="text/javascript">	
 		//Minimalistic settings. You can tweak the settings by re-assigning the defaults in MultiColumnSettings.
 		multiColumnSettings=new MultiColumnSettings;

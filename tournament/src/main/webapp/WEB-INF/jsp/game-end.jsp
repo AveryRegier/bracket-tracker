@@ -50,11 +50,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 </c:choose>
 <td rowspan="<c:out value="${rows}"/>" valign="middle">
 <table border=0 cellspacing=0 cellpadding=0>
-<tr><td><img src="/tournament/images/bracket-top.gif"/></td></tr>
-<tr><td><img src="/tournament/images/bracket-bar.gif" height="<c:out value="${pixels}"/>" width="14"/></td></tr>
-<tr><td><img src="/tournament/images/bracket-middle.gif"/></td></tr>
-<tr><td><img src="/tournament/images/bracket-bar.gif" height="<c:out value="${pixels}"/>" width="14"/></td></tr>
-<tr><td><img src="/tournament/images/bracket-bottom.gif"/></td></tr>
+<tr><td><img src="/images/bracket-top.gif"/></td></tr>
+<tr><td><img src="/images/bracket-bar.gif" height="<c:out value="${pixels}"/>" width="14"/></td></tr>
+<tr><td><img src="/images/bracket-middle.gif"/></td></tr>
+<tr><td><img src="/images/bracket-bar.gif" height="<c:out value="${pixels}"/>" width="14"/></td></tr>
+<tr><td><img src="/images/bracket-bottom.gif"/></td></tr>
 </table>
 </td>
 </c:if>

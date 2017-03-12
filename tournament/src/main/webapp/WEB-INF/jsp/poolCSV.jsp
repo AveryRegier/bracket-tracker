@@ -15,6 +15,6 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
- --%><%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>Rank,Players,Pools,Current,Remaining,Max,Max Rank<c:if test="${Pool.tieBreakerType.oid != 0}">,Tie Breaker</c:if>
+ --%><%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>Rank,Players,Pools,Current,Remaining,Max,Max Rank<c:if test="${Pool.tieBreakerType.oid != 0}">,Tie Breaker</c:if>
 <c:forEach var="bracket" items="${Pool.brackets}"><c:out value="${bracket.rank}"/>,<c:out value="${bracket.userName}"/>,<c:if test="${Pool.showGroups}"><c:out value="${bracket.group.name}"/></c:if><c:if test="${not Pool.showGroups}"><c:out value="${bracket.name}"/></c:if>,<c:out value="${bracket.score.current}"/>,<c:out value="${bracket.score.remaining}"/>,<c:out value="${bracket.score.max}"/>,<c:out value="${bracket.maxRank}"/><c:if test="${Pool.tieBreakerType.oid != 0}">,<c:out value="${bracket.tieBreakerAnswer}"/></c:if>
 </c:forEach>

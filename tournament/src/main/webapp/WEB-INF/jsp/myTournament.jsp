@@ -17,11 +17,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  --%>
 
-<%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head><title><c:out value="${Player.name}"/>'s Tournament</title></head>
-<link rel="stylesheet" type="text/css" href="/tournament/basic.css">
+<link rel="stylesheet" type="text/css" href="/basic.css">
 
 <body>
 <jsp:include page="header.jsp"></jsp:include>

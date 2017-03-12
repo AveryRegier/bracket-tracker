@@ -17,12 +17,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  --%>
 
-<%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
 <title><c:out value="${BracketBean.name}"/></title>
-<link rel="stylesheet" type="text/css" href="/tournament/basic.css">
+<link rel="stylesheet" type="text/css" href="/basic.css">
 <script>
 var alertEnabled = false;
 function Game(oid, selectElement, opponentOrder){

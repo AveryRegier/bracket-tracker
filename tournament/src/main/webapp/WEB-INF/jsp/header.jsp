@@ -16,8 +16,8 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  --%>
-<%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <P class="content" align="right">
 	<a href="<c:out value="${config.MyTournamentURL}"/>">My Tournament</a> 
 	<c:if test="${Player.siteAdmin}"><a href="<c:out value="${config.AdminURL}"/>">Admin</a></c:if>

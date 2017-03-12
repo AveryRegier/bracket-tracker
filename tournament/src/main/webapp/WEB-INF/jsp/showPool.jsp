@@ -17,13 +17,13 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  --%>
 
-<%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
 <title><c:out value="${Pool.name}"/> Pool</title>
-<link rel="stylesheet" type="text/css" href="/tournament/basic.css">
+<link rel="stylesheet" type="text/css" href="/basic.css">
 </head>
 <body>
 <jsp:include page="header.jsp"/>

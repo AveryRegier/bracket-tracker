@@ -17,7 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  --%>
 
-<%@ taglib uri="/WEB-INF/c.tld" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head><title>Login to Tournament and Bracket Tracker</title></head>
@@ -39,10 +39,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 </form>
 <BR>
 <blockquote><pre>
-Tournament Pool and Bracket Tracker version 0.7.0-SNAPSHOT, Copyright (C) 2003-2014 Avery J. Regier
+Tournament Pool and Bracket Tracker version 0.7.1-SNAPSHOT, Copyright (C) 2003-2017 Avery J. Regier
 Tournament Pool and Bracket Tracker comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it under certain conditions.
-For details see the <a href="/tournament/LICENSE">license</a>.
+For details see the <a href="/LICENSE">license</a>.
 
 <a href="http://sourceforge.net/projects/bracket-tracker/">Source</a>
 </pre></blockquote>
