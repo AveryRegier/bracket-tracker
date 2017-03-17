@@ -286,7 +286,11 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 			req.getSession().removeAttribute("tournament");
 		} else {
 			filter = new CurrentFilter();
-			filter = new AdministratorFilter(filter, user);
+			if(getApp().getTournamentManager().hasOpenTournaments()) {
+				// we only need to be able to create new pools if there are open
+				// tournaments at this time.  Otherwise its just noise in the UI.
+				filter = new AdministratorFilter(filter, user);
+			}
 			req.getSession().removeAttribute("archives");
 			req.getSession().removeAttribute("tournament");
 		}

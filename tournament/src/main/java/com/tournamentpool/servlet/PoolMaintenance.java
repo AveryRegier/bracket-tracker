@@ -122,7 +122,7 @@ public class PoolMaintenance extends RequiresLoginServlet {
 				.getName()), user == administrator);
 		req.setAttribute("Group", bean);
 		req.setAttribute("tournaments", getApp().getTournamentManager()
-				.getTournamentMenu());
+				.getOpenTournamentsMenu());
 		req.setAttribute("scoreSystems", getApp().getScoreSystemManager()
 				.getScoreSystemMenu());
 		req.setAttribute("tieBreakerTypes", getApp().getUserManager()

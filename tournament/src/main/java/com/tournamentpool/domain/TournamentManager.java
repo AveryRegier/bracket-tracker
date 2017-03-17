@@ -34,6 +34,8 @@ import utility.menu.reference.ReferenceMenu;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Avery J. Regier
@@ -126,6 +128,24 @@ public class TournamentManager extends SingletonProviderHolder {
 				return tournaments;
 			}
 		};
+	}
+
+	public Menu getOpenTournamentsMenu() {
+		return new ReferenceMenu<Tournament>("tournaments") {
+			protected Map<?, Tournament> getReferences() {
+				return getOpenTournaments();
+			}
+		};
+	}
+
+	private Map<Object, Tournament> getOpenTournaments() {
+		return tournaments.values().stream()
+                .filter((v)->!v.isStarted())
+                .collect(Collectors.toMap(Tournament::getID, Function.identity()));
+	}
+
+	public boolean hasOpenTournaments() {
+		return !getOpenTournaments().isEmpty();
 	}
 
 	public Tournament createTournament(String name, TournamentType tournamentType, League league, Date startTime) {
