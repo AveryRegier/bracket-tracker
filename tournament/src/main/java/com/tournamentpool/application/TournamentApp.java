@@ -32,6 +32,7 @@ import com.tournamentpool.domain.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -186,14 +187,17 @@ public class TournamentApp {
 					try {
 						config.load(getClass().getClassLoader().getResourceAsStream("/config/tournament.properties"));
 
-						config.setProperty("userid", System.getProperty("RDS_USERNAME"));
-						config.setProperty("password", System.getProperty("RDS_PASSWORD"));
-						config.setProperty("jdbcURL", "jdbc:mysql://"+
-								System.getProperty("RDS_HOSTNAME")+":"+
-								System.getProperty("RDS_PORT")+
-								"/tournament"
+						setPropertyIfEnvironmentVariableSet("RDS_USERNAME", "userid");
+						setPropertyIfEnvironmentVariableSet("RDS_PASSWORD", "password");
+						Optional.ofNullable(System.getProperty("RDS_HOSTNAME"))
+							.ifPresent(host->
+									config.setProperty("jdbcURL", "jdbc:mysql://"+
+													host+":"+
+													System.getProperty("RDS_PORT", "3306")+
+													"/tournament"
 //								"/"+System.getProperty("RDS_DB_NAME")
-						);
+									)
+							);
 
 						InputStream propFile = getClass().getClassLoader().getResourceAsStream("/config/jdbc.properties");
 						if(propFile != null) {
@@ -211,6 +215,11 @@ public class TournamentApp {
 			}
 		}
 		return config;
+	}
+
+	private void setPropertyIfEnvironmentVariableSet(String envVar, String property) {
+		Optional.ofNullable(System.getProperty(envVar))
+            .ifPresent(v -> config.setProperty(property, v));
 	}
 
 	/**

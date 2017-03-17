@@ -51,7 +51,9 @@ public class AutoUpdateController extends TournamentController {
 			for (String string : leagueIDStrings) {
 				int id = Integer.parseInt(string);
 				League sourceLeague = sp.getSingleton().getTeamManager().getLeague(id);
-				startWaitForNewTournamentsTimer(sourceLeague, false);
+				if(sourceLeague != null) {
+					startWaitForNewTournamentsTimer(sourceLeague, false);
+				}
 			}
 		} else {
 			System.out.println("No leagues to auto update.");
