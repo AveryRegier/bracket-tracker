@@ -45,7 +45,6 @@ public class MainTournament implements Tournament {
 	private final TournamentType tournamentType;
 	private Timestamp startTime;
 	private final Map<Seed, Team> seeds = new HashMap<>();
-//	private Map games = new HashMap();
 	private Map<GameNode, Game> nodeGameMap = new HashMap<>();
 	private final Set<Integer> admins = new HashSet<>();
 	private final League league;
@@ -90,7 +89,6 @@ public class MainTournament implements Tournament {
 		Game game = new Game(this,
 			gameNode, oponent, startTime
 		);
-	//	games.put(new Integer(gameOID), game);
 		nodeGameMap.put(gameNode, game);
 	}
 
@@ -160,14 +158,12 @@ public class MainTournament implements Tournament {
 	private void updateGameInformation(WinnerSource winnerSource,
 			ScoreReporter scoreReporter, GameReporter gameReporter,
 			GameNode node) {
-		Optional<? extends GameInfo> gameInfo = winnerSource.getGameInfo(getTournamentType(), node);
-		Opponent winner = gameInfo.map(g->g.getWinner().orElse(null)).orElse(null);
+		Optional<GameInfo> gameInfo = winnerSource.getGameInfo(getTournamentType(), node);
+		Opponent winner = gameInfo.flatMap(GameInfo::getWinner).orElse(null);
 		Date gameDate = gameInfo.map(GameInfo::getDate).orElse(null);
 		Game game = createGame(node, winner, gameDate);
 		gameReporter.updateGame(game);
-        if(gameInfo.isPresent()) {
-            updateScores(scoreReporter, gameInfo.get(), game);
-        }
+		gameInfo.ifPresent(g -> updateScores(scoreReporter, g, game));
 	}
 
 	private List<GameNode> getAllGameNodes() {
@@ -192,7 +188,7 @@ public class MainTournament implements Tournament {
 	}
 
 	public static interface WinnerSource {
-		Optional<? extends GameInfo> getGameInfo(TournamentType tournamentType, GameNode node);
+		Optional<GameInfo> getGameInfo(TournamentType tournamentType, GameNode node);
 	}
 	
 	/**

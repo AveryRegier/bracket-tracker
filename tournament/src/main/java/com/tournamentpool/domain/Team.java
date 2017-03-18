@@ -30,6 +30,7 @@ import com.tournamentpool.broker.sql.delete.TeamSynonymDeleteBroker;
 import utility.domain.Reference;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -109,7 +110,7 @@ public class Team implements Reference, Comparable<Team> {
 		synonymns.add(name2);
 	}
 	
-	public Iterable<String> getNames() {
+	public Collection<String> getNames() {
         ArrayList<String> names = new ArrayList<>(synonymns);
         names.add(0, name);
         return names;

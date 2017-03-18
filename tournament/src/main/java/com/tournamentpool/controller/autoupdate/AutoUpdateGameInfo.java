@@ -4,10 +4,8 @@ import com.tournamentpool.domain.GameInfo;
 import com.tournamentpool.domain.Opponent;
 import com.tournamentpool.domain.Team;
 
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
 
 /* 
 Copyright (C) 2003-20013 Avery J. Regier.
@@ -65,12 +63,12 @@ final class AutoUpdateGameInfo implements GameInfo {
 	@Override
 	public Integer getScore(Opponent opponent) {
 		Map<String, Integer> playerScores = game.getPlayerScores();
-		Iterable<String> names = teams.get(opponent).getNames();
-		for (String name : names) {
-			Integer score = playerScores.get(name.toUpperCase());
-			if(score != null) return score;
-		}
-		return null;
+		Collection<String> names = teams.get(opponent).getNames();
+		return names.stream()
+				.map(name -> playerScores.get(name.toUpperCase()))
+				.filter(Objects::nonNull)
+				.findFirst()
+				.orElse(null);
 	}
 
 	@Override
@@ -80,8 +78,8 @@ final class AutoUpdateGameInfo implements GameInfo {
 
 	@Override
 	public Date getDate() {
-		if(oldGame.isPresent() && oldGame.get().getDate() != null)
-            return oldGame.get().getDate();
-		else return game.getStartDate();
+		return oldGame.
+				flatMap(g->(Optional.ofNullable(g.getDate())))
+				.orElse(game.getStartDate());
 	}
 }

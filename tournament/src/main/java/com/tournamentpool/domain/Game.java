@@ -83,24 +83,12 @@ public class Game implements GameInfo, HasWinner {
 		return gameNode;
 	}
 	
-	/**
-	 * @return Returns the gameOID.
-	 */
-//	public int getOid() {
-//		return gameOID;
-//	}
-	
 	public boolean isNew() {
 		return isnew;
 	}
 	
 	void setOld() {
 		isnew = false;
-	}
-
-	public Set<Seed> getSeedsStillInPlay() {
-		if(getWinner().isPresent()) return null;
-		return gameNode.getPossibleWinningSeeds(tournament);
 	}
 
 	public Integer getScore(Opponent opponent) {
@@ -116,12 +104,6 @@ public class Game implements GameInfo, HasWinner {
 		return status;
 	}
 
-	/**
-	 * 
-	 * @param opponent
-	 * @param score
-	 * @return true if this is an update
-	 */
 	public Integer setScore(Opponent opponent, Integer score) {
 		return scores.put(opponent, score);
 	}
