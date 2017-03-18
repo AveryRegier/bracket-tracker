@@ -27,20 +27,16 @@ import com.tournamentpool.beans.PoolBean;
 import com.tournamentpool.beans.TournamentBean;
 import com.tournamentpool.broker.sql.DatabaseFailure;
 import com.tournamentpool.controller.*;
-import com.tournamentpool.domain.Bracket;
-import com.tournamentpool.domain.Group;
-import com.tournamentpool.domain.Pool;
-import com.tournamentpool.domain.User;
+import com.tournamentpool.domain.*;
+import com.tournamentpool.domain.Tournament;
 import utility.StringUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author avery
@@ -252,6 +248,19 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 		bean.setGroups(user.getGroupsInHierarchy(), filter, user);
 		bean.setBrackets(user.getBrackets(), filter, user);
 
+		if(filter.isCurrent()) {
+			List<Game> games = getApp().getTournamentManager().getInProgressTournaments().stream()
+					.filter(filter::pass)
+					.flatMap(Tournament::inProgressGames)
+					.map(Game::getIdentity)
+					.filter(Optional::isPresent)
+					.map(Optional::get)
+					.distinct()
+					.sorted((o1, o2) -> o1.getDate().compareTo(o2.getDate()))
+					.collect(Collectors.toList());
+			bean.setGames(games);
+		}
+
 		req.setAttribute("Player", bean);
 		produceJSPPage(req, resp, "MyTournamentJSP");
 	}
@@ -271,14 +280,16 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 		Filter filter = null;
 		if(StringUtil.killWhitespace(req.getParameter("tournament")) != null) {
             com.tournamentpool.domain.Tournament tournament = lookupTournament(req);
-			filter = new TournamentFilter(tournament.getOid());
+			filter = new TournamentFilter(tournament);
 			if(!tournament.isStarted()) {
 				// the admin filter is only relevant to create a new pool if the
 				// tournament hasn't already started
 				filter = new AdministratorFilter(filter, user);
 			}
-			if(!ArchiveFilter.isArchive(tournament)) req.getSession().removeAttribute("archives");
-			else req.getSession().setAttribute("archives", "true");
+			if(!ArchiveFilter.isArchive(tournament))
+				req.getSession().removeAttribute("archives");
+			else
+				req.getSession().setAttribute("archives", "true");
 			req.getSession().setAttribute("tournament", Integer.toString(tournament.getOid()));
 		} else if(req.getParameter("archives") != null) {
 			filter = new ArchiveFilter();

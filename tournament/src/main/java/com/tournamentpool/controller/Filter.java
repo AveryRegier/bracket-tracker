@@ -21,9 +21,12 @@ package com.tournamentpool.controller;
 import com.tournamentpool.domain.Bracket;
 import com.tournamentpool.domain.Group;
 import com.tournamentpool.domain.Pool;
+import com.tournamentpool.domain.Tournament;
 
 public interface Filter {
 	boolean pass(Group group);
 	boolean pass(Bracket bracket);
 	boolean pass(Pool pool);
+	boolean isCurrent();
+	boolean pass(Tournament tournament);
 }

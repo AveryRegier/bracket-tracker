@@ -21,6 +21,7 @@ package com.tournamentpool.controller;
 import com.tournamentpool.domain.Bracket;
 import com.tournamentpool.domain.Group;
 import com.tournamentpool.domain.Pool;
+import com.tournamentpool.domain.Tournament;
 
 public class CurrentFilter extends ArchiveFilter {
 	public boolean pass(Group group) {
@@ -28,10 +29,20 @@ public class CurrentFilter extends ArchiveFilter {
 	}
 
 	public boolean pass(Pool pool) {
-		return pool != null && !ArchiveFilter.isArchive(pool.getTournament());
+		return pool != null && pass(pool.getTournament());
 	}
 
 	public boolean pass(Bracket bracket) {
-		return bracket != null && !ArchiveFilter.isArchive(bracket.getTournament());
+		return bracket != null && pass(bracket.getTournament());
+	}
+
+	@Override
+	public boolean isCurrent() {
+		return true;
+	}
+
+	@Override
+	public boolean pass(Tournament tournament) {
+		return !ArchiveFilter.isArchive(tournament);
 	}
 }

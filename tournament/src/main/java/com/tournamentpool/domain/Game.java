@@ -21,8 +21,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
+import com.tournamentpool.controller.TournamentVisitor;
+
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 
 /**
@@ -119,4 +122,31 @@ public class Game implements GameInfo, HasWinner {
 	public boolean hasInformation() {
 		return winner != null || this.game_date != null || !scores.isEmpty();
 	}
+
+	public Optional<Game> getIdentity() {
+		return tournament.getIdentity().getGame(getGameNode().getIdentityNode());
+	}
+
+	private Team getTeam(GameNode.Feeder feeder) {
+		return getTeam(getSeed(feeder));
+    }
+
+	public Team getTeam(Seed seed) {
+		return getTournament().getTeam(seed);
+	}
+
+	private Seed getSeed(GameNode.Feeder feeder) {
+		return feeder.visitForWinner(
+                new TournamentVisitor(getTournament()));
+	}
+
+	public Map<Seed, Integer> getScores() {
+		return getGameNode().getFeeders().stream().collect(Collectors.toMap(
+				this::getSeed,
+				feeder->getScore(feeder.getOpponent()),
+				(u, v) -> u,
+				TreeMap::new
+		));
+	}
+
 }

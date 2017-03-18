@@ -26,6 +26,7 @@ import com.tournamentpool.broker.sql.status.TournamentPoolStatusBroker;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 class SubTournament implements Tournament {
 
@@ -201,4 +202,18 @@ class SubTournament implements Tournament {
     public Optional<Opponent> getWinner(GameNode node) {
         return parent.getWinner(node);
     }
+
+	@Override
+	public Stream<Game> allGames() {
+		return parent.allGames()
+				.map(Game::getGameNode)
+				.map(this::getGame)
+				.filter(Optional::isPresent)
+				.map(Optional::get);
+	}
+
+	@Override
+	public Tournament getIdentity() {
+		return getParentTournament();
+	}
 }

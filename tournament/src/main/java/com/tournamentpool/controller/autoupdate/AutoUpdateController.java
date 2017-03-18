@@ -164,7 +164,7 @@ public class AutoUpdateController extends TournamentController {
 				System.out.println("Applying updates to "+tournament.getOid()+" "+tournament.getName());
 				final MainTournament mainTournament = (MainTournament)tournament;
 				mainTournament.updateGames(sp, new AutoUpdateWinnerSource(mainTournament, teamGameMap));
-				tournamentsPaused = tournamentsPaused && !mainTournament.hasGamesInProgress();
+				tournamentsPaused = tournamentsPaused && !mainTournament.hasGamesToUpdate();
 			}
 		}
 		return tournamentsPaused;

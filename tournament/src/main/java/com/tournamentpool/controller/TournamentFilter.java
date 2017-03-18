@@ -21,13 +21,16 @@ package com.tournamentpool.controller;
 import com.tournamentpool.domain.Bracket;
 import com.tournamentpool.domain.Group;
 import com.tournamentpool.domain.Pool;
+import com.tournamentpool.domain.Tournament;
 
 public class TournamentFilter implements Filter {
 
 	private final int tournamentID;
+	private Tournament tournament;
 
-	public TournamentFilter(int tournamentID) {
-		this.tournamentID = tournamentID;
+	public TournamentFilter(Tournament tournament) {
+		this.tournamentID = tournament.getOid();
+		this.tournament = tournament;
 	}
 	
 	public boolean pass(Group group) {
@@ -45,4 +48,14 @@ public class TournamentFilter implements Filter {
 		return pool.getTournament().getOid() == tournamentID;
 	}
 
+	@Override
+	public boolean isCurrent() {
+		return tournament.isInProgress();
+	}
+
+	@Override
+	public boolean pass(Tournament tournament) {
+		return tournament == this.tournament ||
+				(tournament != null && tournament.getOid() == tournamentID);
+	}
 }

@@ -27,8 +27,10 @@ import com.tournamentpool.domain.*;
 import com.tournamentpool.domain.ScoreSystem.Score;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * @author Avery J. Regier
@@ -61,7 +63,9 @@ public class BracketHolderBean {
         return abean.getOid() - bbean.getOid();
     });
 
-	public BracketHolderBean() {
+    private List<GameBean> games;
+
+    public BracketHolderBean() {
 		super();
 	}
 
@@ -155,5 +159,13 @@ public class BracketHolderBean {
 
     protected void setupTeamScores(BracketBean<?> bracketBean, Iterable<Group> membershipGroupsInHierarchy) {
         // do nothing, allow overrides
+    }
+
+    public void setGames(List<Game> games) {
+        this.games = games.stream().map(GameBean::new).collect(Collectors.toList());
+    }
+
+    public List<GameBean> getGames() {
+        return games;
     }
 }

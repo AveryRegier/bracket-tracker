@@ -18,10 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 package com.tournamentpool.controller;
 
-import com.tournamentpool.domain.Bracket;
-import com.tournamentpool.domain.Group;
-import com.tournamentpool.domain.Pool;
-import com.tournamentpool.domain.User;
+import com.tournamentpool.domain.*;
 
 public class AdministratorFilter implements Filter {
 
@@ -46,4 +43,13 @@ public class AdministratorFilter implements Filter {
 		return child.pass(pool);
 	}
 
+	@Override
+	public boolean isCurrent() {
+		return child.isCurrent();
+	}
+
+	@Override
+	public boolean pass(Tournament tournament) {
+		return child.pass(tournament);
+	}
 }

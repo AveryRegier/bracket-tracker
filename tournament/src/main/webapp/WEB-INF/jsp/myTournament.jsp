@@ -38,12 +38,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 </div>
 
 <div class="main">
+    <jsp:include page="game-progress.jsp"></jsp:include>
     <div class="box">
         <h2>Brackets</h2>
         <div class="inner-content">
-            <div>Currently own <c:out value="${Player.numBrackets}"/>
-            bracket<c:if test="${group.numBrackets != 1}">s</c:if>.
-            </div>
             <p/>
             <table class="border-table" cellpadding="0" cellspacing="0" border="0">
             <tr><td>
@@ -92,9 +90,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <div class="box">
         <h2>Groups</h2>
         <div class="inner-content">
-            <div>Currently attached to <c:out value="${Player.numGroups}"/>
-					group<c:if test="${Player.numGroups != 1}">s</c:if>.</div>
-
             <c:if test="${Player.numGroups > 0}">
             <p/>
             <table class="border-table" cellpadding="0" cellspacing="0" border="0">

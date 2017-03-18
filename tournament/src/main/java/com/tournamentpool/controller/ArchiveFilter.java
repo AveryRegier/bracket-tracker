@@ -55,4 +55,14 @@ public class ArchiveFilter implements Filter {
 	public boolean pass(Pool pool) {
 		return pool != null && isArchive(pool.getTournament());
 	}
+
+	@Override
+	public boolean isCurrent() {
+		return false;
+	}
+
+	@Override
+	public boolean pass(Tournament tournament) {
+		return tournament != null && isArchive(tournament);
+	}
 }

@@ -27,6 +27,7 @@ import utility.domain.Reference;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * @author avery
@@ -93,4 +94,21 @@ public interface Tournament extends Reference {
     void setStartTime(Timestamp startTime);
 
     Optional<Opponent> getWinner(GameNode node);
+
+	default boolean isInProgress() {
+		return isStarted() && !isComplete();
+	}
+
+	public Stream<Game> allGames();
+
+	default public Stream<Game> inProgressGames() {
+		return allGames()
+				.filter(game -> !game.isComplete())
+				.filter(Game::isStarted);
+	}
+
+	default public Tournament getIdentity() {
+		return this;
+	}
+
 }

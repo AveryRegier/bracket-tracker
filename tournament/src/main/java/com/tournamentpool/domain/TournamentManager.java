@@ -133,19 +133,25 @@ public class TournamentManager extends SingletonProviderHolder {
 	public Menu getOpenTournamentsMenu() {
 		return new ReferenceMenu<Tournament>("tournaments") {
 			protected Map<?, Tournament> getReferences() {
-				return getOpenTournaments();
+				return getOpenTournamentsMap();
 			}
 		};
 	}
 
-	private Map<Object, Tournament> getOpenTournaments() {
+	private Map<Object, Tournament> getOpenTournamentsMap() {
 		return tournaments.values().stream()
                 .filter((v)->!v.isStarted())
                 .collect(Collectors.toMap(Tournament::getID, Function.identity()));
 	}
 
+	public Collection<Tournament> getInProgressTournaments() {
+		return tournaments.values().stream()
+				.filter(Tournament::isInProgress)
+				.collect(Collectors.toList());
+	}
+
 	public boolean hasOpenTournaments() {
-		return !getOpenTournaments().isEmpty();
+		return !getOpenTournamentsMap().isEmpty();
 	}
 
 	public Tournament createTournament(String name, TournamentType tournamentType, League league, Date startTime) {

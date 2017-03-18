@@ -26,7 +26,7 @@ import utility.domain.Reference;
 /**
  * @author Avery J. Regier
  */
-public class Seed implements Reference {
+public class Seed implements Reference, Comparable<Seed> {
 	public static final Seed UNKNOWN = new Seed(-1, 0);
 	private final int oid;
 	private final int seedno;
@@ -59,5 +59,10 @@ public class Seed implements Reference {
 
 	public String getName() {
 		return Integer.toString(getSeedNo());
+	}
+
+	@Override
+	public int compareTo(Seed o) {
+		return this.oid - o.oid;
 	}
 }
