@@ -12,7 +12,7 @@
                     </tr>
                     <c:forEach var="score" items="${game.scores}">
                     <tr class="content-row">
-                        <td><c:out value="${score.seed}"/> <b><c:out value="${score.team.name}"/></b></td>
+                        <td style="color: <c:out value="${score.color}"/>"><c:out value="${score.seed}"/> <b><c:out value="${score.team.name}"/></b></td>
                         <td><b><c:out value="${score.score}"/></b></td>
                     </tr>
                     </c:forEach>

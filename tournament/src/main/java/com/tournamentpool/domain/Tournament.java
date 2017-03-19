@@ -101,10 +101,11 @@ public interface Tournament extends Reference {
 
 	public Stream<Game> allGames();
 
-	default public Stream<Game> inProgressGames() {
+	default public Stream<Game> recentGames() {
 		return allGames()
-				.filter(game -> !game.isComplete())
-				.filter(Game::isStarted);
+				.filter(Game::isStarted)
+				.filter(game ->
+						game.getDate().getTime() > System.currentTimeMillis() - 18 * 60 * 60 * 1000);
 	}
 
 	default public Tournament getIdentity() {

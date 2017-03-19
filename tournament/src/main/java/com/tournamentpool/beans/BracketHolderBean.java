@@ -26,10 +26,7 @@ import com.tournamentpool.controller.Filter;
 import com.tournamentpool.domain.*;
 import com.tournamentpool.domain.ScoreSystem.Score;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -161,8 +158,10 @@ public class BracketHolderBean {
         // do nothing, allow overrides
     }
 
-    public void setGames(List<Game> games) {
-        this.games = games.stream().map(GameBean::new).collect(Collectors.toList());
+    public void setGames(Map<Game, Set<Seed>> games) {
+        this.games = games.entrySet().stream()
+                .map(GameBean::new)
+                .collect(Collectors.toList());
     }
 
     public List<GameBean> getGames() {

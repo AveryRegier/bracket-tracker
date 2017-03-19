@@ -104,7 +104,7 @@ public class Game implements GameInfo, HasWinner {
 	}
 
 	public String getStatus() {
-		return status;
+		return status != null ? status : winner != null ? "Final" : "";
 	}
 
 	public Integer setScore(Opponent opponent, Integer score) {
@@ -138,6 +138,10 @@ public class Game implements GameInfo, HasWinner {
 	private Seed getSeed(GameNode.Feeder feeder) {
 		return feeder.visitForWinner(
                 new TournamentVisitor(getTournament()));
+	}
+
+	public Seed getSeed(Opponent opponent) {
+		return getSeed(gameNode.getFeeder(opponent));
 	}
 
 	public Map<Seed, Integer> getScores() {

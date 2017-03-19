@@ -80,7 +80,7 @@ public class TournamentVisitor extends GameVisitorCommon<TournamentVisitor.Node>
 					opponent,
 					node.getLevel().getRoundNo(), 
 					node, 
-					game.isPresent() ? game.get().getStatus() : null,
+					game.map(Game::getStatus).orElse(null),
 					getScore(opponent, nextNode)));
 	}
 

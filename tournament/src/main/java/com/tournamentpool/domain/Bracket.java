@@ -190,6 +190,11 @@ public class Bracket implements Reference {
 	}
 
 	public Optional<Pick> getPickFromMemory(GameNode game) {
+		if(picks == null || game == null) {
+			if(picks == null) System.out.println("picks not loaded");
+			if(game == null) System.out.println("bad node");
+			return Optional.empty();
+		}
 		return Optional.ofNullable(picks.get(game));
 	}
 
@@ -216,7 +221,8 @@ public class Bracket implements Reference {
 
     private Stream<Pool> getPoolStream() {
         return getOwner().getGroups().stream()
-                    .flatMap(g -> g.getPools().stream());
+				.flatMap(g -> g.getPools().stream())
+				.filter(pool -> pool.getTournament() == getTournament());
     }
 
     public boolean mayDelete(User user) {

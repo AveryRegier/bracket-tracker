@@ -115,7 +115,7 @@ public class Tournament extends RequiresLoginServlet {
 
                     @Override
                     public String getStatus() {
-                        return game.isPresent() ? game.get().getStatus() : null;
+                        return game.map(Game::getStatus).orElse(null);
                     }
 
                     @Override
