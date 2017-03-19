@@ -42,7 +42,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <div class="box">
         <h2>Brackets</h2>
         <div class="inner-content">
-            <p/>
             <table class="border-table" cellpadding="0" cellspacing="0" border="0">
             <tr><td>
             <table class="content-table" cellpadding="5" cellspacing="1" border="0">
@@ -91,7 +90,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <h2>Groups</h2>
         <div class="inner-content">
             <c:if test="${Player.numGroups > 0}">
-            <p/>
             <table class="border-table" cellpadding="0" cellspacing="0" border="0">
             <tr><td>
             <table class="content-table" cellpadding="5" cellspacing="1" border="0">

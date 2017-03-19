@@ -3,10 +3,9 @@
     <div class="box">
         <h2>Games</h2>
         <div class="inner-content">
-            <p/>
-            <table class="border-table" cellpadding="0" cellspacing="0" border="0">
-            <tr><td>
             <c:forEach var="game" items="${Player.games}">
+            <table class="border-table" cellpadding="0" cellspacing="0" border="0" style="display: inline-block">
+            <tr><td>
                 <table class="content-table" cellpadding="5" cellspacing="1" border="0">
                     <tr class="header-row">
                         <td colspan='2'><c:out value="${game.status}"/></td>
@@ -18,9 +17,9 @@
                     </tr>
                     </c:forEach>
                 </table>
-            </c:forEach>
             </td></tr>
             </table>
+            </c:forEach>
         </div>
     </div>
     <BR clear="all"/>
