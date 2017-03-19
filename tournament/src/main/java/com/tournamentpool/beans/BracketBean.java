@@ -28,7 +28,8 @@ import com.tournamentpool.domain.ScoreSystem.Score;
 import utility.StringUtil;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.joining;
 
 /**
  * @author Avery J. Regier
@@ -239,12 +240,9 @@ public class BracketBean<T extends GameVisitorCommon.Node> {
 			return;
 		}
 		StringBuilder sb = new StringBuilder("Rooting for ");
-        List<String> rootingForList = Arrays.asList(rootingFor)
-                .stream()
+        sb.append(Arrays.stream(rootingFor)
                 .map(r -> pool.getTournament().getTeam(r).getName())
-                .collect(Collectors.toList());
-
-        sb.append(String.join(",", rootingForList));
+                .collect(joining(", ")));
         sb.append('.');
 
 		if(beatBy != null) {
