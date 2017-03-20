@@ -258,11 +258,11 @@ public class MyTournamentServlet extends RequiresLoginServlet {
         produceJSPPage(req, resp, "MyTournamentJSP");
     }
 
-    private Map<Game, Set<Seed>> getInProgressGamesWithPersonalAnalyses(User user, Filter filter) {
+    private Map<Game, Map<Seed, Set<Bracket.Pick>>> getInProgressGamesWithPersonalAnalyses(User user, Filter filter) {
         return getRecentGames(filter)
                 .collect(Collectors.toMap(
                         Function.identity(),
-                        g -> getPickedWinners(user, g)));
+                        g -> getPicks(user, g)));
     }
 
     private Stream<Game> getRecentGames(Filter filter) {
@@ -285,6 +285,22 @@ public class MyTournamentServlet extends RequiresLoginServlet {
     }
 
     private Set<Seed> getPickedWinners(User user, Game g) {
+        return streamPicksForGame(user, g)
+                .map(Bracket.Pick::getWinner)
+                .flatMap(this::asStream)
+                .map(g::getSeed)
+                .peek(s->System.out.println(s.getSeedNo()+" is winner: "+s.getOid()))
+                .collect(Collectors.toSet());
+    }
+
+    private Map<Seed, Set<Bracket.Pick>> getPicks(User user, Game g) {
+        return streamPicksForGame(user, g)
+                .filter(p->p.getWinner().isPresent())
+                .collect(Collectors.groupingBy(p->p.getWinner().map(g::getSeed).get(),
+                        Collectors.mapping(p->p, Collectors.toSet())));
+    }
+
+    private Stream<Bracket.Pick> streamPicksForGame(User user, Game g) {
         return user.getBrackets().stream()
                 .peek(b->System.out.println(b.getID()+" is under consideration"))
                 .filter(b->b.getTournament().getIdentity() == g.getTournament().getIdentity())
@@ -293,12 +309,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
                 .map(b -> getGameNodeForBracket(b, g)
                         .flatMap((game) -> b.getPick(getApp().getSingletonProvider(), game)))
                 .flatMap(this::asStream)
-                .peek(p->System.out.println("found a pick"))
-                .map(Bracket.Pick::getWinner)
-                .flatMap(this::asStream)
-                .map(g::getSeed)
-                .peek(s->System.out.println(s.getSeedNo()+" is winner: "+s.getOid()))
-                .collect(Collectors.toSet());
+                .peek(p->System.out.println("found a pick"));
     }
 
     private Optional<GameNode> getGameNodeForBracket(Bracket b, Game g) {

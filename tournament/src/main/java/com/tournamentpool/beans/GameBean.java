@@ -1,5 +1,6 @@
 package com.tournamentpool.beans;
 
+import com.tournamentpool.domain.Bracket;
 import com.tournamentpool.domain.Game;
 import com.tournamentpool.domain.Seed;
 
@@ -14,7 +15,7 @@ public class GameBean {
     private final List<ScoreBean> scores;
     private final String status;
 
-    public GameBean(Map.Entry<Game, Set<Seed>> entry) {
+    public GameBean(Map.Entry<Game, Map<Seed, Set<Bracket.Pick>>> entry) {
         System.out.println(entry.getKey().getGameID()+(entry.getValue().isEmpty() ? " no picks" : " has picks"));
         Game game = entry.getKey();
         this.date = game.getDate();
@@ -23,7 +24,7 @@ public class GameBean {
                         e.getKey(),
                         game.getTeam(e.getKey()),
                         e.getValue(),
-                        entry.getValue().contains(e.getKey())))
+                        entry.getValue().get(e.getKey())))
                 .collect(Collectors.toList());
         this.status = game.getStatus();
         setupConcernIndicators();

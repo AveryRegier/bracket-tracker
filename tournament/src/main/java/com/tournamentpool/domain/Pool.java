@@ -127,4 +127,6 @@ public interface Pool extends Comparable<Pool> {
 	Bracket getBracket(int bracketID);
 
 	Collection<PoolBracket> getRankedBrackets(Collection<Bracket> brackets, Group group);
+
+	boolean isDefiningPool();
 }

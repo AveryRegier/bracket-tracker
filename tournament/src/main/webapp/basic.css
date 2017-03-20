@@ -86,3 +86,13 @@ input.common {
     font-family: Verdana;
 	padding: 8px;
 }
+
+.number-header {
+    font-size: 7pt;
+    max-width: 20px;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: nowrap;
+    transform: rotate(-35deg);
+    padding-left: 0px;
+}

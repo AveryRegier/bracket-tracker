@@ -1,7 +1,10 @@
 package com.tournamentpool.beans;
 
-import com.tournamentpool.domain.Seed;
-import com.tournamentpool.domain.Team;
+import com.tournamentpool.domain.*;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.ToIntBiFunction;
 
 /**
  * Created by avery on 3/18/17.
@@ -11,14 +14,16 @@ public class ScoreBean {
     private TeamBean team;
     private Integer score;
     private final boolean picked;
+    private final Set<Bracket.Pick> picks;
     private boolean winning = false;
     private boolean tied = false;
 
-    public ScoreBean(Seed seed, Team team, Integer score, boolean picked) {
+    public ScoreBean(Seed seed, Team team, Integer score, Set<Bracket.Pick> picks) {
         this.seed = seed.getSeedNo();
         this.team = new TeamBean(team);
         this.score = score;
-        this.picked = picked;
+        this.picked = picks != null && !picks.isEmpty();
+        this.picks = picks;
     }
 
     public int getSeed() {
@@ -56,5 +61,45 @@ public class ScoreBean {
 
     public void setTied() {
         this.tied = true;
+    }
+
+    public int getCurrent() {
+        return sumPoints(this::getScore);
+    }
+
+    public int getRemaining() {
+        return sumPoints(this::getPotentialPoints);
+    }
+
+    private int sumPoints(ToIntBiFunction<Bracket.Pick, Pool> fn) {
+        return this.picks != null ? this.picks.stream()
+                .flatMapToInt(p -> p.getBracket().getPools().stream()
+                        .filter(Pool::isDefiningPool)
+                        .mapToInt(pool->fn.applyAsInt(p, pool)))
+                .sum() : 0;
+    }
+
+    private int getScore(Bracket.Pick pick, Pool pool) {
+        ScoreSystem scoreSystem = pool.getScoreSystem();
+        Level level = pick.getGameNode().getLevel();
+        return scoreSystem.getScore(level);
+    }
+
+    private int getPotentialPoints(Bracket.Pick pick, Pool pool) {
+        Seed seed = pick.getSeed();
+        Bracket bracket = pick.getBracket();
+        ScoreSystem scoreSystem = pool.getScoreSystem();
+        Level level = pick.getGameNode().getLevel();
+        return getPotentialPoints(scoreSystem, level, seed, bracket);
+    }
+
+    private int getPotentialPoints(ScoreSystem scoreSystem, Level level, Seed seed, Bracket bracket) {
+        return bracket.getTournament().getTournamentType().getGameNodes().stream()
+                .filter(n->n.getLevel().compareTo(level) > 0)
+                .map(n-> bracket.getPickFromMemory(n).filter(p -> p.getSeed() == seed))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .mapToInt(p->scoreSystem.getScore(p.getGameNode().getLevel()))
+                .sum();
     }
 }

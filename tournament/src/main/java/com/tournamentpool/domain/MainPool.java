@@ -230,9 +230,14 @@ public class MainPool implements Pool {
         return group;
     }
 
-    /* (non-Javadoc)
-     * @see com.tournamentpool.domain.IPool#hasBracket(com.tournamentpool.domain.Bracket)
-     */
+	@Override
+	public boolean isDefiningPool() {
+		return true;
+	}
+
+	/* (non-Javadoc)
+         * @see com.tournamentpool.domain.IPool#hasBracket(com.tournamentpool.domain.Bracket)
+         */
 	public boolean hasBracket(Bracket bracket) {
 		getBrackets();
 		return brackets.containsKey(bracket);

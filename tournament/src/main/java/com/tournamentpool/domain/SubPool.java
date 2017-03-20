@@ -44,7 +44,12 @@ public class SubPool implements Pool {
         return parentPool.getDefiningGroup();
     }
 
-    Pool getParentPool() {
+	@Override
+	public boolean isDefiningPool() {
+		return false;
+	}
+
+	Pool getParentPool() {
 		return parentPool;
 	}
 	

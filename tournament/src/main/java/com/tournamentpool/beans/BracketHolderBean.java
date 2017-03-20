@@ -158,7 +158,7 @@ public class BracketHolderBean {
         // do nothing, allow overrides
     }
 
-    public void setGames(Map<Game, Set<Seed>> games) {
+    public void setGames(Map<Game, Map<Seed, Set<Bracket.Pick>>> games) {
         this.games = games.entrySet().stream()
                 .map(GameBean::new)
                 .collect(Collectors.toList());
