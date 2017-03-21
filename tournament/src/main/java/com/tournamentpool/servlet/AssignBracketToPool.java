@@ -51,7 +51,7 @@ public class AssignBracketToPool extends RequiresLoginServlet {
 		User user = getUser(req, res);
 		try {
 			int id = Integer.parseInt(req.getParameter("pool"));
-			Pool pool = getApp().getUserManager().getPool(id);
+			Pool pool = getApp().getUserManager().getPoolObject(id);
 			if(pool == null) {
 				throw new IllegalArgumentException("Pool "+id+" is not valid");
 			}
@@ -85,7 +85,7 @@ public class AssignBracketToPool extends RequiresLoginServlet {
 			UserManager um = getApp().getUserManager();
 
 			int poolID = Integer.parseInt(req.getParameter("pool"));
-			Pool pool = um.getPool(poolID);
+			Pool pool = um.getCachedPool(poolID);
 
 			int bracketID = Integer.parseInt(req.getParameter("bracket"));
 			Bracket bracket = user.getBracket(bracketID);

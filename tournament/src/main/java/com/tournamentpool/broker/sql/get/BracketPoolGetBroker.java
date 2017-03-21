@@ -21,14 +21,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql.get;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.PreparedStatementBroker;
 import com.tournamentpool.domain.Bracket;
 import com.tournamentpool.domain.Pool;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * @author Avery J. Regier
@@ -53,7 +53,7 @@ public class BracketPoolGetBroker extends PreparedStatementBroker {
 	}
 
 	protected void processResults(ResultSet set) throws SQLException {
-		Pool pool = sp.getSingleton().getUserManager().getPool(poolOID);
+		Pool pool = sp.getSingleton().getUserManager().getCachedPool(poolOID);
 		while(set.next()) {
 			int bracketOID = set.getInt("BRACKET_ID");
 			String tieBreakerAnswer = set.getString("TIE_BREAKER_ANSWER");

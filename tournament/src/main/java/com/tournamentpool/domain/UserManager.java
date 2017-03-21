@@ -239,10 +239,10 @@ public class UserManager extends SingletonProviderHolder {
 	 * @param poolOID
 	 */
 	public Pool getPoolObject(int poolOID) {
-		Pool pool = getPool(poolOID);
+		Pool pool = getCachedPool(poolOID);
 		if(pool == null)  {
 			new PoolGetBroker(sp, poolOID).execute();
-			pool = getPool(poolOID);
+			pool = getCachedPool(poolOID);
 		}
 		return pool;
 	}
@@ -251,7 +251,7 @@ public class UserManager extends SingletonProviderHolder {
 	 * @param poolOID
 	 * @return
 	 */
-	public Pool getPool(int poolOID) {
+	public Pool getCachedPool(int poolOID) {
 		return pools.get(poolOID);
 	}
 

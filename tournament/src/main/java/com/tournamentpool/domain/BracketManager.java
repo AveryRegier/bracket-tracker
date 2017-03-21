@@ -27,14 +27,14 @@ import com.tournamentpool.broker.sql.get.BracketGetBroker;
 import com.tournamentpool.broker.sql.insert.BracketInsertBroker;
 import com.tournamentpool.broker.sql.update.BracketUpdateBroker;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Avery J. Regier
  */
 public class BracketManager extends SingletonProviderHolder {
-	private final Map<Integer, Bracket> brackets = new HashMap<>();
+	private final ConcurrentMap<Integer, Bracket> brackets = new ConcurrentHashMap<>();
 
 	/**
 	 * @param sp
@@ -50,8 +50,7 @@ public class BracketManager extends SingletonProviderHolder {
 		if(bracket == null) { 
 			Tournament tournament = sp.getSingleton().getTournamentManager().getTournament(tournamentOID);
 			User user = sp.getSingleton().getUserManager().getUserObject(playerOID);
-			bracket = new Bracket(bracketOID, user, tournament, name);
-			brackets.put(bracketOID, bracket);
+			bracket = brackets.putIfAbsent(bracketOID, new Bracket(bracketOID, user, tournament, name));
 		}
 		return bracket;
 	}

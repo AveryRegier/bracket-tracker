@@ -36,7 +36,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -208,7 +211,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
             poolBean.setGroup(new GroupBean(pool.getGroup()));
             poolBean.setIsChild(pool.getGroup() != pool.getDefiningGroup());
         }
-        poolBean.setEditable(pool.getOwner() == user && !hasAnyBrackets(pool));
+        poolBean.setEditable(pool.getOwner() == user && !pool.hasAnyBrackets());
         poolBean.setBracketLimit(pool.getBracketLimit());
         poolBean.setShowBracketsEarly(pool.isShowBracketsEarly() || pool.getTournament().isStarted());
 
@@ -216,10 +219,6 @@ public class MyTournamentServlet extends RequiresLoginServlet {
             poolBean.addEmail(bracket.getOwner().getEmail());
         }
         return poolBean;
-    }
-
-    private boolean hasAnyBrackets(Pool pool) {
-        return !pool.getBrackets().isEmpty();
     }
 
     private Pool lookupPool(HttpServletRequest req) {
@@ -259,10 +258,25 @@ public class MyTournamentServlet extends RequiresLoginServlet {
     }
 
     private Map<Game, Map<Seed, Set<Bracket.Pick>>> getInProgressGamesWithPersonalAnalyses(User user, Filter filter) {
-        return getRecentGames(filter)
-                .collect(Collectors.toMap(
-                        Function.identity(),
-                        g -> getPicks(user, g)));
+        TreeMap<Game, Map<Seed, Set<Bracket.Pick>>> map = new TreeMap<>(Comparator.comparing(Game::getDate));
+        getRecentGames(filter).forEachOrdered(g->map.put(g, getPicks(user, g)));
+        return map;
+    }
+
+    private static <T> BinaryOperator<T> throwingMerger() {
+        return (u, v) -> {
+            throw new IllegalStateException(String.format("Duplicate key %s", u));
+        };
+    }
+
+    public static <T, K, U, M extends Map<K, U>> Collector<T, ?, M> toMap(Function<? super T, ? extends K> keyMapper,
+                                                                          Function<? super T, ? extends U> valueMapper,
+                                                                          Supplier<M> mapSupplier) {
+        return Collectors.toMap(keyMapper, valueMapper, throwingMerger(), mapSupplier);
+    }
+
+    private BinaryOperator<Game> pickFirstMerger() {
+        return (a,b)->a;
     }
 
     private Stream<Game> getRecentGames(Filter filter) {
@@ -282,15 +296,6 @@ public class MyTournamentServlet extends RequiresLoginServlet {
         }
         System.out.println("Optional is empty");
         return Stream.empty();
-    }
-
-    private Set<Seed> getPickedWinners(User user, Game g) {
-        return streamPicksForGame(user, g)
-                .map(Bracket.Pick::getWinner)
-                .flatMap(this::asStream)
-                .map(g::getSeed)
-                .peek(s->System.out.println(s.getSeedNo()+" is winner: "+s.getOid()))
-                .collect(Collectors.toSet());
     }
 
     private Map<Seed, Set<Bracket.Pick>> getPicks(User user, Game g) {

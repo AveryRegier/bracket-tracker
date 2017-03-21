@@ -129,4 +129,8 @@ public interface Pool extends Comparable<Pool> {
 	Collection<PoolBracket> getRankedBrackets(Collection<Bracket> brackets, Group group);
 
 	boolean isDefiningPool();
+
+	default boolean hasAnyBrackets() {
+        return !getBrackets().isEmpty();
+    }
 }
