@@ -73,7 +73,6 @@ public class UserManager extends SingletonProviderHolder {
 		if(user == null)  {
 			new PlayerGetByLoginBroker(sp, userID).execute();
 			user = users.get(userID);
-			if(user != null) fillUser(user);
 		}
 		return user != null && user.getEmail() != null;
 	}
@@ -90,7 +89,6 @@ public class UserManager extends SingletonProviderHolder {
 				boolean checkForAdmin = players.size() == 0;
 				new PlayerInsertBroker(sp, userID, password, name, email).execute();
 				User user = users.get(userID);
-				fillUser(user);
 				if(checkForAdmin && user.getOID() == 1) {
 					// make this user an admin
 					new SiteAdminUpdateBroker(sp, user, true).execute();
@@ -107,7 +105,6 @@ public class UserManager extends SingletonProviderHolder {
 			new PlayerGetByLoginBroker(sp, userID).execute();
 			user = users.get(userID);
 			if(user == null) throw new IllegalArgumentException("User "+userID+" does not appear to exist.");
-			fillUser(user);
 		}
 		return user;
 	}
@@ -119,7 +116,6 @@ public class UserManager extends SingletonProviderHolder {
 			new PlayerGetByOIDBroker(sp, playerOID).execute();
 			user = players.get(oid);
 			if(user == null) throw new IllegalArgumentException("User "+playerOID+" does not appear to exist.");
-			fillUser(user);
 		}
 		return user;
 	}
@@ -128,8 +124,7 @@ public class UserManager extends SingletonProviderHolder {
 	 * @param user
 	 */
 	private void fillUser(User user) {
-		new PlayerGroupsGetBroker(sp, user.getOID()).execute();
-		new PlayerBracketsGetBroker(sp, user.getOID()).execute();
+		user.fillUser(this.sp);
 	}
 
 	/**
@@ -153,6 +148,7 @@ public class UserManager extends SingletonProviderHolder {
 		User user = new User(userid, id, name, pw, siteAdmin, email);
 		users.put(userid, user);
 		players.put(id, user);
+		fillUser(user);
 	}
 
 	/**
@@ -305,7 +301,6 @@ public class UserManager extends SingletonProviderHolder {
 			if(user == null)  {
 				new PlayerGetByOIDBroker(sp, oid).execute();
 				user = players.get(oid);
-				if(user != null) fillUser(user);
 			}
 			if(user != null) these.add(user);
 		}

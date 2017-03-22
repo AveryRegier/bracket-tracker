@@ -50,7 +50,11 @@ public class BracketManager extends SingletonProviderHolder {
 		if(bracket == null) { 
 			Tournament tournament = sp.getSingleton().getTournamentManager().getTournament(tournamentOID);
 			User user = sp.getSingleton().getUserManager().getUserObject(playerOID);
-			bracket = brackets.putIfAbsent(bracketOID, new Bracket(bracketOID, user, tournament, name));
+			bracket = new Bracket(bracketOID, user, tournament, name);
+			Bracket old = brackets.putIfAbsent(bracketOID, bracket);
+			if(old != null) {
+				bracket = old;
+			}
 		}
 		return bracket;
 	}

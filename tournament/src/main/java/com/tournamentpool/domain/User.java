@@ -21,6 +21,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
+import com.tournamentpool.application.SingletonProvider;
+import com.tournamentpool.broker.sql.get.PlayerBracketsGetBroker;
+import com.tournamentpool.broker.sql.get.PlayerGroupsGetBroker;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
@@ -63,13 +67,13 @@ public class User {
 		return name;
 	}
 
+
 	String checkPassword(String pw) {
 		if(this.pw.equals(pw)) {
 			return resetAuth();
 		}
 		return null;
 	}
-
 
 	private String resetAuth() {
 		byte[] bytes = new byte[10];
@@ -101,7 +105,7 @@ public class User {
 	public Collection<Group> getGroups() {
 		return Collections.unmodifiableCollection(groups);
 	}
-	
+
 	public Group getGroupInHierarchy(Group parent) {
 		List<Group> matches = groups.stream()
 				.filter(g -> g.isInHierarchy(parent))
@@ -120,7 +124,7 @@ public class User {
 		for(Group group: groups) {
 			do {
 				allGroups.add(group);
-				group = group.getParent();				
+				group = group.getParent();
 			} while(group != null);
 		}
 		return allGroups;
@@ -155,6 +159,7 @@ public class User {
 		return siteAdmin;
 	}
 
+
 	public void setSiteAdmin(boolean siteAdmin) {
 		this.siteAdmin = siteAdmin;
 	}
@@ -164,16 +169,15 @@ public class User {
 		return email;
 	}
 
-
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
 
 	void setPassword(String newPassword) {
 		this.pw = newPassword;
 		resetAuth();
 	}
-
 
 	public String getAuth() {
 		if(auth == null) return resetAuth();
@@ -198,6 +202,10 @@ public class User {
 
     public boolean hasBrackets() {
         return !brackets.isEmpty();
+    }
+    void fillUser(SingletonProvider sp) {
+		new PlayerGroupsGetBroker(sp, getOID()).execute();
+		new PlayerBracketsGetBroker(sp, getOID()).execute();
     }
 
     // what organizations does the user belong to?

@@ -26,6 +26,7 @@ import com.tournamentpool.broker.sql.delete.GroupDeleteBroker;
 import com.tournamentpool.broker.sql.delete.GroupPlayerDeleteBroker;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * @author avery
@@ -39,7 +40,7 @@ public class Group implements Comparable<Group> {
 	private final int adminOID;
 	private int invitationCode;
 	private final Group parent;
-	private final TreeSet<Group> children = new TreeSet<>();
+	private final SortedSet<Group> children = new ConcurrentSkipListSet<>();
 	
 	/**
 	 * @param groupOID
