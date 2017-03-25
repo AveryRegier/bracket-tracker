@@ -10,7 +10,7 @@ import java.util.function.ToIntBiFunction;
  * Created by avery on 3/18/17.
  */
 public class ScoreBean {
-    private int seed;
+    private Seed seed;
     private TeamBean team;
     private Integer score;
     private final boolean picked;
@@ -19,7 +19,7 @@ public class ScoreBean {
     private boolean tied = false;
 
     public ScoreBean(Seed seed, Team team, Integer score, Set<Bracket.Pick> picks) {
-        this.seed = seed.getSeedNo();
+        this.seed = seed;
         this.team = new TeamBean(team);
         this.score = score;
         this.picked = picks != null && !picks.isEmpty();
@@ -27,7 +27,7 @@ public class ScoreBean {
     }
 
     public int getSeed() {
-        return seed;
+        return seed.getSeedNo();
     }
 
     public TeamBean getTeam() {
@@ -73,7 +73,8 @@ public class ScoreBean {
 
     private int sumPoints(ToIntBiFunction<Bracket.Pick, Pool> fn) {
         return this.picks != null ? this.picks.stream()
-                .flatMapToInt(p -> p.getBracket().getPools().stream()
+                .distinct()
+                .flatMapToInt(p -> p.getBracket().getPoolStream()
                         .filter(Pool::isDefiningPool)
                         .mapToInt(pool->fn.applyAsInt(p, pool)))
                 .sum() : 0;
@@ -86,14 +87,13 @@ public class ScoreBean {
     }
 
     private int getPotentialPoints(Bracket.Pick pick, Pool pool) {
-        Seed seed = pick.getSeed();
         Bracket bracket = pick.getBracket();
         ScoreSystem scoreSystem = pool.getScoreSystem();
         Level level = pick.getGameNode().getLevel();
-        return getPotentialPoints(scoreSystem, level, seed, bracket);
+        return getPotentialPoints(scoreSystem, level, bracket);
     }
 
-    private int getPotentialPoints(ScoreSystem scoreSystem, Level level, Seed seed, Bracket bracket) {
+    private int getPotentialPoints(ScoreSystem scoreSystem, Level level, Bracket bracket) {
         return bracket.getTournament().getTournamentType().getGameNodes().stream()
                 .filter(n->n.getLevel().compareTo(level) > 0)
                 .map(n-> bracket.getPickFromMemory(n).filter(p -> p.getSeed() == seed))

@@ -216,13 +216,14 @@ public class Bracket implements Reference {
 	public boolean isInPool() {
 		// assuming all brackets are already loaded in all relevant pools
         return getPoolStream()
-                .anyMatch(p -> p.hasBracket(this));
+                .findAny().isPresent();
 	}
 
-    private Stream<Pool> getPoolStream() {
+    public Stream<Pool> getPoolStream() {
         return getOwner().getGroups().stream()
 				.flatMap(g -> g.getPools().stream())
-				.filter(pool -> pool.getTournament() == getTournament());
+				.filter(pool -> pool.getTournament() == getTournament())
+				.filter(pool -> pool.hasBracket(this));
     }
 
     public boolean mayDelete(User user) {
@@ -243,7 +244,7 @@ public class Bracket implements Reference {
 
 	public Collection<Pool> getPools() {
 		return getPoolStream()
-                .filter(pool -> pool.hasBracket(this))
+
                 .collect(Collectors.toCollection(TreeSet::new));
 	}
 

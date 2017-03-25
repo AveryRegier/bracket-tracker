@@ -314,6 +314,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
                 .map(b -> getGameNodeForBracket(b, g)
                         .flatMap((game) -> b.getPick(getApp().getSingletonProvider(), game)))
                 .flatMap(this::asStream)
+                .filter(p->g.isPlaying(p.getSeed()))
                 .peek(p->System.out.println("found a pick"));
     }
 

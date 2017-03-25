@@ -153,4 +153,10 @@ public class Game implements GameInfo, HasWinner {
 		));
 	}
 
+	public boolean isPlaying(Seed seed) {
+		return seed != null &&
+				getGameNode().getFeeders().stream()
+					.map(this::getSeed)
+					.anyMatch(seed::equals);
+	}
 }
