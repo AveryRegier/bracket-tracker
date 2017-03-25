@@ -259,7 +259,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
 
     private Map<Game, Map<Seed, Set<Bracket.Pick>>> getInProgressGamesWithPersonalAnalyses(User user, Filter filter) {
         TreeMap<Game, Map<Seed, Set<Bracket.Pick>>> map = new TreeMap<>(Comparator.comparing(Game::getDate));
-        getRecentGames(filter).forEachOrdered(g->map.put(g, getPicks(user, g)));
+        getRecentGames(filter).forEachOrdered(g->map.put(g, getPicks(user, g, filter)));
         return map;
     }
 
@@ -298,15 +298,15 @@ public class MyTournamentServlet extends RequiresLoginServlet {
         return Stream.empty();
     }
 
-    private Map<Seed, Set<Bracket.Pick>> getPicks(User user, Game g) {
-        return streamPicksForGame(user, g)
-                .filter(p->p.getWinner().isPresent())
+    private Map<Seed, Set<Bracket.Pick>> getPicks(User user, Game g, Filter filter) {
+        return streamPicksForGame(user, g, filter)
                 .collect(Collectors.groupingBy(p->p.getWinner().map(g::getSeed).get(),
                         Collectors.mapping(p->p, Collectors.toSet())));
     }
 
-    private Stream<Bracket.Pick> streamPicksForGame(User user, Game g) {
+    private Stream<Bracket.Pick> streamPicksForGame(User user, Game g, Filter filter) {
         return user.getBrackets().stream()
+                .filter(filter::pass)
                 .peek(b->System.out.println(b.getID()+" is under consideration"))
                 .filter(b->b.getTournament().getIdentity() == g.getTournament().getIdentity())
                 .filter(Bracket::isInPool)
@@ -314,6 +314,7 @@ public class MyTournamentServlet extends RequiresLoginServlet {
                 .map(b -> getGameNodeForBracket(b, g)
                         .flatMap((game) -> b.getPick(getApp().getSingletonProvider(), game)))
                 .flatMap(this::asStream)
+                .filter(p->p.getWinner().isPresent())
                 .filter(p->g.isPlaying(p.getSeed()))
                 .peek(p->System.out.println("found a pick"));
     }
