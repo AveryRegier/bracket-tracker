@@ -31,9 +31,9 @@ import com.tournamentpool.broker.sql.get.BracketPoolGetBroker;
 import com.tournamentpool.domain.ScoreSystem.Score;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -140,7 +140,7 @@ public class MainPool implements Pool {
 
     private void loadBrackets() {
         if(brackets == null) {
-            brackets = new HashMap<>();
+            brackets = new ConcurrentHashMap<>();
             new BracketPoolGetBroker(sp, oid).execute();
         }
     }
