@@ -106,6 +106,6 @@ public class BracketVisitor extends GameVisitorCommon<BracketVisitor.Node> {
 	}
 
 	public Optional<Opponent> getWinner(GameNode node) {
-        return bracket.getPickFromMemory(node).map(Pick::getWinner).orElse(Optional.empty());
+        return bracket.getPickFromMemory(node).flatMap(Pick::getWinner);
 	}
 }

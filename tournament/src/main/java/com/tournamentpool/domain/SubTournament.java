@@ -22,6 +22,7 @@ import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.delete.TournamentDeleteBroker;
 import com.tournamentpool.broker.sql.status.TournamentBracketStatusBroker;
 import com.tournamentpool.broker.sql.status.TournamentPoolStatusBroker;
+import com.tournamentpool.util.Utilities;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -208,8 +209,7 @@ class SubTournament implements Tournament {
 		return parent.allGames()
 				.map(Game::getGameNode)
 				.map(this::getGame)
-				.filter(Optional::isPresent)
-				.map(Optional::get);
+				.flatMap(Utilities::asStream);
 	}
 
 	@Override

@@ -98,19 +98,17 @@ public class Tournament extends RequiresLoginServlet {
 
                     @Override
                     public String getGameID() {
-                        return game.isPresent() ? game.get().getGameID() : null;
+                        return game.map(Game::getGameID).orElse(null);
                     }
 
                     @Override
                     public Integer getScore(Opponent opponent) {
-                        return game.isPresent() ? game.get().getScore(opponent) : null;
+                        return game.map(game -> game.getScore(opponent)).orElse(null);
                     }
 
                     @Override
                     public Date getDate() {
-                        return game.isPresent() ?
-                                game.get().getDate() :
-                                getWinner().isPresent() ? new Date() : null;
+                        return game.map(Game::getDate).orElseGet(() -> getWinner().isPresent() ? new Date() : null);
                     }
 
                     @Override

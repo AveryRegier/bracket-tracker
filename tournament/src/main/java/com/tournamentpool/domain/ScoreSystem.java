@@ -297,8 +297,7 @@ public class ScoreSystem implements Reference {
 	}
 
     private boolean isPlayed(Tournament tournament, GameNode gameNode) {
-        Optional<Game> game = tournament.getGame(gameNode);
-        return game.isPresent() && game.get().getWinner().isPresent();
+        return tournament.getGame(gameNode).flatMap(Game::getWinner).isPresent();
     }
 
     private boolean isPickStillAlive(Bracket bracket, TournamentVisitor tournamentVisitor, Pick pick, GameNode gameNode) {

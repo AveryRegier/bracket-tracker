@@ -1,8 +1,8 @@
 package com.tournamentpool.beans;
 
 import com.tournamentpool.domain.*;
+import com.tournamentpool.util.Utilities;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.ToIntBiFunction;
 
@@ -97,8 +97,7 @@ public class ScoreBean {
         return bracket.getTournament().getTournamentType().getGameNodes().stream()
                 .filter(n->n.getLevel().compareTo(level) > 0)
                 .map(n-> bracket.getPickFromMemory(n).filter(p -> p.getSeed() == seed))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .flatMap(Utilities::asStream)
                 .mapToInt(p->scoreSystem.getScore(p.getGameNode().getLevel()))
                 .sum();
     }

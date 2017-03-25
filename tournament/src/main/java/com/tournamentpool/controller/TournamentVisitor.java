@@ -103,6 +103,6 @@ public class TournamentVisitor extends GameVisitorCommon<TournamentVisitor.Node>
 	}
 	
 	public Optional<Opponent> getWinner(GameNode node) {
-		return tournament.getGame(node).map(Game::getWinner).orElse(Optional.empty());
+		return tournament.getGame(node).flatMap(Game::getWinner);
 	}
 }
