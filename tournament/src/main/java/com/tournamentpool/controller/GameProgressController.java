@@ -62,7 +62,7 @@ public class GameProgressController extends TournamentController {
                 .filter(b->b.getTournament().getIdentity() == g.getTournament().getIdentity())
                 .filter(Bracket::isInPool)
                 .map(b -> getGameNodeForBracket(b, g)
-                        .flatMap((game) -> b.getPick(getApp().getSingletonProvider(), game)))
+                        .flatMap((game) -> b.getPick(sp, game)))
                 .flatMap(Utilities::asStream)
                 .filter(p->p.getWinner().isPresent())
                 .filter(p->g.isPlaying(p.getSeed()));
