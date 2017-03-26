@@ -120,6 +120,9 @@ public class MainPool implements Pool {
 	 * @see com.tournamentpool.domain.IPool#loadBracket(com.tournamentpool.domain.Bracket, java.lang.String)
 	 */
 	public void loadBracket(Bracket bracket, String tieBreakerAnswer2) {
+		if(tieBreakerAnswer2 == null) {
+			tieBreakerAnswer2 = "";
+		}
 		brackets.put(bracket, tieBreakerAnswer2);
 	}
 
