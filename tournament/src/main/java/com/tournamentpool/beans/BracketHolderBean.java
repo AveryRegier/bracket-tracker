@@ -159,10 +159,14 @@ public class BracketHolderBean {
     }
 
     public void setGames(Map<Game, Map<Seed, Set<Bracket.Pick>>> games) {
-        this.games = games.entrySet().stream()
-                .filter(k->k.getKey().hasInformation())
-                .map(GameBean::new)
-                .collect(Collectors.toList());
+	    try {
+            this.games = games.entrySet().stream()
+                    .filter(k -> k.getKey().hasInformation())
+                    .map(GameBean::new)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+	        e.printStackTrace();
+        }
     }
 
     public List<GameBean> getGames() {
