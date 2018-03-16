@@ -216,23 +216,36 @@ public class AutoUpdateController extends TournamentController {
 	private ScoreSource loadParser(League sourceLeague) throws ClassNotFoundException,
 			InstantiationException, IllegalAccessException, MalformedURLException {
         String prefix = "scoreSource." + sourceLeague.getLeagueID()+".";
-        URL[] urls = new URL[] {new File(getProperty(prefix + "classLocation")).toURI().toURL()};
-		URLClassLoader loader = new URLClassLoader(urls, getClass().getClassLoader());
-		String className = getProperty(prefix+"class");
-		Class<?> clazz = Class.forName(className, true, loader);
-        try {
-            Constructor<?> constructor = clazz.getConstructor(Properties.class);
+		Class<?> clazz = findClass(prefix);
+		return (ScoreSource) createObject(prefix, clazz);
+    }
+
+	private <T> T createObject(String prefix, Class<T> clazz) throws InstantiationException, IllegalAccessException {
+		try {
+            Constructor<T> constructor = clazz.getConstructor(Properties.class);
             if(constructor != null) {
-                return (ScoreSource) constructor.newInstance(getSubSet(prefix));
+                return constructor.newInstance(getSubSet(prefix));
             }
         } catch(ReflectiveOperationException e) {
             e.printStackTrace();
             // fall through
         }
-        return (ScoreSource) clazz.newInstance();
-    }
+		return clazz.newInstance();
+	}
 
-    private Properties getSubSet(String prefix) {
+	private Class<?> findClass(String prefix) throws MalformedURLException, ClassNotFoundException {
+		String className = getProperty(prefix + "class");
+		String classLocation = getProperty(prefix + "classLocation");Class<?> clazz;
+		if(classLocation != null) {
+			URL[] urls = new URL[]{new File(classLocation).toURI().toURL()};
+			URLClassLoader loader = new URLClassLoader(urls, getClass().getClassLoader());
+			return Class.forName(className, true, loader);
+		} else {
+			return Class.forName(className);
+		}
+	}
+
+	private Properties getSubSet(String prefix) {
         Properties config = getConfig();
         Properties subConfig = new Properties();
         config.stringPropertyNames().stream()
