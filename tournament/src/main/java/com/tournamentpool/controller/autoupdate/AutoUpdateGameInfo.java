@@ -46,11 +46,11 @@ final class AutoUpdateGameInfo implements GameInfo {
 			for (Entry<Opponent, Team> entry : teams.entrySet()) {
 				Team team = entry.getValue();
 				if(team.anyNamesMatch(winnerTeamName)) {
-					System.out.println("Winner of "+game+" is "+team.getName());
+					System.out.println("Winner of "+game.getGameID()+" is "+team.getName());
 					return Optional.of(entry.getKey());
 				}
 			}
-			System.out.println("No winner found for "+game);
+			System.out.println("No winner found for "+game.getGameID());
 		}
 		return Optional.empty();
 	}

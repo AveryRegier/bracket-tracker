@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 final class AutoUpdateWinnerSource implements WinnerSource {
 	private final MainTournament mainTournament;
@@ -94,16 +95,22 @@ final class AutoUpdateWinnerSource implements WinnerSource {
 	}
 
 	private boolean verifySameGame(LiveGame game, Map<Opponent, Team> teams) {
-		System.out.println("Evaluating game "+game);
+		System.out.println("Evaluating game "+teams.values().stream()
+				.flatMap(t->t.getNames().stream())
+				.collect(Collectors.joining(", ")));
 		for (Team team : teams.values()) {
 			if(anyNamesMatch(game, team)) {
 				System.out.println("Team "+team.getName()+" matches!");
 			} else {
-				System.out.println("Team "+team.getName()+" does not match.");
+				System.out.println("Team "+team.getName()+" does not match. " + getFeedNames(game));
 				return false;
 			}
 		}
 		return true;
+	}
+
+	private String getFeedNames(LiveGame game) {
+		return game.getPlayerScores().keySet().stream().collect(Collectors.joining(", "));
 	}
 
 	private boolean anyNamesMatch(LiveGame game, Team team) {

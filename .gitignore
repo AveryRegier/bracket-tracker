@@ -11,5 +11,5 @@ derby.log
 sampleDB1s/
 tournament/TOURNAMENT/
 tournament/sampleDB/
-
+tournament/src/main/java/scoresource/**
 

@@ -207,6 +207,7 @@ public class AutoUpdateController extends TournamentController {
 			//if(game.isFinal()) {
 				for (String team : game.getPlayerScores().keySet()) {
 					teamGameMap.put(team.toUpperCase(), game);
+					System.out.println("Added "+team.toUpperCase()+ " for "+game.getGameID());
 				}
 			//}
 		}
