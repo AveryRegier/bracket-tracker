@@ -55,7 +55,6 @@ input.common {
     width: 20%;
     min-height: 100%;
     text-align: left;
-
 }
 
 .main {
@@ -95,4 +94,5 @@ input.common {
     white-space: nowrap;
     transform: rotate(-35deg);
     padding-left: 0px;
+    width: 20px;
 }

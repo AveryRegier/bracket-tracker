@@ -3,7 +3,7 @@
     <c:forEach var="game" items="${Player.games}">
     <table class="border-table" cellpadding="0" cellspacing="0" border="0" style="display: inline-block">
     <tr><td>
-        <table class="content-table" cellpadding="5" cellspacing="1" border="0">
+        <table class="content-table" cellpadding="5" cellspacing="1" border="0" style="table-layout: fixed; width: 100%">
             <tr class="header-row">
                 <td><c:out value="${game.status}"/></td>
                 <td class="number-header">Score</td>
