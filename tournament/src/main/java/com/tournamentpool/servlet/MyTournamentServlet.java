@@ -1,5 +1,5 @@
 /* 
-Copyright (C) 2003-2013 Avery J. Regier.
+Copyright (C) 2003-2018 Avery J. Regier.
 
 This file is part of the Tournament Pool and Bracket Tracker.
 
@@ -183,6 +183,10 @@ public class MyTournamentServlet extends RequiresLoginServlet {
         Pool pool = lookupPool(req);
         PoolBean poolBean = mapPoolBean(user, pool);
         req.setAttribute("Pool", poolBean);
+        Filter filter = new TournamentFilter(pool.getTournament());
+        PlayerBean bean = new PlayerBean(user.getOID(), user.getName(), user.isSiteAdmin());
+        addInProgressGames(user, filter, bean);
+        req.setAttribute("Player", bean);
         if ("csv".equals(req.getParameter("output"))) {
             resp.setContentType("text/csv");
             produceJSPPage(req, resp, "PoolCSVJSP");
@@ -248,13 +252,17 @@ public class MyTournamentServlet extends RequiresLoginServlet {
         bean.setGroups(user.getGroupsInHierarchy(), filter, user);
         bean.setBrackets(user.getBrackets(), filter, user);
 
+        addInProgressGames(user, filter, bean);
+
+        req.setAttribute("Player", bean);
+        produceJSPPage(req, resp, "MyTournamentJSP");
+    }
+
+    private void addInProgressGames(User user, Filter filter, PlayerBean bean) {
         if (filter.isCurrent()) {
             bean.setGames(new GameProgressController(getApp().getSingletonProvider())
                     .getInProgressGamesWithPersonalAnalyses(user, filter));
         }
-
-        req.setAttribute("Player", bean);
-        produceJSPPage(req, resp, "MyTournamentJSP");
     }
 
     private void addTournamentBeans(HttpServletRequest req, User user) {

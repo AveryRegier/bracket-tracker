@@ -1,5 +1,5 @@
 <%--
-Copyright (C) 2003-2014 Avery J. Regier.
+Copyright (C) 2003-2018 Avery J. Regier.
 
 This file is part of the Tournament Pool and Bracket Tracker.
 
@@ -35,10 +35,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		<a href="<c:out value="${config.MyTournamentURL}"/>?tournament=<c:out value="${tournament.id}"/><c:if test="${tournament.archived}">&archives=true</c:if>">
 			<c:out value="${tournament.name}"/></a></p></c:if>
 	</c:forEach>
+    <jsp:include page="game-progress.jsp"></jsp:include>
 </div>
 
 <div class="main">
-    <jsp:include page="game-progress.jsp"></jsp:include>
     <div class="box">
         <h2>Brackets</h2>
         <div class="inner-content">

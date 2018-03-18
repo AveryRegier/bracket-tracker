@@ -1,5 +1,5 @@
 <%--
-Copyright (C) 2003-2013 Avery J. Regier.
+Copyright (C) 2003-2018 Avery J. Regier.
 
 This file is part of the Tournament Pool and Bracket Tracker.
 
@@ -39,7 +39,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 </form>
 <BR>
 <blockquote><pre>
-Tournament Pool and Bracket Tracker version 0.7.1-SNAPSHOT, Copyright (C) 2003-2017 Avery J. Regier
+Tournament Pool and Bracket Tracker version 0.7.1-SNAPSHOT, Copyright (C) 2003-2018 Avery J. Regier
 Tournament Pool and Bracket Tracker comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it under certain conditions.
 For details see the <a href="/LICENSE">license</a>.

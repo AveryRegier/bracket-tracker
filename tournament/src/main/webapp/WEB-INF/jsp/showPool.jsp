@@ -29,6 +29,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <jsp:include page="header.jsp"/>
 <!--Round Table-->
 
+<div class="sidebar">
+    <jsp:include page="game-progress.jsp"></jsp:include>
+</div>
+
 <div class="main">
     <div class="box">
         <h2><c:out value="${Pool.name}"/> Pool Detail</h2>

@@ -47,7 +47,7 @@ public class GameProgressController extends TournamentController {
                 .map(Game::getIdentity)
                 .flatMap(Utilities::asStream)
                 .distinct()
-                .sorted(Comparator.comparing(Game::getDate));
+                .sorted(Comparator.comparing(Game::getDate).reversed());
     }
 
     private Map<Seed, Set<Bracket.Pick>> getPicks(User user, Game g, Filter filter) {
