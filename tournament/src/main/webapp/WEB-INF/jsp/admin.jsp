@@ -43,6 +43,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		<td width="0%" background="/images/boxleft.gif"><img src="/images/boxleft.gif" alt="" width="8" height="8" border="0"></td>
 		<td width="100%">
 			<img src="/images/spacer.gif" width="143" height="5" border="0" alt=""><br>
+            <a href="?request=reset">Reload from database</a><br/>
+            <a href="?request=update">Force game score update</a>
+			<img src="/images/spacer.gif" width="143" height="5" border="0" alt=""><br>
 			<!--Content Table-->
 			
 			<table class="border-table" cellpadding="0" cellspacing="0" border="0">

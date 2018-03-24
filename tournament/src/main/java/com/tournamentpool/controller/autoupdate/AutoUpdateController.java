@@ -292,4 +292,8 @@ public class AutoUpdateController extends TournamentController {
 		}
 	}
 
+    public void update() {
+		cancel();
+		init();
+    }
 }

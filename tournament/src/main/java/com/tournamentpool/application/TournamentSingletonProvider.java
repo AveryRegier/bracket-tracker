@@ -43,4 +43,9 @@ public class TournamentSingletonProvider implements SingletonProvider, ServletCo
 		app.getAutoUpdateController().cancel();
 		app = null;
 	}
+
+	public void reset() {
+		app.getAutoUpdateController().cancel();
+		app = new TournamentApp(this);
+	}
 }

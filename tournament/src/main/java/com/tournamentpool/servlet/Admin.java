@@ -21,6 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.servlet;
 
+import com.tournamentpool.application.TournamentSingletonProvider;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -77,6 +79,10 @@ public class Admin extends RequiresLoginServlet {
 			property = createProperties.get(type);
 		} else if("list".equals(request)){
 			property = listProperties.get(type);
+		} else if("reset".equals(request)) {
+			((TournamentSingletonProvider)getServletContext().getAttribute("app")).reset();
+		} else if("update".equals(request)) {
+			getApp().getAutoUpdateController().update();
 		}
 		
 		String url = property != null ? getApp().getConfig().getProperty(property) : null;
