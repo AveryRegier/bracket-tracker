@@ -30,6 +30,8 @@ import com.tournamentpool.broker.sql.insert.GameInsertBroker;
 import com.tournamentpool.broker.sql.insert.GameScoreInsertBroker;
 import com.tournamentpool.broker.sql.status.TournamentBracketStatusBroker;
 import com.tournamentpool.broker.sql.status.TournamentPoolStatusBroker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -41,6 +43,8 @@ import java.util.stream.Stream;
  * @author avery
  */
 public class MainTournament implements Tournament {
+    private final static Logger logger = LoggerFactory.getLogger(MainTournament.class);
+
     private final Integer oid;
     private String name;
     private final TournamentType tournamentType;
@@ -354,14 +358,14 @@ public class MainTournament implements Tournament {
                 Date gameDate = game.getDate();
                 if (gameDate != null && !game.getWinner().isPresent()) {
                     if (toReturn == null || gameDate.before(toReturn)) {
-                        System.out.println("Found earlier: " + gameDate);
+                        logger.info("Found earlier: " + gameDate);
                         toReturn = gameDate;
                     }
                 }
             }
         }
         if (toReturn == null) {
-            System.out.println("Using tournament start time");
+            logger.info("Using tournament start time");
         }
 
         return toReturn != null ? toReturn : getStartTime();

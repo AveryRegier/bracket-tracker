@@ -26,6 +26,8 @@ import com.tournamentpool.broker.sql.delete.BracketDeleteBroker;
 import com.tournamentpool.broker.sql.get.PickGetBroker;
 import com.tournamentpool.broker.sql.insert.PickInsertBroker;
 import com.tournamentpool.domain.GameNode.Feeder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utility.domain.Reference;
 
 import java.util.*;
@@ -36,6 +38,8 @@ import java.util.stream.Stream;
  * @author avery
  */
 public class Bracket implements Reference {
+	private final static Logger logger = LoggerFactory.getLogger(Bracket.class);
+	
     public class Pick implements HasWinner {
 		private final GameNode game;
 		private Opponent winner;
@@ -191,8 +195,8 @@ public class Bracket implements Reference {
 
 	public Optional<Pick> getPickFromMemory(GameNode game) {
 		if(picks == null || game == null) {
-			if(picks == null) System.out.println("picks not loaded");
-			if(game == null) System.out.println("bad node");
+			if(picks == null) logger.info("picks not loaded");
+			if(game == null) logger.info("bad node");
 			return Optional.empty();
 		}
 		return Optional.ofNullable(picks.get(game));

@@ -23,6 +23,8 @@ package com.tournamentpool.broker.sql.get;
 
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.PreparedStatementBroker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,6 +34,7 @@ import java.sql.SQLException;
  * @author Avery J. Regier
  */
 public class GroupGetBroker extends PreparedStatementBroker {
+	private final static Logger logger = LoggerFactory.getLogger(GroupGetBroker.class);
 	int groupOID;
 	
 	/**
@@ -59,7 +62,7 @@ public class GroupGetBroker extends PreparedStatementBroker {
 			try {
 				parentGroupID = set.getInt("PARENT_GROUP_ID");
 			} catch (SQLException e) {
-				System.out.println("Parent Groups not supported in the database.  Run the update SQL");
+				logger.warn("Parent Groups not supported in the database.  Run the update SQL");
 			}
 			sp.getSingleton().getUserManager()
 				.loadGroup(getGroupOID(set), name, adminID, invitationCode, parentGroupID);

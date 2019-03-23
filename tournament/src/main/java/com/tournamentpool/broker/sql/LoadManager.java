@@ -21,6 +21,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -29,6 +32,7 @@ import java.util.Set;
  * @author Avery J. Regier
  */
 public class LoadManager {
+	private final static Logger logger = LoggerFactory.getLogger(LoadManager.class);
 	private final Set<LoadBroker> loaders = new HashSet<>();
 	private final Set<LoadBroker> started = new HashSet<>();
 
@@ -64,7 +68,7 @@ public class LoadManager {
 				wait(1000);
 			} catch (InterruptedException e) {}
 		} 
-		System.out.print("Load "+(error? "failed." : "successful."));
+		logger.info("Load "+(error? "failed." : "successful."));
 	}
 
 	/**

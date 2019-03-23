@@ -23,6 +23,8 @@ import com.tournamentpool.controller.TournamentController;
 import com.tournamentpool.domain.League;
 import com.tournamentpool.domain.MainTournament;
 import com.tournamentpool.domain.Tournament;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utility.StringUtil;
 
 import java.io.File;
@@ -36,6 +38,7 @@ import static utility.StringUtil.killWhitespace;
 
 
 public class AutoUpdateController extends TournamentController {
+	private final static Logger logger = LoggerFactory.getLogger(AutoUpdateController.class);
 
 	private final List<Timer> timers= new ArrayList<>();
 
@@ -56,7 +59,7 @@ public class AutoUpdateController extends TournamentController {
 				}
 			}
 		} else {
-			System.out.println("No leagues to auto update.");
+			logger.info("No leagues to auto update.");
 		}
 	}
 
@@ -67,7 +70,7 @@ public class AutoUpdateController extends TournamentController {
 		Date firstTime = new Date();
 		if(forcePause) {
 			firstTime = new Date(firstTime.getTime()+period);
-			System.out.println("Next try at "+firstTime);
+			logger.info("Next try at "+firstTime);
 		}
 		timer.schedule(new TimerTask() {
 			private Date last;
@@ -78,10 +81,10 @@ public class AutoUpdateController extends TournamentController {
 					last = start;
 					startAutoUpdateTimer(sourceLeague, start);
 					this.cancel(); // we no longer need this timer
-					System.out.println(sourceLeague.getID()+" wait for tournament timer cancelled.");
+					logger.info(sourceLeague.getID()+" wait for tournament timer cancelled.");
 				} else {
-					System.out.println("No tournaments in progress for league "+sourceLeague.getLeagueID()+" "+sourceLeague.getName());
-					System.out.println("Waiting for "+period+" ms "+sourceLeague.getLeagueID()+" "+sourceLeague.getName());
+					logger.info("No tournaments in progress for league "+sourceLeague.getLeagueID()+" "+sourceLeague.getName());
+					logger.info("Waiting for "+period+" ms "+sourceLeague.getLeagueID()+" "+sourceLeague.getName());
 				}
 			}
 		}, firstTime, period);
@@ -89,7 +92,7 @@ public class AutoUpdateController extends TournamentController {
 
 	private void startAutoUpdateTimer(final League sourceLeague, Date start) {
 		final long period = getLongProperty("autoUpdate.refreshDelayInSeconds", 30)*1000;// 1000 * 60 * 5;
-		System.out.println(sourceLeague.getID()+" auto update timer set to start at "+start+" or in "+(start.getTime() - new Date().getTime())+" ms");
+		logger.info(sourceLeague.getID()+" auto update timer set to start at "+start+" or in "+(start.getTime() - new Date().getTime())+" ms");
 		Timer timer = new Timer("Update "+sourceLeague.getName(), true);
 		timers.add(timer);
 		timer.schedule(new TimerTask() {
@@ -105,10 +108,10 @@ public class AutoUpdateController extends TournamentController {
 				}
 				if(tournamentsCompletedOrPaused) {
 					this.cancel();
-					System.out.println(sourceLeague.getID()+" auto update timer cancelled.");
+					logger.info(sourceLeague.getID()+" auto update timer cancelled.");
 					startWaitForNewTournamentsTimer(sourceLeague, true);
 				} else {
-					System.out.println(sourceLeague.getID()+" auto update timer waiting for "+period);
+					logger.info(sourceLeague.getID()+" auto update timer waiting for "+period);
 				}
 			}
 		}, start, period);
@@ -129,10 +132,10 @@ public class AutoUpdateController extends TournamentController {
 			if(!teamGameMap.isEmpty()) {
 				tournamentsCompletedOrPaused = applyToTournaments(sourceLeague, teamGameMap);
 			} else {
-				System.out.println("No games available.");
+				logger.info("No games available.");
 			}
 		} else {
-			System.out.println("No auto update content for league "+sourceLeague.getLeagueID()+" "+sourceLeague.getName());
+			logger.info("No auto update content for league "+sourceLeague.getLeagueID()+" "+sourceLeague.getName());
 			tournamentsCompletedOrPaused = false;
 		}
 		return tournamentsCompletedOrPaused;
@@ -161,7 +164,7 @@ public class AutoUpdateController extends TournamentController {
 		boolean tournamentsPaused = true;
 		for (Tournament tournament : getTournaments()) {
 			if (isOngoing(sourceLeague, tournament)) {
-				System.out.println("Applying updates to "+tournament.getOid()+" "+tournament.getName());
+				logger.info("Applying updates to "+tournament.getOid()+" "+tournament.getName());
 				final MainTournament mainTournament = (MainTournament)tournament;
 				mainTournament.updateGames(sp, new AutoUpdateWinnerSource(mainTournament, teamGameMap));
 				tournamentsPaused = tournamentsPaused && !mainTournament.hasGamesToUpdate();
@@ -176,9 +179,9 @@ public class AutoUpdateController extends TournamentController {
 			tournament.isStarted() && 
 			!tournament.isComplete() && 
 			tournament.hasAllSeedsAssigned();
-		System.out.println("Tournament "+tournament.getName()+(ongoing ? " is ongoing ": " is not ongoing ")+
+		logger.info("Tournament "+tournament.getName()+(ongoing ? " is ongoing ": " is not ongoing ")+
                 "for League: "+sourceLeague.getLeagueID());
-        System.out.println("Tournament "+tournament.getName()+(tournament.isStarted() ? " is started ": " is not started ")+
+        logger.info("Tournament "+tournament.getName()+(tournament.isStarted() ? " is started ": " is not started ")+
                 "at time: "+new Date());
 
         return ongoing;
@@ -194,10 +197,10 @@ public class AutoUpdateController extends TournamentController {
 				Date tstart = tournament.getNextStartTime();
 				start = start == null ? tstart : tstart.before(start) ? tstart : start;
 			} else {
-				System.out.println(new Date()+": "+tournament.getName()+" starts at "+tournament.getStartTime());
+				logger.info(new Date()+": "+tournament.getName()+" starts at "+tournament.getStartTime());
 			}
 		}
-		System.out.println(sourceLeague.getID()+" appropriate start date is "+start);
+		logger.info(sourceLeague.getID()+" appropriate start date is "+start);
 		return start;
 	}
 
@@ -207,7 +210,7 @@ public class AutoUpdateController extends TournamentController {
 			//if(game.isFinal()) {
 				for (String team : game.getPlayerScores().keySet()) {
 					teamGameMap.put(team.toUpperCase(), game);
-					System.out.println("Added "+team.toUpperCase()+ " for "+game.getGameID());
+					logger.info("Added "+team.toUpperCase()+ " for "+game.getGameID());
 				}
 			//}
 		}
@@ -285,10 +288,10 @@ public class AutoUpdateController extends TournamentController {
 
 	public void cancel() {
 		// TODO Auto-generated method stub
-		System.out.println("Need to cancel threads");
+		logger.info("Need to cancel threads");
 		for (Timer timer : timers) {
 			timer.cancel();
-			System.out.println(timer+" cancelled");
+			logger.info(timer+" cancelled");
 		}
 	}
 

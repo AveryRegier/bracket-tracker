@@ -20,6 +20,8 @@ package com.tournamentpool.broker.mail;
 
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.domain.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -34,37 +36,39 @@ import java.util.Set;
  */
 public class JavaMailEmailBroker {
 
-	private static final ThreadLocal<String[]> tl = new ThreadLocal<>();
+    private final static Logger logger = LoggerFactory.getLogger(JavaMailEmailBroker.class);
 
-	public static void setBaseURL(String scheme, String host, int port) {
-		tl.set(new String[] { scheme, host, Integer.toString(port) });
-	}
+    private static final ThreadLocal<String[]> tl = new ThreadLocal<>();
 
-	private final SingletonProvider sp;
+    public static void setBaseURL(String scheme, String host, int port) {
+        tl.set(new String[]{scheme, host, Integer.toString(port)});
+    }
 
-	public JavaMailEmailBroker(SingletonProvider sp) {
-		this.sp = sp;
-	}
+    private final SingletonProvider sp;
 
-	public void sendPasswordChange(User user) throws UnsupportedEncodingException, MessagingException {
-		String[] server = tl.get();
-		String scheme = server[0];
-		String host = server[1];
-		String port = server[2];
-		final Properties config = sp.getSingleton().getConfig();
+    public JavaMailEmailBroker(SingletonProvider sp) {
+        this.sp = sp;
+    }
 
-		Properties props = new Properties();
-		// set some defaults to be backwards compatible with the old code
-		props.put("mail.smtp.host", config.getProperty("smtpServerHost"));
-		props.put("mail.smtp.port", "25");
-		
-		Set<String> stringPropertyNames = config.stringPropertyNames();
-		for (String prop : stringPropertyNames) {
-			if(prop != null && prop.startsWith("mail.smtp.")) {
-				props.put(prop, config.getProperty(prop));
-			}
-		}
-		
+    public void sendPasswordChange(User user) throws UnsupportedEncodingException, MessagingException {
+        String[] server = tl.get();
+        String scheme = server[0];
+        String host = server[1];
+        String port = server[2];
+        final Properties config = sp.getSingleton().getConfig();
+
+        Properties props = new Properties();
+        // set some defaults to be backwards compatible with the old code
+        props.put("mail.smtp.host", config.getProperty("smtpServerHost"));
+        props.put("mail.smtp.port", "25");
+
+        Set<String> stringPropertyNames = config.stringPropertyNames();
+        for (String prop : stringPropertyNames) {
+            if (prop != null && prop.startsWith("mail.smtp.")) {
+                props.put(prop, config.getProperty(prop));
+            }
+        }
+
 //		props.put("mail.smtp.auth", config.getProperty("mail.smtp.auth", "true"));
 //		props.put("mail.smtp.starttls.enable", config.getProperty("mail.smtp.starttls.enable", "true"));
 //		props.put("mail.smtp.host", 
@@ -80,35 +84,35 @@ public class JavaMailEmailBroker {
 //		props.put("mail.smtp.port", "465");
 //		}
 
-		
-		Session session = Session.getInstance(props,
-				new javax.mail.Authenticator() {
-					protected PasswordAuthentication getPasswordAuthentication() {
-						return new PasswordAuthentication(
-								config.getProperty("mail.userName", config.getProperty("adminEmail")), 
-								config.getProperty("mail.password"));
-					}
-				});
 
-		Message message = new MimeMessage(session);
-		message.setFrom(new InternetAddress(config.getProperty("adminEmail"),
-				"Tournament and Bracket Tracker Administrator"));
-		message.setRecipients(Message.RecipientType.TO,
-				new InternetAddress[] { new InternetAddress(user.getEmail(),
-						user.getName()) });
-		message.setSubject(config.getProperty("passwordChangeSubject",
-				"Tournament and Bracket Tracker Password Change"));
-		message.setText(user.getName() + ",\n"
-				+ "To change your password please click the following link: \n"
-				+ scheme + "://" + host
-				+ ("http".equals(scheme) && port.equals("80") ? "" : ":" + port)
-				+ sp.getSingleton().getConfig().getProperty("ResetPasswordURL")
-				+ "?uid=" + user.getID() + "&auth="
-				+ URLEncoder.encode(user.getAuth(), "UTF-8") + "\n");
+        Session session = Session.getInstance(props,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(
+                                config.getProperty("mail.userName", config.getProperty("adminEmail")),
+                                config.getProperty("mail.password"));
+                    }
+                });
 
-		Transport.send(message);
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(config.getProperty("adminEmail"),
+                "Tournament and Bracket Tracker Administrator"));
+        message.setRecipients(Message.RecipientType.TO,
+                new InternetAddress[]{new InternetAddress(user.getEmail(),
+                        user.getName())});
+        message.setSubject(config.getProperty("passwordChangeSubject",
+                "Tournament and Bracket Tracker Password Change"));
+        message.setText(user.getName() + ",\n"
+                + "To change your password please click the following link: \n"
+                + scheme + "://" + host
+                + ("http".equals(scheme) && port.equals("80") ? "" : ":" + port)
+                + sp.getSingleton().getConfig().getProperty("ResetPasswordURL")
+                + "?uid=" + user.getID() + "&auth="
+                + URLEncoder.encode(user.getAuth(), "UTF-8") + "\n");
 
-		System.out.println("Password reset sent to "+user.getEmail());
+        Transport.send(message);
 
-	}
+        logger.info("Password reset sent to " + user.getEmail());
+
+    }
 }

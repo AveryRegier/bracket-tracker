@@ -22,6 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 package com.tournamentpool.broker.sql;
 
 import com.tournamentpool.application.SingletonProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,6 +32,8 @@ import java.util.Set;
  * @author Avery J. Regier
  */
 public abstract class LoadBroker extends SQLBroker {
+
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final Set<LoadBroker> dependencies = new HashSet<>();
 	private volatile boolean hasRun = false;
 	private volatile boolean successful = false;
@@ -56,12 +60,12 @@ public abstract class LoadBroker extends SQLBroker {
 	 */
 	public void execute() {
 		try {
-			System.out.println("Load "+getSQLKey()+" started.");
+			logger.info("Load "+getSQLKey()+" started.");
 			super.execute();
 			successful = true;
 		} finally {
 			hasRun = true;
-			System.out.println("Load "+getSQLKey()+(successful?" successful.":" failed."));
+			logger.info("Load "+getSQLKey()+(successful?" successful.":" failed."));
 			lm.complete(this);
 		}
 	}
@@ -74,7 +78,7 @@ public abstract class LoadBroker extends SQLBroker {
             try {
                 execute();
             } catch (Throwable e) {
-                e.printStackTrace();
+                logger.error(getSQLKey(), e);
             }
         }, getSQLKey()).start();
 		return true;

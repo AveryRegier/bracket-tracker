@@ -3,6 +3,8 @@ package com.tournamentpool.beans;
 import com.tournamentpool.domain.Bracket;
 import com.tournamentpool.domain.Game;
 import com.tournamentpool.domain.Seed;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -11,12 +13,14 @@ import java.util.stream.Collectors;
  * Created by avery on 3/18/17.
  */
 public class GameBean {
+    private final static Logger logger = LoggerFactory.getLogger(GameBean.class);
+
     private final Date date;
     private final List<ScoreBean> scores;
     private final String status;
 
     public GameBean(Map.Entry<Game, Map<Seed, Set<Bracket.Pick>>> entry) {
-        System.out.println(entry.getKey().getGameID()+
+        logger.debug(entry.getKey().getGameID()+
                 (entry.getValue().isEmpty() ? " no picks" : " has picks"));
         Game game = entry.getKey();
         this.date = game.getDate();
