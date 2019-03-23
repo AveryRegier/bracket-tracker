@@ -3,6 +3,8 @@ package com.tournamentpool.controller.autoupdate;
 import com.tournamentpool.domain.GameInfo;
 import com.tournamentpool.domain.Opponent;
 import com.tournamentpool.domain.Team;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -27,6 +29,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 
 final class AutoUpdateGameInfo implements GameInfo {
+	private static final Logger logger = LoggerFactory.getLogger(AutoUpdateGameInfo.class);
+
 	private final LiveGame game;
 	private final Map<Opponent, Team> teams;
 	private final Optional<? extends GameInfo> oldGame;
@@ -46,11 +50,11 @@ final class AutoUpdateGameInfo implements GameInfo {
 			for (Entry<Opponent, Team> entry : teams.entrySet()) {
 				Team team = entry.getValue();
 				if(team.anyNamesMatch(winnerTeamName)) {
-					System.out.println("Winner of "+game.getGameID()+" is "+team.getName());
+					logger.info("Winner of "+game.getGameID()+" is "+team.getName());
 					return Optional.of(entry.getKey());
 				}
 			}
-			System.out.println("No winner found for "+game.getGameID());
+			logger.info("No winner found for "+game.getGameID());
 		}
 		return Optional.empty();
 	}

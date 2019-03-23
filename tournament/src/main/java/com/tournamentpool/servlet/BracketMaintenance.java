@@ -121,7 +121,6 @@ public class BracketMaintenance extends RequiresLoginServlet {
 	{
 		User user = getUser(req, res);
 
-	//	System.out.println(req.getParameterMap());
 		try {
 			Bracket bracket = createOrUpdateBracket(req, user);
 

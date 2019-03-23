@@ -115,7 +115,6 @@ public class TournamentServlet extends HttpServlet {
 	}
 
 	public static String killWhitespace(String value) {
-	//	System.out.println(value);
 		if(value != null) {
 			value = value.trim();
 			if(value.length() == 0) {

@@ -19,11 +19,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 package com.tournamentpool.controller;
 
 import com.tournamentpool.domain.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Calendar;
 import java.util.Optional;
 
 public class ArchiveFilter implements Filter {
+	private static final Logger logger = LoggerFactory.getLogger(ArchiveFilter.class);
 
 	public boolean pass(Group group) {
 		for(Pool pool: group.getPools()) {
@@ -45,7 +48,7 @@ public class ArchiveFilter implements Filter {
                 gameTime.setTime(championshipGame.get().getDate());
                 Calendar archiveDate = Calendar.getInstance();
                 archiveDate.add(Calendar.WEEK_OF_YEAR, -1);
-//				System.out.println(tournament.getName()+" ended "+(gameTime.getTime())+" Comparing to "+archiveDate.getTime()+" after "+archiveDate.after(endDate));
+//				logger.debug(tournament.getName()+" ended "+(gameTime.getTime())+" Comparing to "+archiveDate.getTime()+" after "+archiveDate.after(endDate));
                 return archiveDate.after(gameTime);
 			}
 		}

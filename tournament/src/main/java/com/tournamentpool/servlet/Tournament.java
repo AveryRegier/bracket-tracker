@@ -78,7 +78,6 @@ public class Tournament extends RequiresLoginServlet {
 	{
 		User user = getUser(req, res); 
 
-		//	System.out.println(req.getParameterMap());
 		try {
 			int tournamentOid = Integer.parseInt(req.getParameter("tournament"));
 			final MainTournament tournament = (MainTournament) getApp().getTournamentManager().getTournament(tournamentOid);

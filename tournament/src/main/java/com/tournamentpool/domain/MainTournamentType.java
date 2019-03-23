@@ -67,7 +67,6 @@ public class MainTournamentType extends TournamentTypeAdapter implements Tournam
 	 * @see com.tournamentpool.domain.ITournamentType#getOpponent(int)
 	 */
 	public Opponent getOpponent(int oponentOID) {
-	//	System.out.println(oponentOID);
 		return oponents.get(oponentOID);
 	}
 
@@ -75,7 +74,6 @@ public class MainTournamentType extends TournamentTypeAdapter implements Tournam
 	 * @see com.tournamentpool.domain.ITournamentType#getOpponentByOrder(int)
 	 */
 	public Optional<Opponent> getOpponentByOrder(int sequence) {
-	//	System.out.println(sequence);
 		for (Opponent opponent: oponents.values()) {
 			if(opponent.getSequence() == sequence) return Optional.of(opponent);
 		}

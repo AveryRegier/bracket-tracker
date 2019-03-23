@@ -22,6 +22,8 @@ import com.tournamentpool.controller.TournamentVisitor;
 import com.tournamentpool.domain.*;
 import com.tournamentpool.domain.GameNode.Feeder;
 import com.tournamentpool.domain.MainTournament.WinnerSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,6 +33,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 final class AutoUpdateWinnerSource implements WinnerSource {
+	private static final Logger logger = LoggerFactory.getLogger(AutoUpdateWinnerSource.class);
+	
 	private final MainTournament mainTournament;
 	private final Map<String, LiveGame> teamGameMap;
 
@@ -57,7 +61,7 @@ final class AutoUpdateWinnerSource implements WinnerSource {
                 Iterable<String> names = entry.getValue().getNames();
             n:	for (String name : names) {
                     String teamName = name.toUpperCase();
-                    System.out.println("Evaluating "+teamName);
+                    logger.info("Evaluating "+teamName);
                     LiveGame game = teamGameMap.get(teamName);
                     if(game != null) {
                         if(verifySameGame(game, teams)) {
@@ -68,7 +72,7 @@ final class AutoUpdateWinnerSource implements WinnerSource {
                 }
             }
         } else {
-            System.out.println("No teams are ready to play for "+mainTournament.getOid()+" "+mainTournament.getName());
+            logger.info("No teams are ready to play for "+mainTournament.getOid()+" "+mainTournament.getName());
         }
         return null;
     }
@@ -95,14 +99,14 @@ final class AutoUpdateWinnerSource implements WinnerSource {
 	}
 
 	private boolean verifySameGame(LiveGame game, Map<Opponent, Team> teams) {
-		System.out.println("Evaluating game "+teams.values().stream()
+		logger.info("Evaluating game "+teams.values().stream()
 				.flatMap(t->t.getNames().stream())
 				.collect(Collectors.joining(", ")));
 		for (Team team : teams.values()) {
 			if(anyNamesMatch(game, team)) {
-				System.out.println("Team "+team.getName()+" matches!");
+				logger.info("Team "+team.getName()+" matches!");
 			} else {
-				System.out.println("Team "+team.getName()+" does not match. " + getFeedNames(game));
+				logger.info("Team "+team.getName()+" does not match. " + getFeedNames(game));
 				return false;
 			}
 		}
