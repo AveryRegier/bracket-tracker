@@ -8,6 +8,25 @@
 		<listener-class>com.tournamentpool.application.TournamentSingletonProvider</listener-class>
 	</listener>
 
+	<listener>
+		<listener-class>com.tournamentpool.application.WorkTrackerContextListener</listener-class>
+	</listener>
+
+	<filter>
+		<filter-name>httpWorkFilter</filter-name>
+		<filter-class>com.deere.isg.worktracker.servlet.HttpWorkFilter</filter-class>
+	</filter>
+
+	<filter>
+		<filter-name>requestBouncerFilter</filter-name>
+		<filter-class>com.deere.isg.worktracker.servlet.RequestBouncerFilter</filter-class>
+	</filter>
+
+	<filter>
+		<filter-name>zombieFilter</filter-name>
+		<filter-class>com.deere.isg.worktracker.servlet.ZombieFilter</filter-class>
+	</filter>
+
 	<servlet>
 		<servlet-name>com.tournamentpool.servlet.Admin</servlet-name>
 		<servlet-class>com.tournamentpool.servlet.Admin</servlet-class>
@@ -113,6 +132,31 @@
         <servlet-class>com.tournamentpool.servlet.ProfileServlet</servlet-class>
     </servlet>
 
+	<servlet>
+		<servlet-name>workHttpServlet</servlet-name>
+		<servlet-class>com.deere.isg.worktracker.servlet.WorkHttpServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>ViewStatusMessages</servlet-name>
+		<servlet-class>ch.qos.logback.classic.ViewStatusMessagesServlet</servlet-class>
+	</servlet>
+
+	<filter-mapping>
+		<filter-name>httpWorkFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>requestBouncerFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>zombieFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
 	<servlet-mapping>
 		<servlet-name>com.tournamentpool.servlet.Admin</servlet-name>
 		<url-pattern>/Admin</url-pattern>
@@ -217,4 +261,14 @@
         <servlet-name>com.tournamentpool.servlet.ProfileServlet</servlet-name>
         <url-pattern>/Profile</url-pattern>
     </servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>workHttpServlet</servlet-name>
+		<url-pattern>/health/outstanding</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>ViewStatusMessages</servlet-name>
+		<url-pattern>/lbClassicStatus</url-pattern>
+	</servlet-mapping>
 </web-app>

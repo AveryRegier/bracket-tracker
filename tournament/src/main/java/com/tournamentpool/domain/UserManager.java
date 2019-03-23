@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.domain;
 
+import com.tournamentpool.application.MDC;
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.application.SingletonProviderHolder;
 import com.tournamentpool.broker.mail.JavaMailEmailBroker;
@@ -67,6 +68,7 @@ public class UserManager extends SingletonProviderHolder {
 	 */
 	public User getUser(String userID, String auth) {
 		User user = getUserObject(userID);
+		MDC.getWork().ifPresent(w->w.setRemoteUser(user.getID()));
 		// TODO: check the auth secure token
 		if(user.authenticate(auth)) return user;
 		else return null;
