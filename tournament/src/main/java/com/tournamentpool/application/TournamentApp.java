@@ -28,6 +28,8 @@ import com.tournamentpool.broker.sql.load.*;
 import com.tournamentpool.controller.ShowTournamentController;
 import com.tournamentpool.controller.autoupdate.AutoUpdateController;
 import com.tournamentpool.domain.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +41,8 @@ import java.util.Properties;
  * @author avery
  */
 public class TournamentApp {
+	private static final Logger logger = LoggerFactory.getLogger(TournamentApp.class);
+
 	private BracketManager bracketManager;
 	private TournamentManager tournamentManager;
 	private ScoreSystemManager scoreSystemManager;
@@ -66,7 +70,7 @@ public class TournamentApp {
                 }
                 init();
             } catch(Throwable t) {
-                t.printStackTrace();
+                logger.error("Initialization Failure", t);
             }
         }, "Initialization").start();
 	}
@@ -209,7 +213,7 @@ public class TournamentApp {
 							}
 						}
 					} catch (IOException e) {
-						e.printStackTrace();
+						logger.error("Configuration Failure", e);
 					}
 				}
 			}

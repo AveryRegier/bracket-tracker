@@ -23,6 +23,8 @@ package com.tournamentpool.broker.sql.get;
 
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.PreparedStatementBroker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,6 +33,8 @@ import java.sql.SQLException;
  * @author Avery J. Regier
  */
 public abstract class PlayerGetBroker extends PreparedStatementBroker {
+	private static final Logger logger = LoggerFactory.getLogger(PlayerGetBroker.class);
+
 	/**
 	 * @param sp
 	 */
@@ -45,7 +49,7 @@ public abstract class PlayerGetBroker extends PreparedStatementBroker {
 				email = set.getString("EMAIL");
 			} catch (SQLException e) {
 				if(!emailWarningGiven) {
-					System.err.println("EMAIL address column not available");
+					logger.warn("EMAIL address column not available");
 					emailWarningGiven = true;
 				}
 			}

@@ -20,9 +20,13 @@ package com.tournamentpool.domain;
 
 import com.tournamentpool.broker.sql.DatabaseFailure;
 import com.tournamentpool.controller.ShowTournamentController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utility.domain.Reference;
 
 public abstract class TieBreakerType implements Reference {
+	private static final Logger logger = LoggerFactory.getLogger(TieBreakerType.class);
+
 	@SuppressWarnings("rawtypes")
 	private static final Comparable<?> EQUALIZER = new Comparable() {
 		public int compareTo(Object arg0) {
@@ -101,7 +105,7 @@ public abstract class TieBreakerType implements Reference {
 				}
 				return new Delta(delta);
 			} catch (DatabaseFailure e) {
-				e.printStackTrace();
+				logger.error("TieBreakerTypeUpsetPrediction", e);
 				return EQUALIZER;
 			}
 		}
@@ -159,7 +163,7 @@ public abstract class TieBreakerType implements Reference {
 				}
 				return new CombinedDelta(upsetDelta, closestNumberDelta);
 			} catch (DatabaseFailure e) {
-				e.printStackTrace();
+				logger.error("TieBreakerTypeUpsetPredictionClosestNumber", e);
 				return EQUALIZER;
 			}
 		}

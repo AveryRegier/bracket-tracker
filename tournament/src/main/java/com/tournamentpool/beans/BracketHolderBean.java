@@ -25,6 +25,8 @@ import com.tournamentpool.broker.sql.DatabaseFailure;
 import com.tournamentpool.controller.Filter;
 import com.tournamentpool.domain.*;
 import com.tournamentpool.domain.ScoreSystem.Score;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,6 +35,8 @@ import java.util.stream.Collectors;
  * @author Avery J. Regier
  */
 public class BracketHolderBean {
+    private static final Logger logger = LoggerFactory.getLogger(BracketHolderBean.class);
+
 	private final Set<BracketBean<?>> bracketBeans = new TreeSet<>((abean, bbean) -> {
         if(abean == bbean) return 0;
         Score aScore = abean.getScore();
@@ -165,7 +169,7 @@ public class BracketHolderBean {
                     .map(GameBean::new)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-	        e.printStackTrace();
+	        logger.error("Game Visualization Failure", e);
         }
     }
 

@@ -21,18 +21,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
  */
 package com.tournamentpool.broker.sql.load;
 
+import com.tournamentpool.application.SingletonProvider;
+import com.tournamentpool.broker.sql.LoadBroker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-
-import com.tournamentpool.application.SingletonProvider;
-import com.tournamentpool.broker.sql.LoadBroker;
 
 /**
  * @author Avery J. Regier
  */
 public class TournamentLoadBroker extends LoadBroker {
-
+	private static final Logger logger = LoggerFactory.getLogger(TournamentLoadBroker.class);
 	/**
 	 * @param sp
 	 */
@@ -68,7 +70,7 @@ public class TournamentLoadBroker extends LoadBroker {
 				startLevelOID = set.getInt("START_LEVEL_ID");
 			} catch (SQLException e) {
 				if(!messageSent) {
-					System.err.println("Database not upgraded to support sub tournaments");
+					logger.warn("Database not upgraded to support sub tournaments");
 					messageSent = true;
 				}
 			}

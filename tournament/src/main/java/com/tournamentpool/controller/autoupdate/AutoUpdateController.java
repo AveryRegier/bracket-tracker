@@ -102,7 +102,7 @@ public class AutoUpdateController extends TournamentController {
 				try {
 					tournamentsCompletedOrPaused = doUpdate(sourceLeague);
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(sourceLeague.getName(), e);
 					this.cancel();
 					return;
 				}
@@ -231,7 +231,7 @@ public class AutoUpdateController extends TournamentController {
                 return constructor.newInstance(getSubSet(prefix));
             }
         } catch(ReflectiveOperationException e) {
-            e.printStackTrace();
+            logger.error("Ignored "+prefix+" "+clazz.getCanonicalName(), e);
             // fall through
         }
 		return clazz.newInstance();

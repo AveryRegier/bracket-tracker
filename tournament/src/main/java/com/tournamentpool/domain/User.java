@@ -24,6 +24,8 @@ package com.tournamentpool.domain;
 import com.tournamentpool.application.SingletonProvider;
 import com.tournamentpool.broker.sql.get.PlayerBracketsGetBroker;
 import com.tournamentpool.broker.sql.get.PlayerGroupsGetBroker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -34,6 +36,8 @@ import java.util.stream.Collectors;
  * @author avery
  */
 public class User {
+	private static final Logger logger = LoggerFactory.getLogger(User.class);
+
 	private String pw;
 	private String name;
 	private final int oid;
@@ -82,7 +86,7 @@ public class User {
 		try {
 			auth = URLEncoder.encode(auth, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			logger.error("UTF-8", e);
 		}
 		return auth;
 	}

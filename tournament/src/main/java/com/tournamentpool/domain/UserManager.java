@@ -29,6 +29,8 @@ import com.tournamentpool.broker.sql.delete.PlayerDeleteBroker;
 import com.tournamentpool.broker.sql.get.*;
 import com.tournamentpool.broker.sql.insert.*;
 import com.tournamentpool.broker.sql.update.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utility.StringUtil;
 import utility.menu.Menu;
 import utility.menu.reference.ReferenceMenu;
@@ -43,6 +45,8 @@ import java.util.stream.Collectors;
  * @author avery
  */
 public class UserManager extends SingletonProviderHolder {
+	private static final Logger logger = LoggerFactory.getLogger(UserManager.class);
+
 	private final Map<String, User> users = new HashMap<>();
 	private final Map<Integer, User> players = new HashMap<>();
 	private final Map<Integer, Group> groups = new HashMap<>();
@@ -136,7 +140,7 @@ public class UserManager extends SingletonProviderHolder {
 		try {
 			return getUserObject(userID).checkPassword(password);
 		} catch (IllegalArgumentException e) {
-			System.err.println("Login with unknown user "+userID+" attempted.");
+			logger.warn("Login with unknown user "+userID+" attempted.");
 			return null;
 		}
 	}

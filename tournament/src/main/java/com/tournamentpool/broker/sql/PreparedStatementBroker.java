@@ -22,6 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 package com.tournamentpool.broker.sql;
 
 import com.tournamentpool.application.SingletonProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,6 +34,7 @@ import java.sql.Statement;
  * @author Avery J. Regier
  */
 public abstract class PreparedStatementBroker extends SQLBroker {
+	private static final Logger logger = LoggerFactory.getLogger(PreparedStatementBroker.class);
 
 	/**
 	 * 
@@ -46,7 +49,7 @@ public abstract class PreparedStatementBroker extends SQLBroker {
 			prepare(stmt);
 			return stmt.execute();
 		} catch(SQLException e) {
-			System.err.println(toString());
+			logger.error(toString(), e);
 			throw e;
 		}
 	}
