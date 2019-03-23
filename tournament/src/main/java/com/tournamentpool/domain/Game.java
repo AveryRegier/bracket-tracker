@@ -99,8 +99,7 @@ public class Game implements GameInfo, HasWinner {
 	}
 
 	public String getGameID() {
-		// TODO Auto-generated method stub
-		return null;
+		return tournament.getID()+"-"+gameNode.getID();
 	}
 
 	public String getStatus() {

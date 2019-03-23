@@ -16,7 +16,8 @@ public class GameBean {
     private final String status;
 
     public GameBean(Map.Entry<Game, Map<Seed, Set<Bracket.Pick>>> entry) {
-        System.out.println(entry.getKey().getGameID()+(entry.getValue().isEmpty() ? " no picks" : " has picks"));
+        System.out.println(entry.getKey().getGameID()+
+                (entry.getValue().isEmpty() ? " no picks" : " has picks"));
         Game game = entry.getKey();
         this.date = game.getDate();
         this.scores = game.getScores().entrySet().stream()
