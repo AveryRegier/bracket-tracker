@@ -176,8 +176,7 @@ public class AutoUpdateController extends TournamentController {
 	private boolean isOngoing(final League sourceLeague, Tournament tournament) {
 		boolean ongoing = tournament instanceof MainTournament && 
 			tournament.getLeague() == sourceLeague && 
-			tournament.isStarted() && 
-			!tournament.isComplete() && 
+			tournament.isInProgress() &&
 			tournament.hasAllSeedsAssigned();
 		logger.info("Tournament "+tournament.getName()+(ongoing ? " is ongoing ": " is not ongoing ")+
                 "for League: "+sourceLeague.getLeagueID());

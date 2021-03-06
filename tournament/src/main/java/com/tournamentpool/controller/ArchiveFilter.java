@@ -40,7 +40,7 @@ public class ArchiveFilter implements Filter {
 	}
 
 	public static boolean isArchive(Tournament tournament) {
-		boolean c = tournament != null && tournament.isComplete();
+		boolean c = tournament != null && (tournament.isComplete() || tournament.isCancelled());
 		if(c) {
 			Optional<Game> championshipGame = tournament.getChampionshipGame();
 			if(championshipGame.isPresent()) {

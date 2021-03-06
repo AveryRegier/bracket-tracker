@@ -96,8 +96,13 @@ public interface Tournament extends Reference {
     Optional<Opponent> getWinner(GameNode node);
 
 	default boolean isInProgress() {
-		return isStarted() && !isComplete();
+		return (isStarted() && !isComplete()) && !isCancelled();
 	}
+
+	default boolean isCancelled() {
+		// Just working around 2020 for now
+		return Integer.valueOf(60).equals(getID());
+	};
 
 	public Stream<Game> allGames();
 

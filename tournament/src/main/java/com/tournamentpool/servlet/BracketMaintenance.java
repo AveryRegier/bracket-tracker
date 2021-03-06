@@ -84,7 +84,7 @@ public class BracketMaintenance extends RequiresLoginServlet {
 			for(Group group: user.getGroupsInHierarchy()) {
 				GroupBean gBean = new GroupBean(group);
                 group.getMyPools().stream()
-                        .filter(pool -> pool != null)
+                        .filter(Objects::nonNull)
                         .forEach(pool -> {
                             if (pool.getTournament() == bracket.getTournament() &&
                                     !pool.hasBracket(bracket) && !pool.hasReachedLimit(user)) {
